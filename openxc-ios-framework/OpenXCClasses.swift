@@ -66,6 +66,17 @@ public class VehicleMeasurementResponse : VehicleBaseMessage {
     out.appendContentsOf("}")
     return out
   }
+  public func valueIsBool() -> Bool {
+    if value is NSNumber {
+      let nv = value as! NSNumber
+      if nv.isEqualToValue(NSNumber(bool: true)) {
+        return true
+      } else if nv.isEqualToValue(NSNumber(bool:false)) {
+        return true
+      }
+    }
+    return false
+  }
 }
 
 

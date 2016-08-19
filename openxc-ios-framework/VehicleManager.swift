@@ -10,6 +10,26 @@ import Foundation
 import CoreBluetooth
 
 
+public enum VehicleManagerStatusMessage: Int {
+  case C5DETECTED
+  case C5CONNECTED
+  case C5SERVICEFOUND
+  case C5NOTIFYON
+  case C5OPERATIONAL
+  case C5DISCONNECTED
+  case TRACE_SOURCE_END
+}
+
+public enum VehicleManagerConnectionState: Int {
+  case NotConnected=0
+  case ConnectionInProgress=1
+  case Connected=2
+  case Operational=3
+}
+
+
+
+
 
 public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
 
@@ -70,7 +90,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   
 
-  private var connectionState: VehicleManagerConnectionState! = .NotConnected
+  public var connectionState: VehicleManagerConnectionState! = .NotConnected
+  public var messageCount: Int = 0
 
   private var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   
@@ -81,13 +102,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   // MARK : Class Defines
   
-  public enum VehicleManagerConnectionState: Int {
-    case NotConnected=0
-    case ConnectionInProgress=1
-    case Connected=2
-  }
-
-
+ 
   
   
   
@@ -127,6 +142,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     vmlog("VehicleManager connect started")
     connectionState = .ConnectionInProgress
+    messageCount = 0
     openXCPeripheral=nil
     centralManager = CBCentralManager(delegate: self, queue: cbqueue, options:nil)
     
@@ -557,7 +573,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       }
       let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
       if str != nil {
-//        vmlog(str!)
+ //       vmlog(str!)
       } else {
         vmlog("not UTF8")
       }
@@ -606,8 +622,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             }
           }
           if !found {
-            let act = defaultMeasurementCallback
-            act!.performAction(["vehiclemessage":rsp] as NSDictionary)
+            if let act = defaultMeasurementCallback {
+              act.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
           }
         }
           ///////////////////////
@@ -624,6 +641,23 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           rsp.timestamp = timestamp
           rsp.name = name
           decodedMessage = rsp
+          
+          // bool test
+          // TODO maybe keep track of what type each rsp is?
+          /*
+          if value is NSNumber {
+            let nv = value as! NSNumber
+            if nv.isEqualToValue(NSNumber(bool: true)) {
+              vmlog("it's a bool and it's true")
+            } else if nv.isEqualToValue(NSNumber(bool:false)) {
+              vmlog("it's a bool and it's true")
+            } else {
+              vmlog("it's a number")
+            }
+          } else {
+            vmlog("it's a string")
+          }
+          */
           
           
           latestVehicleMeasurements.setValue(rsp, forKey:name as String)
@@ -801,6 +835,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         }
         
         
+        messageCount += 1
+        
+        
+        
         
       } catch {
         vmlog("bad json")
@@ -877,7 +915,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         traceFilesourceHandle!.closeFile()
         traceFilesourceHandle = nil
         if let act = managerCallback {
-          act.performAction(["status":"TRACE_SOURCE_END"] as NSDictionary)
+          act.performAction(["status":VehicleManagerStatusMessage.TRACE_SOURCE_END.rawValue] as Dictionary)
         }
       }
       
@@ -923,18 +961,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog(peripheral.name)
       vmlog(advertisementData["kCBAdvDataLocalName"])
       // TODO look at advData, or just either possible name, confirm with Ford
-      if peripheral.name=="OpenXC_C5_BTLE" {
+      if peripheral.name=="OpenXC_C5_BTLE" || peripheral.name=="CrossChasm" {
         openXCPeripheral = peripheral
         openXCPeripheral.delegate = self
         centralManager.connectPeripheral(openXCPeripheral, options:nil)
-      }
-      if peripheral.name=="CrossChasm" {
-        openXCPeripheral = peripheral
-        openXCPeripheral.delegate = self
-        centralManager.connectPeripheral(openXCPeripheral, options:nil)
-      }
-      if let act = managerCallback {
-        act.performAction(["status":"C5DETECTED"] as NSDictionary)
+        if let act = managerCallback {
+          act.performAction(["status":VehicleManagerStatusMessage.C5DETECTED.rawValue] as NSDictionary)
+        }
       }
 
     }
@@ -946,7 +979,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     connectionState = .Connected
     peripheral.discoverServices(nil)
     if let act = managerCallback {
-      act.performAction(["status":"C5CONNECTED"] as NSDictionary)
+      act.performAction(["status":VehicleManagerStatusMessage.C5CONNECTED.rawValue] as NSDictionary)
     }
   }
   
@@ -969,16 +1002,17 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     
     // just reconnect for now
+    // TODO allow configuration of auto-reconnect?
     if peripheral.name=="OpenXC_C5_BTLE" {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
     }
     if peripheral.name=="CrossChasm" {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
     }
-
     if let act = managerCallback {
-      act.performAction(["status":"C5DISCONNECT"] as NSDictionary)
+      act.performAction(["status":VehicleManagerStatusMessage.C5DISCONNECTED.rawValue] as NSDictionary)
     }
+    connectionState = .ConnectionInProgress
 
   }
   
@@ -1001,7 +1035,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         openXCService = service
         openXCPeripheral.discoverCharacteristics(nil, forService:service)
         if let act = managerCallback {
-          act.performAction(["status":"C5SERVICEFOUND"] as NSDictionary)
+          act.performAction(["status":VehicleManagerStatusMessage.C5SERVICEFOUND.rawValue] as NSDictionary)
         }
       }
       
@@ -1027,15 +1061,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         peripheral.setNotifyValue(true, forCharacteristic:characteristic)
         openXCPeripheral.discoverDescriptorsForCharacteristic(characteristic)
         if let act = managerCallback {
-          act.performAction(["status":"C5NOTIFYON"] as NSDictionary)
+          act.performAction(["status":VehicleManagerStatusMessage.C5NOTIFYON.rawValue] as NSDictionary)
         }
+        connectionState = .Operational
       }
       if characteristic.UUID.UUIDString == "6800D38B-5262-11E5-885D-FEFF819CDCE2" {
         openXCWriteChar = characteristic
         openXCPeripheral.discoverDescriptorsForCharacteristic(characteristic)
-        if let act = managerCallback {
-          act.performAction(["status":"C5WRITEON"] as NSDictionary)
-        }
       }
     }
     
