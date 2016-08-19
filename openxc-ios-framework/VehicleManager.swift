@@ -11,13 +11,12 @@ import CoreBluetooth
 
 
 public enum VehicleManagerStatusMessage: Int {
-  case C5DETECTED
-  case C5CONNECTED
-  case C5SERVICEFOUND
-  case C5NOTIFYON
-  case C5OPERATIONAL
-  case C5DISCONNECTED
-  case TRACE_SOURCE_END
+  case C5DETECTED=1
+  case C5CONNECTED=2
+  case C5SERVICEFOUND=3
+  case C5NOTIFYON=4
+  case C5DISCONNECTED=5
+  case TRACE_SOURCE_END=6
 }
 
 public enum VehicleManagerConnectionState: Int {
