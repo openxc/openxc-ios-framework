@@ -849,17 +849,53 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             }
             
           } else {
-            // what the heck is it??
+            // can't really get here!
             
           }
           
           
-         
+          
+        } else {
+          // what the heck is it??
           
         }
+        
+        
+        
+        ///////
+        //// fake out a CAN msg on every msg received (for debug)!!
+        if false {
+          let rsp : VehicleCanResponse = VehicleCanResponse()
+          rsp.timestamp = timestamp
+          rsp.bus = Int(arc4random_uniform(2) + 1)
+          rsp.id = Int(arc4random_uniform(20) + 2015)
+          rsp.data = String(format:"%x",Int(arc4random_uniform(100000)+1))
+          decodedMessage = rsp
+          
+          vmlog("CAN bus:\(rsp.bus) id:\(rsp.id) payload:\(rsp.data)")
           
           
+          let tupple = "\(String(rsp.bus))-\(String(rsp.id))"
           
+          var found=false
+          for key in canCallbacks.keys {
+            let act = canCallbacks[key]
+            if act!.returnKey() == tupple {
+              found=true
+              act!.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+          if !found {
+            if let act = defaultCanCallback {
+              act.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+          
+        }
+        
+        
+        
+        
         
         
         
