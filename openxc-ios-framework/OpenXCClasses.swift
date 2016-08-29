@@ -17,6 +17,7 @@ public enum VehicleMessageType: NSString {
   case DiagnosticRequest
   case DiagnosticResponse
   case CanResponse
+  case CanRequest
 }
 
 public enum VehicleCommandType: NSString {
@@ -125,7 +126,7 @@ public class VehicleDiagnosticRequest : VehicleBaseMessage {
 
 
 public class VehicleDiagnosticResponse : VehicleBaseMessage {
-  override init() {
+  public override init() {
     super.init()
     type = .DiagnosticResponse
   }
@@ -141,7 +142,7 @@ public class VehicleDiagnosticResponse : VehicleBaseMessage {
 
 
 public class VehicleCanResponse : VehicleBaseMessage {
-  override init() {
+  public override init() {
     super.init()
     type = .CanResponse
   }
@@ -149,6 +150,17 @@ public class VehicleCanResponse : VehicleBaseMessage {
   public var id : NSInteger = 0
   public var data : NSString = ""
   public var format : NSString = "standard"
+}
+
+public class VehicleCanRequest : VehicleBaseMessage {
+  public override init() {
+    super.init()
+    type = .CanRequest
+  }
+  public var bus : NSInteger = 0
+  public var id : NSInteger = 0
+  public var data : NSString = ""
+  public var format : NSString = ""
 }
 
 

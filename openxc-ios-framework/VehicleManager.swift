@@ -442,6 +442,23 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   
   
+  public func sendCanReq(cmd:VehicleCanRequest) {
+    vmlog("in sendCanReq")
+    
+    if (traceFilesourceEnabled) {return}
+    
+    BLETxSendToken += 1
+    let key : String = String(BLETxSendToken)
+    let act : TargetAction = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
+    BLETxCommandCallback.append(act)
+    BLETxCommandToken.append(key)
+    
+    sendCanCommon(cmd)
+    
+  }
+
+  
+  
   
   
   ////////////////
@@ -490,6 +507,23 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       NSThread.sleepForTimeInterval(0.05)
     }
   
+  }
+  
+  
+  private func sendCanCommon(cmd:VehicleCanRequest) {
+    vmlog("in sendCanCommon")
+    
+    let cmd = "{\"bus\":\(cmd.bus),\"id\":\(cmd.id),\"data\":\"\(cmd.data)\"}"
+    BLETxDataBuffer.addObject(cmd.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
+    
+    
+    BLESendFunction()
+    
+    // wait for BLE acknowledgement
+    // TODO need a timeout!
+    while (BLETxWriteCount>0) {
+      NSThread.sleepForTimeInterval(0.05)
+    }
   }
   
   
