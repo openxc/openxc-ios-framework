@@ -9,6 +9,14 @@
 import Foundation
 
 
+// This TargetAction protocol allows for Swift to have callback methods.
+// The TargetActionWrapper keeps a 'key' that can be used to identify
+// a specific TargetAction object if more than one is present. It keeps
+// a 'target', which is a pointer to an existing class object, for example, to
+// the ViewController that contains the callback. The variable 'action' is the
+// actual callback method that always must have an NSDictionary as a parameter.
+// The NSDictionary parameter can hold anything required for the callback
+// method.
 
 
 protocol TargetAction {

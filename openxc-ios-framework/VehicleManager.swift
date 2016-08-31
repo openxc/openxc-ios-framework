@@ -10,20 +10,25 @@ import Foundation
 import CoreBluetooth
 
 
+// public enum VehicleManagerStatusMessage
+// values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
-  case C5DETECTED=1
-  case C5CONNECTED=2
-  case C5SERVICEFOUND=3
-  case C5NOTIFYON=4
-  case C5DISCONNECTED=5
-  case TRACE_SOURCE_END=6
+  case C5DETECTED=1       // C5 VI was detected
+  case C5CONNECTED=2      // C5 VI connection established
+  case C5SERVICEFOUND=3   // C5 VI OpenXC service detected
+  case C5NOTIFYON=4       // C5 VI notification enabled
+  case C5DISCONNECTED=5   // C5 VI disconnected
+  case TRACE_SOURCE_END=6 // configured trace input end of file reached
 }
 
+
+// public enum VehicleManagerConnectionState
+// values reported in public variable connectionState
 public enum VehicleManagerConnectionState: Int {
-  case NotConnected=0
-  case ConnectionInProgress=1
-  case Connected=2
-  case Operational=3
+  case NotConnected=0           // not connected to any C5 VI
+  case ConnectionInProgress=1   // connection in progress (connecting/searching for services)
+  case Connected=2              // connection established (but not ready to receive btle writes)
+  case Operational=3            // C5 VI operational (notify enabled and writes accepted)
 }
 
 
@@ -34,15 +39,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
 
   
   
-  // MARK : Singleton Init
+  // MARK: Singleton Init
   
+  // This signleton init allows mutiple controllers to access the same instantiation
+  // of the VehicleManager. There is only a single instantiation of the VehicleManager
+  // for the entire client app
   static public let sharedInstance: VehicleManager = {
     let instance = VehicleManager()
-    // TODO do we want to autoconnect?
-    // probably not because the client app will need to 
-    // setup delegates and such
-    // instance.connect()
-    //////////////////
     return instance
   }()
   private override init() {
@@ -50,63 +53,87 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   
   
-  // MARK : Class Vars
+  // MARK: Class Vars
+  // -----------------
 
+  // CoreBluetooth variables
   private var centralManager: CBCentralManager!
   private var openXCPeripheral: CBPeripheral!
   private var openXCService: CBService!
   private var openXCNotifyChar: CBCharacteristic!
   private var openXCWriteChar: CBCharacteristic!
 
+  // config for outputting debug messages to console
   private var managerDebug : Bool = false
+  
+  // optional variable holding callback for VehicleManager status updates
   private var managerCallback: TargetAction?
   
+  // data buffer for receiving raw BTLE data
   private var RxDataBuffer: NSMutableData! = NSMutableData()
   
+  // data buffer for storing vehicle messages to send to BTLE
   private var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+  // BTLE transmit semaphore variable
   private var BLETxWriteCount: Int = 0
+  // BTLE transmit token increment variable
   private var BLETxSendToken: Int = 0
   
+  // ordered list for storing callbacks for in progress vehicle commands
   private var BLETxCommandCallback = [TargetAction]()
+  // mirrored ordered list for storing command token for in progress vehicle commands
   private var BLETxCommandToken = [String]()
 
+  // dictionary for holding registered measurement message callbacks
+  // pairing measurement String with callback action
   private var measurementCallbacks = [NSString:TargetAction]()
+  // default callback action for measurement messages not registered above
   private var defaultMeasurementCallback : TargetAction?
 
+  // dictionary for holding registered diagnostic message callbacks
+  // pairing bus-id-mode(-pid) String with callback action
   private var diagCallbacks = [NSString:TargetAction]()
+  // default callback action for diagnostic messages not registered above
   private var defaultDiagCallback : TargetAction?
   
+  // dictionary for holding registered diagnostic message callbacks
+  // pairing bus-id String with callback action
   private var canCallbacks = [NSString:TargetAction]()
+  // default callback action for can messages not registered above
   private var defaultCanCallback : TargetAction?
   
+  // config variable determining whether trace output is generated
   private var traceFilesinkEnabled: Bool = false
+  // config variable holding trace output file name
   private var traceFilesinkName: NSString = ""
 
+  // config variable determining whether trace input is used instead of BTLE data
   private var traceFilesourceEnabled: Bool = false
+  // config variable holding trace input file name
   private var traceFilesourceName: NSString = ""
+  // private timer for trace input message send rate
   private var traceFilesourceTimer: NSTimer = NSTimer()
+  // private file handle to trace input file
   private var traceFilesourceHandle: NSFileHandle?
   
   
-
+  // public variable holding VehicleManager connection state enum
   public var connectionState: VehicleManagerConnectionState! = .NotConnected
+  // public variable holding number of messages received since last Connection established
   public var messageCount: Int = 0
 
+
+  // dictionary holding last received measurement message for each measurement type
   private var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   
-  private var registeredCallbacks: NSMutableDictionary! = NSMutableDictionary()
   
   
   
   
-  // MARK : Class Defines
-  
- 
   
   
   
-  
-  // MARK : Class Functions
+  // MARK: Class Functions
   
   public func setManagerCallbackTarget<T: AnyObject>(target: T, action: (T) -> (NSDictionary) -> ()) {
     managerCallback = TargetActionWrapper(key:"", target: target, action: action)
@@ -127,10 +154,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   
   public func connect() {
-    // TODO allow VI to be chosen from a list
+    // TODO: allow VI to be chosen from a list
     // instead of auto connecting to first VI
     
-    // TODO handle already connected!
+    // TODO: handle already connected!
     if connectionState != .NotConnected {
       vmlog("VehicleManager already connected! Sorry!")
       return
@@ -373,7 +400,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     diagCallbacks[key] = TargetActionWrapper(key:key, target: target, action: action)
   }
   
-  public func clearDiagnosticTarget(keys: [NSString]) {
+  public func clearDiagnosticTarget(keys: [NSInteger]) {
     let key : NSMutableString = ""
     var first : Bool = true
     for i in keys {
@@ -417,7 +444,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     diagCallbacks[key] = TargetActionWrapper(key:key, target: target, action: action)
   }
   
-  public func clearCanTarget(keys: [NSString]) {
+  public func clearCanTarget(keys: [NSInteger]) {
     let key : NSMutableString = ""
     var first : Bool = true
     for i in keys {
@@ -476,10 +503,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     BLESendFunction()
     
     // wait for BLE acknowledgement
-    // TODO need a timeout!
-    while (BLETxWriteCount>0) {
-      NSThread.sleepForTimeInterval(0.05)
-    }
+    // TODO: need a timeout!
+//    while (BLETxWriteCount>0) {
+//      NSThread.sleepForTimeInterval(0.05)
+//    }
   }
   
   
@@ -493,7 +520,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     }
     cmdjson.appendString("}}\0")
 
-    // TODO what about recurring diagnostic messages
+    // TODO: what about recurring diagnostic messages
     
     vmlog("sending diag cmd:",cmdjson)
     
@@ -502,10 +529,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     BLESendFunction()
     
     // wait for BLE acknowledgement
-    // TODO need timeout here!
-    while (BLETxWriteCount>0) {
-      NSThread.sleepForTimeInterval(0.05)
-    }
+    // TODO: need timeout here!
+//    while (BLETxWriteCount>0) {
+//      NSThread.sleepForTimeInterval(0.05)
+//    }
   
   }
   
@@ -520,10 +547,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     BLESendFunction()
     
     // wait for BLE acknowledgement
-    // TODO need a timeout!
-    while (BLETxWriteCount>0) {
-      NSThread.sleepForTimeInterval(0.05)
-    }
+    // TODO: need a timeout!
+//    while (BLETxWriteCount>0) {
+//      NSThread.sleepForTimeInterval(0.05)
+//    }
   }
   
   
@@ -535,7 +562,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   private func BLESendFunction() {
     
-    vmlog("in BLESendFunction")
+    vmlog("in BLESendFunction: TxDataBuffer count = \(BLETxDataBuffer.count)")
     
     var sendBytes: NSData
     
@@ -563,8 +590,14 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       openXCPeripheral.writeValue(sendBytes, forCharacteristic: openXCWriteChar, type: CBCharacteristicWriteType.WithResponse)
 
       BLETxWriteCount += 1
-//      vmlog("sent:",sendBytes)
+      vmlog("sent:",String(data: sendBytes,encoding: NSUTF8StringEncoding))
+      while BLETxWriteCount>0 {
+        print(".", terminator:"")
+        // loop
+      }
     }
+    
+
     
     
 
@@ -577,7 +610,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     
     // JSON decoding
-    // TODO if protbuf?
+    // TODO: if protbuf?
     ////////////////
     
     let sepdata = NSData(bytes: [separator] as [UInt8], length: 1)
@@ -613,13 +646,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     }
     
     
-    // TODO error handling!
+    // TODO: error handling!
     if data_chunk.length > 0 {
       do {
         let json = try NSJSONSerialization.JSONObjectWithData(data_chunk, options: .MutableContainers)
         let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
         
-        // TODO this isn't really working...?
+        // TODO: this isn't really working...?
         var decodedMessage : VehicleBaseMessage = VehicleBaseMessage()
         
         
@@ -676,7 +709,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           decodedMessage = rsp
           
           // bool test
-          // TODO maybe keep track of what type each rsp is?
+          // TODO: maybe keep track of what type each rsp is?
           /*
           if value is NSNumber {
             let nv = value as! NSNumber
@@ -923,7 +956,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   private func traceFileWriter (message:VehicleBaseMessage) {
     
-    // TODO if we want to be able to trace directly from a vehicleMessage,
+    // TODO: if we want to be able to trace directly from a vehicleMessage,
     // this is where to do it
     // Each class of vehicle message has it's own trace output method
     vmlog(message.traceOutput())
@@ -959,7 +992,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         }
       }
       catch {
-        // TODO error handling here
+        // TODO: error handling here
       }
       
     }
@@ -1002,7 +1035,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
 
   
   
-  // MARK : Core Bluetooth Manager
+  // MARK: Core Bluetooth Manager
   
   public func centralManagerDidUpdateState(central: CBCentralManager) {
     vmlog("in centralManagerDidUpdateState:")
@@ -1029,7 +1062,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog("FOUND:")
       vmlog(peripheral.name)
       vmlog(advertisementData["kCBAdvDataLocalName"])
-      // TODO look at advData, or just either possible name, confirm with Ford
+      // TODO: look at advData, or just either possible name, confirm with Ford
       if peripheral.name=="OpenXC_C5_BTLE" || peripheral.name=="CrossChasm" {
         openXCPeripheral = peripheral
         openXCPeripheral.delegate = self
@@ -1071,7 +1104,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     
     // just reconnect for now
-    // TODO allow configuration of auto-reconnect?
+    // TODO: allow configuration of auto-reconnect?
     if peripheral.name=="OpenXC_C5_BTLE" {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
     }
@@ -1087,7 +1120,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   
   
-  // MARK : Peripheral Delgate Function
+  // MARK: Peripheral Delgate Function
   
   public func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
     vmlog("in peripheral:didDiscoverServices")
@@ -1193,6 +1226,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog(error!.localizedDescription)
     } else {
       BLETxWriteCount -= 1
+      vmlog("writeValueDone")
     }
   }
   

@@ -23,7 +23,6 @@ public enum VehicleMessageType: NSString {
 public enum VehicleCommandType: NSString {
   case version
   case device_id
-  case passthrough
 }
 
 
