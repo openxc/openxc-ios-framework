@@ -148,6 +148,11 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // private debug log function gated by the debug setting
   private func vmlog(strings:Any...) {
     if managerDebug {
+      let d = NSDate()
+      let df = NSDateFormatter()
+      df.dateFormat = "[H:m:ss.SSS]"
+      print(df.stringFromDate(d),terminator:"")
+      print(" ",terminator:"")
       for string in strings {
         print(string,terminator:"")
       }
@@ -555,11 +560,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     BLESendFunction()
     
-    // wait for BLE acknowledgement
-    // TODO: need a timeout!
-    //    while (BLETxWriteCount>0) {
-    //      NSThread.sleepForTimeInterval(0.05)
-    //    }
   }
   
   
@@ -581,12 +581,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     BLESendFunction()
     
-    // wait for BLE acknowledgement
-    // TODO: need timeout here!
-    //    while (BLETxWriteCount>0) {
-    //      NSThread.sleepForTimeInterval(0.05)
-    //    }
-    
   }
   
   
@@ -599,11 +593,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     BLESendFunction()
     
-    // wait for BLE acknowledgement
-    // TODO: need a timeout!
-    //    while (BLETxWriteCount>0) {
-    //      NSThread.sleepForTimeInterval(0.05)
-    //    }
   }
   
   
@@ -615,18 +604,22 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   private func BLESendFunction() {
     
-    vmlog("in BLESendFunction: TxDataBuffer count = \(BLETxDataBuffer.count)")
     
     var sendBytes: NSData
     
-    //    vmlog (BLETxDataBuffer)
-    
+//    vmlog("BLEsf: TxDataBuffer count = \(BLETxDataBuffer.count)")
     if BLETxDataBuffer.count == 0 {
+//      vmlog("BLEsf: exit")
+      return
+    }
+    
+//    vmlog("BLEsf: b4 TxDataWriteCount count = \(BLETxWriteCount)")
+    if BLETxWriteCount != 0 {
+//      vmlog("BLEsf: exit")
       return
     }
     
     var cmdToSend : NSMutableData = BLETxDataBuffer[0] as! NSMutableData
-    BLETxDataBuffer.removeObjectAtIndex(0)
     
     let rangedata = NSMakeRange(0, 20)
     while cmdToSend.length > 0 {
@@ -639,19 +632,15 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         let leftdata = NSMakeRange(20,cmdToSend.length-20)
         cmdToSend = NSMutableData(data: cmdToSend.subdataWithRange(leftdata))
       }
-      
       openXCPeripheral.writeValue(sendBytes, forCharacteristic: openXCWriteChar, type: CBCharacteristicWriteType.WithResponse)
-      
       BLETxWriteCount += 1
-      vmlog("sent:",String(data: sendBytes,encoding: NSUTF8StringEncoding))
-      while BLETxWriteCount>0 {
-        print(".", terminator:"")
-        // loop
-      }
+//      vmlog("BLEsf: ",String(data: sendBytes,encoding: NSUTF8StringEncoding))
     }
     
-    
-    
+    BLETxDataBuffer.removeObjectAtIndex(0)
+
+//    vmlog("BLEsf: af TxDataWriteCount count = \(BLETxWriteCount)")
+//    vmlog("BLEsf: exit")
     
     
   }
@@ -692,7 +681,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       }
       let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
       if str != nil {
-               vmlog(str!)
+  //             vmlog(str!)
       } else {
         vmlog("not UTF8")
       }
@@ -1280,9 +1269,14 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog("error")
       vmlog(error!.localizedDescription)
     } else {
-      BLETxWriteCount -= 1
-      vmlog("writeValueDone")
+
     }
+    NSThread.sleepForTimeInterval(0.05)
+    //vmlog("pdwv: b4 BLETxWriteCount = \(BLETxWriteCount)")
+    BLETxWriteCount -= 1
+    BLESendFunction()
+    //vmlog("pdwv: af BLETxWriteCount = \(BLETxWriteCount)")
+    //vmlog("pdwv: exit")
   }
   
   
