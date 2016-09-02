@@ -36,7 +36,7 @@ public enum VehicleManagerConnectionState: Int {
 
 
 public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
-
+  
   
   
   // MARK: Singleton Init
@@ -55,14 +55,14 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   // MARK: Class Vars
   // -----------------
-
+  
   // CoreBluetooth variables
   private var centralManager: CBCentralManager!
   private var openXCPeripheral: CBPeripheral!
   private var openXCService: CBService!
   private var openXCNotifyChar: CBCharacteristic!
   private var openXCWriteChar: CBCharacteristic!
-
+  
   // config for outputting debug messages to console
   private var managerDebug : Bool = false
   
@@ -83,13 +83,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var BLETxCommandCallback = [TargetAction]()
   // mirrored ordered list for storing command token for in progress vehicle commands
   private var BLETxCommandToken = [String]()
-
+  
   // dictionary for holding registered measurement message callbacks
   // pairing measurement String with callback action
   private var measurementCallbacks = [NSString:TargetAction]()
   // default callback action for measurement messages not registered above
   private var defaultMeasurementCallback : TargetAction?
-
+  
   // dictionary for holding registered diagnostic message callbacks
   // pairing bus-id-mode(-pid) String with callback action
   private var diagCallbacks = [NSString:TargetAction]()
@@ -106,7 +106,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var traceFilesinkEnabled: Bool = false
   // config variable holding trace output file name
   private var traceFilesinkName: NSString = ""
-
+  
   // config variable determining whether trace input is used instead of BTLE data
   private var traceFilesourceEnabled: Bool = false
   // config variable holding trace input file name
@@ -121,8 +121,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   public var connectionState: VehicleManagerConnectionState! = .NotConnected
   // public variable holding number of messages received since last Connection established
   public var messageCount: Int = 0
-
-
+  
+  
   // dictionary holding last received measurement message for each measurement type
   private var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   
@@ -135,14 +135,17 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   // MARK: Class Functions
   
+  // set the callback for VM status updates
   public func setManagerCallbackTarget<T: AnyObject>(target: T, action: (T) -> (NSDictionary) -> ()) {
     managerCallback = TargetActionWrapper(key:"", target: target, action: action)
   }
   
+  // change the debug config for the VM
   public func setManagerDebug(on:Bool) {
     managerDebug = on
   }
   
+  // private debug log function gated by the debug setting
   private func vmlog(strings:Any...) {
     if managerDebug {
       for string in strings {
@@ -153,19 +156,22 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // connect the VM to the VI
   public func connect() {
+    
     // TODO: allow VI to be chosen from a list
     // instead of auto connecting to first VI
     
-    // TODO: handle already connected!
+    // if the VM is already connected, don't do anything
     if connectionState != .NotConnected {
       vmlog("VehicleManager already connected! Sorry!")
       return
     }
     
+    // run the core bluetooth framework on a separate thread from main thread
     let cbqueue: dispatch_queue_t = dispatch_queue_create("CBQ", DISPATCH_QUEUE_SERIAL)
-
     
+    // start the connection process
     vmlog("VehicleManager connect started")
     connectionState = .ConnectionInProgress
     messageCount = 0
@@ -175,9 +181,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
-  
+  // tell the VM to enable output to trace file
   public func enableTraceFileSink(filename:NSString) -> Bool {
     
+    // check that file sharing is enabled in the bundle
     if let fs : Bool? = NSBundle.mainBundle().infoDictionary?["UIFileSharingEnabled"] as? Bool {
       if fs == true {
         vmlog("file sharing ok!")
@@ -189,16 +196,17 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog("no file sharing key!")
       return false
     }
-
+    
+    // save the trace file name
     traceFilesinkEnabled = true
     traceFilesinkName = filename
-  
     
+    // find the file, and overwrite it if it already exists
     if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory,
                                                      NSSearchPathDomainMask.AllDomainsMask, true).first {
       
       let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(traceFilesinkName as String).path!
-
+      
       vmlog("checking for file")
       if NSFileManager.defaultManager().fileExistsAtPath(path) {
         vmlog("file detected")
@@ -215,7 +223,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     } else {
       return false
     }
-
+    
     
     
     return true
@@ -223,19 +231,24 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // turn off trace file output
   public func disableTraceFileSink() {
-  
+    
     traceFilesinkEnabled = false
     
   }
   
   
   
-  
+  // turn on trace file input instead of data from BTLE
+  // specify a filename to read from, and a speed that lines
+  // are read from the file in ms
   public func enableTraceFileSource(filename:NSString, speed:NSInteger=500) -> Bool {
-
+    
+    // only allow a reasonable range of values for speed, not too fast or slow
     if speed < 50 || speed > 1000 {return false}
     
+    // check for file sharing in the bundle
     if let fs : Bool? = NSBundle.mainBundle().infoDictionary?["UIFileSharingEnabled"] as? Bool {
       if fs == true {
         vmlog("file sharing ok!")
@@ -249,7 +262,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     }
     
     
-    
+    // check that the file exists
     if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory,
                                                      NSSearchPathDomainMask.AllDomainsMask, true).first {
       
@@ -258,18 +271,22 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog("checking for file")
       if NSFileManager.defaultManager().fileExistsAtPath(path) {
         vmlog("file detected")
+        
+        // file exists, save file name for trace input
         traceFilesourceEnabled = true
         traceFilesourceName = filename
-
+        
+        // create a file handle for the trace input
         traceFilesourceHandle = NSFileHandle(forReadingAtPath:path)
         if traceFilesourceHandle == nil {
           vmlog("can't open filehandle")
           return false
         }
         
+        // create a timer to handle reading from the trace input filehandle
         let spdf:Double = Double(speed) / 1000.0
         traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(spdf, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
-
+        
         return true
         
       }
@@ -280,109 +297,133 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // turn off trace file input
   public func disableTraceFileSource() {
-
+    
     traceFilesourceEnabled = false
   }
   
   
+  
+  // return the latest message received for a given measurement string name
   public func getLatest(key:NSString) -> VehicleMeasurementResponse {
     if let entry = latestVehicleMeasurements[key] {
-     return entry as! VehicleMeasurementResponse
+      return entry as! VehicleMeasurementResponse
     }
     return VehicleMeasurementResponse()
   }
   
   
-  
+  // add a callback for a given measurement string name
   public func addMeasurementTarget<T: AnyObject>(key: NSString, target: T, action: (T) -> (NSDictionary) -> ()) {
     measurementCallbacks[key] = TargetActionWrapper(key:key, target: target, action: action)
   }
   
+  // clear the callback for a given measurement string name
   public func clearMeasurementTarget(key: NSString) {
     measurementCallbacks.removeValueForKey(key)
   }
   
+  // add a default callback for any measurement messages not include in specified callbacks
   public func setMeasurementDefaultTarget<T: AnyObject>(target: T, action: (T) -> (NSDictionary) -> ()) {
     defaultMeasurementCallback = TargetActionWrapper(key:"", target: target, action: action)
   }
   
+  // clear default callback (by setting the default callback to a null method)
   public func clearMeasurementDefaultTarget() {
     defaultMeasurementCallback = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
   }
   
   
   
-  
-  public func sendCommand(cmd:VehicleCommandRequest) {
-    vmlog("in sendCommand")
-
-    if (traceFilesourceEnabled) {return}
-    
-    
-    BLETxSendToken += 1
-    let key : String = String(BLETxSendToken)
-    let act : TargetAction = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
-    BLETxCommandCallback.append(act)
-    BLETxCommandToken.append(key)
-    
-    sendCommandCommon(cmd)
-    
-  }
-  
+  // send a command message with a callback for when the command response is received
   public func sendCommand<T: AnyObject>(cmd:VehicleCommandRequest, target: T, action: (T) -> (NSDictionary) -> ()) -> String {
     vmlog("in sendCommand:target")
     
+    // if we have a trace input file, ignore this request!
     if (traceFilesourceEnabled) {return ""}
-
+    
+    // save the callback in order, so we know which to call when responses are received
     BLETxSendToken += 1
     let key : String = String(BLETxSendToken)
     let act : TargetAction = TargetActionWrapper(key:key, target: target, action: action)
     BLETxCommandCallback.append(act)
     BLETxCommandToken.append(key)
-
+    
+    // common command send method
     sendCommandCommon(cmd)
     
     return key
     
   }
   
-  
-  
-  public func sendDiagReq(cmd:VehicleDiagnosticRequest) {
-    vmlog("in sendDiagReq")
+  // send a command message with no callback specified
+  public func sendCommand(cmd:VehicleCommandRequest) {
+    vmlog("in sendCommand")
     
+    // if we have a trace input file, ignore this request!
     if (traceFilesourceEnabled) {return}
-
+    
+    // we still need to keep a spot for the callback in the ordered list, so 
+    // nothing gets out of sync. Assign the callback to the null callback method.
     BLETxSendToken += 1
     let key : String = String(BLETxSendToken)
     let act : TargetAction = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
     BLETxCommandCallback.append(act)
     BLETxCommandToken.append(key)
-
-    sendDiagCommon(cmd)
+    
+    // common command send method
+    sendCommandCommon(cmd)
     
   }
   
+  
+  
+  // send a diagnostic message with a callback for when the diag command response is received
   public func sendDiagReq<T: AnyObject>(cmd:VehicleDiagnosticRequest, target: T, cmdaction: (T) -> (NSDictionary) -> ()) -> String {
     vmlog("in sendDiagReq:cmd")
     
+    // if we have a trace input file, ignore this request!
     if (traceFilesourceEnabled) {return ""}
-
+    
+    // save the callback in order, so we know which to call when responses are received
     BLETxSendToken += 1
     let key : String = String(BLETxSendToken)
     let act : TargetAction = TargetActionWrapper(key:key, target: target, action: cmdaction)
     BLETxCommandCallback.append(act)
     BLETxCommandToken.append(key)
     
+    // common diag send method
     sendDiagCommon(cmd)
     
     return key
     
   }
   
-
+  // send a diagnostic message with no callback specified
+  public func sendDiagReq(cmd:VehicleDiagnosticRequest) {
+    vmlog("in sendDiagReq")
+    
+    // if we have a trace input file, ignore this request!
+    if (traceFilesourceEnabled) {return}
+    
+    // we still need to keep a spot for the callback in the ordered list, so
+    // nothing gets out of sync. Assign the callback to the null callback method.
+    BLETxSendToken += 1
+    let key : String = String(BLETxSendToken)
+    let act : TargetAction = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
+    BLETxCommandCallback.append(act)
+    BLETxCommandToken.append(key)
+    
+    // common diag send method
+    sendDiagCommon(cmd)
+    
+  }
   
+  
+  // set a callback for any diagnostic messages received with a given set of keys.
+  // The key is bus-id-mode-pid if there are 4 keys specified in the parameter.
+  // The key becomes bus-id-mode-X if there are 3 keys specified, indicating that pid does not exist
   public func addDiagnosticTarget<T: AnyObject>(keys: [NSInteger], target: T, action: (T) -> (NSDictionary) -> ()) {
     let key : NSMutableString = ""
     var first : Bool = true
@@ -396,10 +437,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     if keys.count == 3 {
       key.appendString("-X")
     }
+    // key string has been created
     vmlog("add diag key=",key)
+    // save the callback associated with the key
     diagCallbacks[key] = TargetActionWrapper(key:key, target: target, action: action)
   }
   
+  // clear a callback for a given set of keys, defined as above.
   public func clearDiagnosticTarget(keys: [NSInteger]) {
     let key : NSMutableString = ""
     var first : Bool = true
@@ -413,15 +457,18 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     if keys.count == 3 {
       key.appendString("-X")
     }
+    // key string has been created
     vmlog("rm diag key=",key)
+    // clear the callback associated with the key
     diagCallbacks.removeValueForKey(key)
   }
   
-  
+  // set a default callback for any diagnostic messages with a key set not specified above
   public func setDiagnosticDefaultTarget<T: AnyObject>(target: T, action: (T) -> (NSDictionary) -> ()) {
     defaultDiagCallback = TargetActionWrapper(key:"", target: target, action: action)
   }
   
+  // clear the default diag callback
   public func clearDiagnosticDefaultTarget() {
     defaultDiagCallback = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
   }
@@ -430,6 +477,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   
   
+  // set a callback for any can messages received with a given set of keys.
+  // The key is bus-id and 2 keys must be specified always
   public func addCanTarget<T: AnyObject>(keys: [NSInteger], target: T, action: (T) -> (NSDictionary) -> ()) {
     let key : NSMutableString = ""
     var first : Bool = true
@@ -440,10 +489,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       first=false
       key.appendString(String(i))
     }
+    // key string has been created
     vmlog("add can key=",key)
+    // save the callback associated with the key
     diagCallbacks[key] = TargetActionWrapper(key:key, target: target, action: action)
   }
   
+  // clear a callback for a given set of keys, defined as above.
   public func clearCanTarget(keys: [NSInteger]) {
     let key : NSMutableString = ""
     var first : Bool = true
@@ -454,36 +506,37 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       first=false
       key.appendString(String(i))
     }
+    // key string has been created
     vmlog("rm can key=",key)
+    // clear the callback associated with the key
     diagCallbacks.removeValueForKey(key)
   }
   
   
+  // set a default callback for any can messages with a key set not specified above
   public func setCanDefaultTarget<T: AnyObject>(target: T, action: (T) -> (NSDictionary) -> ()) {
     defaultCanCallback = TargetActionWrapper(key:"", target: target, action: action)
   }
   
+  // clear the can diag callback
   public func clearCanDefaultTarget() {
     defaultCanCallback = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
   }
   
   
   
+  // send a can message   
   public func sendCanReq(cmd:VehicleCanRequest) {
     vmlog("in sendCanReq")
     
+    // if we have a trace input file, ignore this request!
     if (traceFilesourceEnabled) {return}
     
-    BLETxSendToken += 1
-    let key : String = String(BLETxSendToken)
-    let act : TargetAction = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
-    BLETxCommandCallback.append(act)
-    BLETxCommandToken.append(key)
-    
+    // common can send method
     sendCanCommon(cmd)
     
   }
-
+  
   
   
   
@@ -494,7 +547,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   private func sendCommandCommon(cmd:VehicleCommandRequest) {
     vmlog("in sendCommandCommon")
-
+    
     if (cmd.command == .version || cmd.command == .device_id) {
       let cmd = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
       BLETxDataBuffer.addObject(cmd.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
@@ -504,22 +557,22 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     // wait for BLE acknowledgement
     // TODO: need a timeout!
-//    while (BLETxWriteCount>0) {
-//      NSThread.sleepForTimeInterval(0.05)
-//    }
+    //    while (BLETxWriteCount>0) {
+    //      NSThread.sleepForTimeInterval(0.05)
+    //    }
   }
   
   
   private func sendDiagCommon(cmd:VehicleDiagnosticRequest) {
     vmlog("in sendDiagCommon")
- 
+    
     let cmdjson : NSMutableString = ""
     cmdjson.appendString("{\"command\":\"diagnostic_request\",\"action\":\"add\",\"request\":{\"bus\":\(cmd.bus),\"id\":\(cmd.message_id),\"mode\":\(cmd.mode)")
     if cmd.pid != nil {
       cmdjson.appendString(",\"pid\":\(cmd.pid!)")
     }
     cmdjson.appendString("}}\0")
-
+    
     // TODO: what about recurring diagnostic messages
     
     vmlog("sending diag cmd:",cmdjson)
@@ -530,10 +583,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     // wait for BLE acknowledgement
     // TODO: need timeout here!
-//    while (BLETxWriteCount>0) {
-//      NSThread.sleepForTimeInterval(0.05)
-//    }
-  
+    //    while (BLETxWriteCount>0) {
+    //      NSThread.sleepForTimeInterval(0.05)
+    //    }
+    
   }
   
   
@@ -548,15 +601,15 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     // wait for BLE acknowledgement
     // TODO: need a timeout!
-//    while (BLETxWriteCount>0) {
-//      NSThread.sleepForTimeInterval(0.05)
-//    }
+    //    while (BLETxWriteCount>0) {
+    //      NSThread.sleepForTimeInterval(0.05)
+    //    }
   }
   
   
   
   private func CallbackNull(o:AnyObject) {
-//    vmlog("in CallbackNull")
+    //    vmlog("in CallbackNull")
   }
   
   
@@ -566,7 +619,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     var sendBytes: NSData
     
-//    vmlog (BLETxDataBuffer)
+    //    vmlog (BLETxDataBuffer)
     
     if BLETxDataBuffer.count == 0 {
       return
@@ -588,7 +641,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       }
       
       openXCPeripheral.writeValue(sendBytes, forCharacteristic: openXCWriteChar, type: CBCharacteristicWriteType.WithResponse)
-
+      
       BLETxWriteCount += 1
       vmlog("sent:",String(data: sendBytes,encoding: NSUTF8StringEncoding))
       while BLETxWriteCount>0 {
@@ -597,10 +650,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       }
     }
     
-
     
     
-
+    
+    
   }
   
   
@@ -639,7 +692,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       }
       let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
       if str != nil {
- //       vmlog(str!)
+               vmlog(str!)
       } else {
         vmlog("not UTF8")
       }
@@ -711,19 +764,19 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           // bool test
           // TODO: maybe keep track of what type each rsp is?
           /*
-          if value is NSNumber {
-            let nv = value as! NSNumber
-            if nv.isEqualToValue(NSNumber(bool: true)) {
-              vmlog("it's a bool and it's true")
-            } else if nv.isEqualToValue(NSNumber(bool:false)) {
-              vmlog("it's a bool and it's true")
-            } else {
-              vmlog("it's a number")
-            }
-          } else {
-            vmlog("it's a string")
-          }
-          */
+           if value is NSNumber {
+           let nv = value as! NSNumber
+           if nv.isEqualToValue(NSNumber(bool: true)) {
+           vmlog("it's a bool and it's true")
+           } else if nv.isEqualToValue(NSNumber(bool:false)) {
+           vmlog("it's a bool and it's true")
+           } else {
+           vmlog("it's a number")
+           }
+           } else {
+           vmlog("it's a string")
+           }
+           */
           
           
           latestVehicleMeasurements.setValue(rsp, forKey:name as String)
@@ -767,9 +820,11 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           rsp.status = status
           decodedMessage = rsp
           
-          let ta : TargetAction = BLETxCommandCallback.removeFirst()
-          let s : String = BLETxCommandToken.removeFirst()
-          ta.performAction(["vehiclemessage":rsp,"key":s] as NSDictionary)
+          if BLETxCommandCallback.count > 0 {
+            let ta : TargetAction = BLETxCommandCallback.removeFirst()
+            let s : String = BLETxCommandToken.removeFirst()
+            ta.performAction(["vehiclemessage":rsp,"key":s] as NSDictionary)
+          }
           
         }
           //////////////////////////
@@ -784,7 +839,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           
           if let success = json["success"] as? Bool {
             // diag rsp
-
+            
             var bus : NSInteger = 0
             if let busX = json["bus"] as? NSInteger {
               bus = busX
@@ -805,7 +860,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             if let valueX = json["value"] as? NSInteger {
               value = valueX
             }
-
+            
             
             let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
             rsp.timestamp = timestamp
@@ -844,12 +899,12 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
               }
             }
             
-
+            
             
             
           } else if let data = json["data"] as? NSString {
             // CAN msg
-
+            
             var bus : NSInteger = 0
             if let busX = json["bus"] as? NSInteger {
               bus = busX
@@ -1032,7 +1087,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   
   
-
+  
   
   
   // MARK: Core Bluetooth Manager
@@ -1050,7 +1105,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     if central.state == CBCentralManagerState.PoweredOn && connectionState == .ConnectionInProgress {
       centralManager.scanForPeripheralsWithServices(nil, options: nil)
     }
-
+    
     
   }
   
@@ -1071,7 +1126,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           act.performAction(["status":VehicleManagerStatusMessage.C5DETECTED.rawValue] as NSDictionary)
         }
       }
-
+      
     }
   }
   
@@ -1115,7 +1170,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       act.performAction(["status":VehicleManagerStatusMessage.C5DISCONNECTED.rawValue] as NSDictionary)
     }
     connectionState = .ConnectionInProgress
-
+    
   }
   
   
@@ -1240,8 +1295,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     vmlog("in peripheral:didReadRSSI")
   }
   
-
   
   
-
+  
+  
 }
