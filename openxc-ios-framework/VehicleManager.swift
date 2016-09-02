@@ -865,13 +865,24 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             
             let tupple : NSMutableString = ""
             tupple.appendString("\(String(bus))-\(String(id))-\(String(mode))-")
-            
             if pid != nil {
               tupple.appendString(String(pid))
-              vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) value:\(value)")
             } else {
               tupple.appendString("X")
-              vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(value)")
+            }
+
+            if value != nil {
+              if pid != nil {
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) value:\(value)")
+              } else {
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(value)")
+              }
+            } else {
+              if pid != nil {
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) payload:\(payload)")
+              } else {
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(payload)")
+              }
             }
             
             var found=false
