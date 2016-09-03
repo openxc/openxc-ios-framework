@@ -13,12 +13,14 @@ import CoreBluetooth
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
-  case C5DETECTED=1       // C5 VI was detected
-  case C5CONNECTED=2      // C5 VI connection established
-  case C5SERVICEFOUND=3   // C5 VI OpenXC service detected
-  case C5NOTIFYON=4       // C5 VI notification enabled
-  case C5DISCONNECTED=5   // C5 VI disconnected
-  case TRACE_SOURCE_END=6 // configured trace input end of file reached
+  case C5DETECTED=1               // C5 VI was detected
+  case C5CONNECTED=2              // C5 VI connection established
+  case C5SERVICEFOUND=3           // C5 VI OpenXC service detected
+  case C5NOTIFYON=4               // C5 VI notification enabled
+  case C5DISCONNECTED=5           // C5 VI disconnected
+  case TRACE_SOURCE_END=6         // configured trace input end of file reached
+  case TRACE_SINK_WRITE_ERROR=7   // error in writing message to trace file
+  case BLE_RX_DATA_PARSE_ERROR=8  // error in parsing data received from VI
 }
 
 
@@ -688,20 +690,15 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     }
     
     
-    // TODO: error handling!
     if data_chunk.length > 0 {
       do {
         let json = try NSJSONSerialization.JSONObjectWithData(data_chunk, options: .MutableContainers)
         let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
         
-        // TODO: this isn't really working...?
-        var decodedMessage : VehicleBaseMessage = VehicleBaseMessage()
-        
         
         var timestamp : NSInteger = 0
         if json["timestamp"] != nil {
           timestamp = json["timestamp"] as! NSInteger
-          decodedMessage.timestamp = timestamp
         }
         
         
@@ -718,8 +715,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           rsp.value = value
           rsp.isEvented = true
           rsp.event = event
-          decodedMessage = rsp
-          
           
           var found=false
           for key in measurementCallbacks.keys {
@@ -748,17 +743,15 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           rsp.value = value
           rsp.timestamp = timestamp
           rsp.name = name
-          decodedMessage = rsp
           
-          // bool test
-          // TODO: maybe keep track of what type each rsp is?
+          // neat way to test for type of AnyObject
           /*
            if value is NSNumber {
            let nv = value as! NSNumber
            if nv.isEqualToValue(NSNumber(bool: true)) {
            vmlog("it's a bool and it's true")
            } else if nv.isEqualToValue(NSNumber(bool:false)) {
-           vmlog("it's a bool and it's true")
+           vmlog("it's a bool and it's false")
            } else {
            vmlog("it's a number")
            }
@@ -807,7 +800,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           rsp.message = message
           rsp.command_response = cmd_rsp
           rsp.status = status
-          decodedMessage = rsp
           
           if BLETxCommandCallback.count > 0 {
             let ta : TargetAction = BLETxCommandCallback.removeFirst()
@@ -850,7 +842,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
               value = valueX
             }
             
-            
             let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
             rsp.timestamp = timestamp
             rsp.bus = bus
@@ -860,8 +851,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             rsp.success = success
             rsp.payload = payload
             rsp.value = value
-            decodedMessage = rsp
-            
             
             let tupple : NSMutableString = ""
             tupple.appendString("\(String(bus))-\(String(id))-\(String(mode))-")
@@ -915,7 +904,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             rsp.bus = bus
             rsp.id = id
             rsp.data = data
-            decodedMessage = rsp
             
             vmlog("CAN bus:\(bus) status:\(id) payload:\(data)")
             
@@ -952,13 +940,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         
         ///////
         //// fake out a CAN msg on every msg received (for debug)!!
+        /*
         if false {
           let rsp : VehicleCanResponse = VehicleCanResponse()
           rsp.timestamp = timestamp
           rsp.bus = Int(arc4random_uniform(2) + 1)
           rsp.id = Int(arc4random_uniform(20) + 2015)
           rsp.data = String(format:"%x",Int(arc4random_uniform(100000)+1))
-          decodedMessage = rsp
           
           vmlog("CAN bus:\(rsp.bus) id:\(rsp.id) payload:\(rsp.data)")
           
@@ -980,10 +968,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           }
           
         }
-        
-        
-        
-        
+        */
         
         
         
@@ -999,7 +984,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         
       } catch {
         vmlog("bad json")
-        // bad json!
+        if let act = managerCallback {
+          act.performAction(["status":VehicleManagerStatusMessage.BLE_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+        }
       }
       
       
@@ -1047,7 +1034,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         }
       }
       catch {
-        // TODO: error handling here
+        if let act = managerCallback {
+          act.performAction(["status":VehicleManagerStatusMessage.TRACE_SINK_WRITE_ERROR.rawValue] as Dictionary)
+        }
       }
       
     }
@@ -1156,7 +1145,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     vmlog("in centralManager:didDisconnectPeripheral:")
     vmlog(peripheral.name!)
     vmlog(error)
-    
     
     // just reconnect for now
     // TODO: allow configuration of auto-reconnect?
