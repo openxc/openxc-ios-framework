@@ -1118,7 +1118,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog(peripheral.name)
       vmlog(advertisementData["kCBAdvDataLocalName"])
       // TODO: look at advData, or just either possible name, confirm with Ford
-      if peripheral.name=="OpenXC_C5_BTLE" || peripheral.name=="CrossChasm" {
+      if peripheral.name==OpenXCConstants.C5_VI_NAME || peripheral.name==OpenXCConstants.C5_VI_NAME_ALT {
         openXCPeripheral = peripheral
         openXCPeripheral.delegate = self
         centralManager.connectPeripheral(openXCPeripheral, options:nil)
@@ -1160,10 +1160,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     // just reconnect for now
     // TODO: allow configuration of auto-reconnect?
-    if peripheral.name=="OpenXC_C5_BTLE" {
+    if peripheral.name==OpenXCConstants.C5_VI_NAME {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
     }
-    if peripheral.name=="CrossChasm" {
+    if peripheral.name==OpenXCConstants.C5_VI_NAME_ALT {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
     }
     if let act = managerCallback {
@@ -1187,7 +1187,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     for service in peripheral.services! {
       vmlog(" - Found service : ",service.UUID)
       
-      if service.UUID.UUIDString == "6800D38B-423D-4BDB-BA05-C9276D8453E1" {
+      if service.UUID.UUIDString == OpenXCConstants.C5_OPENXC_BLE_SERVICE_UUID {
         vmlog("   OPENXC_MAIN_SERVICE DETECTED")
         openXCService = service
         openXCPeripheral.discoverCharacteristics(nil, forService:service)
@@ -1213,7 +1213,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     for characteristic in service.characteristics! {
       vmlog(" - Found characteristic : ",characteristic.UUID)
-      if characteristic.UUID.UUIDString == "6800D38B-5262-11E5-885D-FEFF819CDCE3" {
+      if characteristic.UUID.UUIDString == OpenXCConstants.C5_OPENXC_BLE_CHARACTERISTIC_NOTIFY_UUID {
         openXCNotifyChar = characteristic
         peripheral.setNotifyValue(true, forCharacteristic:characteristic)
         openXCPeripheral.discoverDescriptorsForCharacteristic(characteristic)
@@ -1222,7 +1222,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         }
         connectionState = .Operational
       }
-      if characteristic.UUID.UUIDString == "6800D38B-5262-11E5-885D-FEFF819CDCE2" {
+      if characteristic.UUID.UUIDString == OpenXCConstants.C5_OPENXC_BLE_CHARACTERISTIC_WRITE_UUID {
         openXCWriteChar = characteristic
         openXCPeripheral.discoverDescriptorsForCharacteristic(characteristic)
       }
