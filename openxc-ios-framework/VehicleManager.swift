@@ -552,22 +552,29 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // private functions
   
   
+  // common function for sending a VehicleCommandRequest
   private func sendCommandCommon(cmd:VehicleCommandRequest) {
     vmlog("in sendCommandCommon")
     
+    // for now the only commands supported are VERSION and DEVICE_ID
     if (cmd.command == .version || cmd.command == .device_id) {
+      // build the command json
       let cmd = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
+      // append to tx buffer
       BLETxDataBuffer.addObject(cmd.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
     }
     
+    // trigger a BLE data send
     BLESendFunction()
     
   }
   
   
+  // common function for sending a VehicleDiagnosticRequest
   private func sendDiagCommon(cmd:VehicleDiagnosticRequest) {
     vmlog("in sendDiagCommon")
     
+    // build the command json
     let cmdjson : NSMutableString = ""
     cmdjson.appendString("{\"command\":\"diagnostic_request\",\"action\":\"add\",\"request\":{\"bus\":\(cmd.bus),\"id\":\(cmd.message_id),\"mode\":\(cmd.mode)")
     if cmd.pid != nil {
@@ -578,124 +585,142 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     // TODO: what about recurring diagnostic messages
     
     vmlog("sending diag cmd:",cmdjson)
-    
+    // append to tx buffer
     BLETxDataBuffer.addObject(cmdjson.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
     
+    // trigger a BLE data send
     BLESendFunction()
     
   }
   
   
+  // common function for sending a VehicleCanRequest
   private func sendCanCommon(cmd:VehicleCanRequest) {
     vmlog("in sendCanCommon")
     
+    // build the command json
     let cmd = "{\"bus\":\(cmd.bus),\"id\":\(cmd.id),\"data\":\"\(cmd.data)\"}"
+    // append to tx buffer
     BLETxDataBuffer.addObject(cmd.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
     
-    
+    // trigger a BLE data send
     BLESendFunction()
     
   }
   
   
-  
+  // internal method used when a callback needs to be registered, but we don't
+  // want it to actually do anything, for example a command request where we don't
+  // want a callback for the command response. The command response is still received
+  // but the callback registered comes here, and does nothing.
   private func CallbackNull(o:AnyObject) {
-    //    vmlog("in CallbackNull")
+    vmlog("in CallbackNull")
   }
   
   
+  // common function called whenever any messages need to be sent over BLE
   private func BLESendFunction() {
     
     
     var sendBytes: NSData
     
-//    vmlog("BLEsf: TxDataBuffer count = \(BLETxDataBuffer.count)")
+    // Check to see if the tx buffer is actually empty.
+    // We need to do this because this function can be called as BLE notifications are
+    // received because we may have queued up some messages to send.
     if BLETxDataBuffer.count == 0 {
-//      vmlog("BLEsf: exit")
       return
     }
     
-//    vmlog("BLEsf: b4 TxDataWriteCount count = \(BLETxWriteCount)")
+    // Check to see if the tx write semaphore is >0.
+    // This indicates that the last message are still being sent.
+    // As the parts of the messsage are being queued up in CoreBluetooth 
+    // (20B at a time), the tx write semaphore is incremented.
+    // As the parts of the message are actually sent (20B at a time) and
+    // acknowledged the tx write semaphore is decremented.
+    // We can only start to send a new message when the semaphore is empty (=0).
     if BLETxWriteCount != 0 {
-//      vmlog("BLEsf: exit")
       return
     }
     
+    // take the message to send from the head of the tx buffer queue
     var cmdToSend : NSMutableData = BLETxDataBuffer[0] as! NSMutableData
     
+    // we can only send 20B at a time in BLE
     let rangedata = NSMakeRange(0, 20)
+    // loop through and send 20B at a time, make sure to handle <20B in the last send.
     while cmdToSend.length > 0 {
       if (cmdToSend.length<=20) {
         sendBytes = cmdToSend
         cmdToSend = NSMutableData()
       } else {
         sendBytes = cmdToSend.subdataWithRange(rangedata)
-        
         let leftdata = NSMakeRange(20,cmdToSend.length-20)
         cmdToSend = NSMutableData(data: cmdToSend.subdataWithRange(leftdata))
       }
+      // write the byte chunk to the VI
       openXCPeripheral.writeValue(sendBytes, forCharacteristic: openXCWriteChar, type: CBCharacteristicWriteType.WithResponse)
+      // increment the tx write semaphore
       BLETxWriteCount += 1
-//      vmlog("BLEsf: ",String(data: sendBytes,encoding: NSUTF8StringEncoding))
     }
-    
-    BLETxDataBuffer.removeObjectAtIndex(0)
 
-//    vmlog("BLEsf: af TxDataWriteCount count = \(BLETxWriteCount)")
-//    vmlog("BLEsf: exit")
-    
+    // remove the message from the tx buffer queue once all parts of it have been sent
+    BLETxDataBuffer.removeObjectAtIndex(0)
     
   }
   
   
   
-  
+  // Common function for parsing any received data into openXC messages.
+  // The separator parameter allows data to be parsed when each message is
+  // separated by different things, for example messages are separated by \0
+  // when coming via BLE, and separated by 0xa when coming via a trace file
   private func RxDataParser(separator:UInt8) {
     
-    
     // JSON decoding
-    // TODO: if protbuf?
+    // TODO: handle protbuf!!!
     ////////////////
     
+    // see if we can find a separator in the buffered data
     let sepdata = NSData(bytes: [separator] as [UInt8], length: 1)
     let rangedata = NSMakeRange(0, RxDataBuffer.length)
     let foundRange = RxDataBuffer.rangeOfData(sepdata, options:[], range:rangedata)
     
+    // data parsing variables
     let data_chunk : NSMutableData = NSMutableData()
     let data_left : NSMutableData = NSMutableData()
     
+    // here we check to see if the separator exists, and therefore that we
+    // have a complete message ready to be extracted
     if foundRange.location != NSNotFound {
+      // extract the entire message from the rx data buffer
       data_chunk.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(0,foundRange.location)))
-      /*
-       vmlog("buff",BLEDataBuffer)
-       vmlog("chunk",data_chunk)
-       vmlog("buf len:",BLEDataBuffer.length)
-       vmlog("foundRange loc:",foundRange.location," len:",foundRange.length)
-       let start = foundRange.location+1
-       let len = BLEDataBuffer.length-foundRange.location
-       vmlog("start:",start," len:",len)
-       */
+      // if there is leftover data in the buffer, make sure to keep it otherwise
+      // the parsing will not work for the next message that is partially complete now
       if RxDataBuffer.length-1 > foundRange.location {
         data_left.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(foundRange.location+1,RxDataBuffer.length-foundRange.location-1)))
         RxDataBuffer = data_left
       } else {
         RxDataBuffer = NSMutableData()
       }
+      // TODO: remove this, just for debug
       let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
       if str != nil {
   //             vmlog(str!)
       } else {
         vmlog("not UTF8")
       }
+      /////////////////////////////////////
     }
     
     
+    // do the actual parsing if we've managed to extract a full message
     if data_chunk.length > 0 {
       do {
+        
+        // decode json
         let json = try NSJSONSerialization.JSONObjectWithData(data_chunk, options: .MutableContainers)
-        let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
         
-        
+        // every message will have a timestamp
         var timestamp : NSInteger = 0
         if json["timestamp"] != nil {
           timestamp = json["timestamp"] as! NSInteger
@@ -705,10 +730,14 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         
         // evented measurement rsp
         ///////////////////
+        // evented measuerment messages will have an "event" key
         if let event = json["event"] as? NSString {
+          
+          // extract other keys from message
           let name = json["name"] as! NSString
           let value : AnyObject = json["value"] ?? NSNull()
           
+          // build measurement message
           let rsp : VehicleMeasurementResponse = VehicleMeasurementResponse()
           rsp.timestamp = timestamp
           rsp.name = name
@@ -716,6 +745,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           rsp.isEvented = true
           rsp.event = event
           
+          // capture this message into the dictionary of latest messages
+          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
+          
+          // look for a specific callback for this measurement name
           var found=false
           for key in measurementCallbacks.keys {
             let act = measurementCallbacks[key]
@@ -724,45 +757,33 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
               act!.performAction(["vehiclemessage":rsp] as NSDictionary)
             }
           }
+          // otherwise use the default callback if it exists
           if !found {
             if let act = defaultMeasurementCallback {
               act.performAction(["vehiclemessage":rsp] as NSDictionary)
             }
           }
         }
-          ///////////////////////
           
           
-          
-          // measurement rsp
-          ///////////////////
+        // measurement rsp
+        ///////////////////
+        // normal measuerment messages will have an "name" key (but no "event" key)
         else if let name = json["name"] as? NSString {
+          
+          // extract other keys from message
           let value : AnyObject = json["value"] ?? NSNull()
           
+          // build measurement message
           let rsp : VehicleMeasurementResponse = VehicleMeasurementResponse()
           rsp.value = value
           rsp.timestamp = timestamp
           rsp.name = name
           
-          // neat way to test for type of AnyObject
-          /*
-           if value is NSNumber {
-           let nv = value as! NSNumber
-           if nv.isEqualToValue(NSNumber(bool: true)) {
-           vmlog("it's a bool and it's true")
-           } else if nv.isEqualToValue(NSNumber(bool:false)) {
-           vmlog("it's a bool and it's false")
-           } else {
-           vmlog("it's a number")
-           }
-           } else {
-           vmlog("it's a string")
-           }
-           */
-          
-          
+          // capture this message into the dictionary of latest messages
           latestVehicleMeasurements.setValue(rsp, forKey:name as String)
           
+          // look for a specific callback for this measurement name
           var found=false
           for key in measurementCallbacks.keys {
             let act = measurementCallbacks[key]
@@ -771,36 +792,44 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
               act!.performAction(["vehiclemessage":rsp] as NSDictionary)
             }
           }
+          // otherwise use the default callback if it exists
           if !found {
             if let act = defaultMeasurementCallback {
               act.performAction(["vehiclemessage":rsp] as NSDictionary)
             }
           }
         }
-          ///////////////////////
           
           
           
-          // command rsp
-          ///////////////////
+        // command rsp
+        ///////////////////
+        // command response messages will have a "command_response" key
         else if let cmd_rsp = json["command_response"] as? NSString {
           
+          // extract other keys from message
           var message : NSString = ""
           if let messageX = json["message"] as? NSString {
             message = messageX
           }
-          
           var status : Bool = false
           if let statusX = json["status"] as? Bool {
             status = statusX
           }
           
+          // build command response message
           let rsp : VehicleCommandResponse = VehicleCommandResponse()
           rsp.timestamp = timestamp
           rsp.message = message
           rsp.command_response = cmd_rsp
           rsp.status = status
           
+          // Grab the first callback message in the list of command callbacks.
+          // They will be in order relative to when the commands are sent (VI guarantees
+          // to response order). We need to check that the list of command callbacks
+          // actually has something in it here (check for count>0) because if we're
+          // receiving command responses via a trace file, then there was never an
+          // actual command request message sent to the VI.
           if BLETxCommandCallback.count > 0 {
             let ta : TargetAction = BLETxCommandCallback.removeFirst()
             let s : String = BLETxCommandToken.removeFirst()
@@ -808,19 +837,17 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           }
           
         }
-          //////////////////////////
           
           
-          
-          
-          
-          // diag rsp or CAN message
-          ///////////////////
+        // diag rsp or CAN message
+        ///////////////////
+        // both diagnostic response and CAN response messages have an "id" key
         else if let id = json["id"] as? NSInteger {
           
+          // only diagnostic response messages have "success"
           if let success = json["success"] as? Bool {
-            // diag rsp
             
+            // extract other keys from message
             var bus : NSInteger = 0
             if let busX = json["bus"] as? NSInteger {
               bus = busX
@@ -842,6 +869,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
               value = valueX
             }
             
+            // build diag response message
             let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
             rsp.timestamp = timestamp
             rsp.bus = bus
@@ -852,6 +880,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             rsp.payload = payload
             rsp.value = value
             
+            // build the key that identifies this diagnostic response
+            // bus-id-mode-[X or pid]
             let tupple : NSMutableString = ""
             tupple.appendString("\(String(bus))-\(String(id))-\(String(mode))-")
             if pid != nil {
@@ -860,6 +890,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
               tupple.appendString("X")
             }
 
+            // TODO: debug printouts, maybe remove
             if value != nil {
               if pid != nil {
                 vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) value:\(value)")
@@ -873,7 +904,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
                 vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(payload)")
               }
             }
+            ////////////////////////////
             
+            // look for a specific callback for this diag response based on tupple created above
             var found=false
             for key in diagCallbacks.keys {
               let act = diagCallbacks[key]
@@ -882,6 +915,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
                 act!.performAction(["vehiclemessage":rsp] as NSDictionary)
               }
             }
+            // otherwise use the default callback if it exists
             if !found {
               if let act = defaultDiagCallback {
                 act.performAction(["vehiclemessage":rsp] as NSDictionary)
@@ -890,26 +924,31 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             
             
             
-            
+          // CAN messages have "data"
           } else if let data = json["data"] as? NSString {
-            // CAN msg
             
+            // extract other keys from message
             var bus : NSInteger = 0
             if let busX = json["bus"] as? NSInteger {
               bus = busX
             }
             
+            // build CAN response message
             let rsp : VehicleCanResponse = VehicleCanResponse()
             rsp.timestamp = timestamp
             rsp.bus = bus
             rsp.id = id
             rsp.data = data
             
+            // TODO: remove debug statement?
             vmlog("CAN bus:\(bus) status:\(id) payload:\(data)")
             
             
+            // build the key that identifies this CAN response
+            // bus-id
             let tupple = "\(String(bus))-\(String(id))"
             
+            // look for a specific callback for this CAN response based on tupple created above
             var found=false
             for key in canCallbacks.keys {
               let act = canCallbacks[key]
@@ -918,6 +957,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
                 act!.performAction(["vehiclemessage":rsp] as NSDictionary)
               }
             }
+            // otherwise use the default callback if it exists
             if !found {
               if let act = defaultCanCallback {
                 act.performAction(["vehiclemessage":rsp] as NSDictionary)
@@ -925,21 +965,26 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             }
             
           } else {
-            // can't really get here!
-            
+            // should never get here!
+            if let act = managerCallback {
+              act.performAction(["status":VehicleManagerStatusMessage.BLE_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+            }
           }
-          
           
           
         } else {
           // what the heck is it??
-          
+          if let act = managerCallback {
+            act.performAction(["status":VehicleManagerStatusMessage.BLE_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+          }
+       
         }
         
         
         
         ///////
-        //// fake out a CAN msg on every msg received (for debug)!!
+        // TODO: for debug, remove later
+        //// fake out a CAN msg on every msg received!!
         /*
         if false {
           let rsp : VehicleCanResponse = VehicleCanResponse()
@@ -971,18 +1016,22 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         */
         
         
-        
+        // if trace file output is enabled, create a string from the message
+        // and send it to the trace file writer
         if traceFilesinkEnabled {
+          let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
           traceFileWriter(str!)
         }
         
         
+        // Keep a count of how many messages were received in total
+        // since connection. Can be used by the client app.
         messageCount += 1
         
         
         
-        
       } catch {
+        // the json decode failed for some reason, usually data lost in connection
         vmlog("bad json")
         if let act = managerCallback {
           act.performAction(["status":VehicleManagerStatusMessage.BLE_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
@@ -995,31 +1044,23 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
-  
-  private func traceFileWriter (message:VehicleBaseMessage) {
-    
-    // TODO: if we want to be able to trace directly from a vehicleMessage,
-    // this is where to do it
-    // Each class of vehicle message has it's own trace output method
-    vmlog(message.traceOutput())
-    
-  }
-  
+  // Write the incoming string to the configured trace output file.
+  // Make sure that there are no LF/CR in the parameter string, because
+  // this method adds a CR automatically
   private func traceFileWriter (string:String) {
     
-    // this version of the method outputs a direct string
-    // make sure there are no LFCR in the string, because they're added here automatically
     vmlog("trace:",string)
     
     var traceOut = string
     
     traceOut.appendContentsOf("\n");
-    
+
+    // search for the trace output file
     if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory,
                                                      NSSearchPathDomainMask.AllDomainsMask, true).first {
       let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(traceFilesinkName as String)
       
-      //writing
+      // write the string to the trace output file
       do {
         let data = traceOut.dataUsingEncoding(NSUTF8StringEncoding)!
         if let fileHandle = try? NSFileHandle(forWritingToURL: path) {
@@ -1030,47 +1071,57 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           fileHandle.writeData(data)
         }
         else {
+          // file handle open failed for some reason,
+          // try writing to the file as a path url.
+          // shouldn't reach this normally
           try data.writeToURL(path, options: .DataWritingAtomic)
         }
       }
       catch {
+        // couldn't write to the trace output file
         if let act = managerCallback {
           act.performAction(["status":VehicleManagerStatusMessage.TRACE_SINK_WRITE_ERROR.rawValue] as Dictionary)
         }
       }
       
+    } else {
+      // couldn't find trace output file
+      if let act = managerCallback {
+        act.performAction(["status":VehicleManagerStatusMessage.TRACE_SINK_WRITE_ERROR.rawValue] as Dictionary)
+      }
     }
     
     
   }
   
-  
+  // Read a chunk of data from the trace input file.
+  // 20B is chosen as the chunk size to mirror the BLE data size.
   private dynamic func traceFileReader () {
     
-    //    vmlog("in traceFileReader")
-    
+    // if the trace file is enabled and open, read 20B
     if traceFilesourceEnabled && traceFilesourceHandle != nil {
       let rdData = traceFilesourceHandle!.readDataOfLength(20)
       
-      
+      // we have read some data, append it to the rx data buffer
       if rdData.length > 0 {
-        //        vmlog("rdData:",rdData)
         RxDataBuffer.appendData(rdData)
+        // Try parsing the data that was added to the buffer. Use
+        // LF as the message delimiter because that's what's used
+        // in trace files.
+        RxDataParser(0x0a)
       } else {
+        // There was no data read, so we're at the end of the
+        // trace input file. Close the input file.
         vmlog("traceFilesource EOF")
         traceFilesourceHandle!.closeFile()
         traceFilesourceHandle = nil
+        // notify the client app if the callback is enabled
         if let act = managerCallback {
           act.performAction(["status":VehicleManagerStatusMessage.TRACE_SOURCE_END.rawValue] as Dictionary)
         }
       }
       
-      RxDataParser(0x0a)
-      
-      
-      
     }
-    
     
   }
   
@@ -1081,6 +1132,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   // MARK: Core Bluetooth Manager
   
+  
+  // watch for changes to the BLE state
   public func centralManagerDidUpdateState(central: CBCentralManager) {
     vmlog("in centralManagerDidUpdateState:")
     if central.state == .PoweredOff {
@@ -1090,7 +1143,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     } else {
       vmlog(" Other")
     }
-    
+  
+    // TODO: might have to make this part of a separate call if we want
+    // to track what VIs we find and not just connect to the first one!
     if central.state == CBCentralManagerState.PoweredOn && connectionState == .ConnectionInProgress {
       centralManager.scanForPeripheralsWithServices(nil, options: nil)
     }
@@ -1099,18 +1154,29 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // Core Bluetooth has discovered a BLE peripheral
   public func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
     vmlog("in centralManager:didDiscover")
     
+    // run through the next bit of code only if we haven't already found an openXC peripheral
+    // TODO: must change to handle more than 1 VI
     if openXCPeripheral == nil {
       vmlog("FOUND:")
       vmlog(peripheral.name)
       vmlog(advertisementData["kCBAdvDataLocalName"])
+      
+      // only find the right kinds of the BLE devices (C5 VI)
       // TODO: look at advData, or just either possible name, confirm with Ford
       if peripheral.name==OpenXCConstants.C5_VI_NAME || peripheral.name==OpenXCConstants.C5_VI_NAME_ALT {
+        // save the discovered peripheral
         openXCPeripheral = peripheral
         openXCPeripheral.delegate = self
+        
+        // auto connect to this peripheral
+        // TODO: NO!
         centralManager.connectPeripheral(openXCPeripheral, options:nil)
+        
+        // notify client if the callback is enabled
         if let act = managerCallback {
           act.performAction(["status":VehicleManagerStatusMessage.C5DETECTED.rawValue] as NSDictionary)
         }
@@ -1119,11 +1185,18 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     }
   }
   
+  // Core Bluetooth has connected to a BLE peripheral
   public func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
     vmlog("in centralManager:didConnectPeripheral:")
     vmlog(peripheral.name!)
+    
+    // update the connection state
     connectionState = .Connected
+    
+    // auto discover the services for this peripheral
     peripheral.discoverServices(nil)
+    
+    // notify client if the callback is enabled
     if let act = managerCallback {
       act.performAction(["status":VehicleManagerStatusMessage.C5CONNECTED.rawValue] as NSDictionary)
     }
@@ -1141,6 +1214,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // Core Bluetooth has disconnected from BLE peripheral
   public func centralManager(central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: NSError?) {
     vmlog("in centralManager:didDisconnectPeripheral:")
     vmlog(peripheral.name!)
@@ -1154,9 +1228,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     if peripheral.name==OpenXCConstants.C5_VI_NAME_ALT {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
     }
+
+    // notify client if the callback is enabled
     if let act = managerCallback {
       act.performAction(["status":VehicleManagerStatusMessage.C5DISCONNECTED.rawValue] as NSDictionary)
     }
+
+    // update the connection state
     connectionState = .ConnectionInProgress
     
   }
@@ -1165,20 +1243,30 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   // MARK: Peripheral Delgate Function
   
+  // Core Bluetooth has discovered services for a peripheral
   public func peripheral(peripheral: CBPeripheral, didDiscoverServices error: NSError?) {
     vmlog("in peripheral:didDiscoverServices")
+    
+    // this isn't our captured openXC peripheral... should never happen
     if peripheral != openXCPeripheral {
       vmlog("peripheral error!")
       return
     }
     
+    // scan through all of the available services
+    // look for the open XC service
     for service in peripheral.services! {
       vmlog(" - Found service : ",service.UUID)
       
+      // uuid matches, we found the service
       if service.UUID.UUIDString == OpenXCConstants.C5_OPENXC_BLE_SERVICE_UUID {
         vmlog("   OPENXC_MAIN_SERVICE DETECTED")
+        // capture the service
         openXCService = service
+        // automatically discover all charateristics for the openXC service
         openXCPeripheral.discoverCharacteristics(nil, forService:service)
+        
+        // notify client if the callback is enabled
         if let act = managerCallback {
           act.performAction(["status":VehicleManagerStatusMessage.C5SERVICEFOUND.rawValue] as NSDictionary)
         }
@@ -1188,8 +1276,11 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // Core Bluetooth has discovered characteristics for a service
   public func peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService service: CBService, error: NSError?) {
     vmlog("in peripheral:didDiscoverCharacteristicsForService")
+    
+    // check that we're getting info from the right peripheral and service
     if peripheral != openXCPeripheral {
       vmlog("peripheral error!")
       return
@@ -1199,19 +1290,31 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       return
     }
     
+    // loop through all characteristics found
     for characteristic in service.characteristics! {
       vmlog(" - Found characteristic : ",characteristic.UUID)
+      
+      // uuid matched on openXC notify characteristic
       if characteristic.UUID.UUIDString == OpenXCConstants.C5_OPENXC_BLE_CHARACTERISTIC_NOTIFY_UUID {
+        // capture the characteristic
         openXCNotifyChar = characteristic
+        // turn on the notification characteristic
         peripheral.setNotifyValue(true, forCharacteristic:characteristic)
+        // discover any descriptors for the characteristic
         openXCPeripheral.discoverDescriptorsForCharacteristic(characteristic)
+        // notify client if the callback is enabled
         if let act = managerCallback {
           act.performAction(["status":VehicleManagerStatusMessage.C5NOTIFYON.rawValue] as NSDictionary)
         }
+        // update connection state to indicate that we're fully operational and receiving data
         connectionState = .Operational
       }
+      
+      // uuid matched on openXC notify characteristic
       if characteristic.UUID.UUIDString == OpenXCConstants.C5_OPENXC_BLE_CHARACTERISTIC_WRITE_UUID {
+        // capture the characteristic
         openXCWriteChar = characteristic
+        // discover any descriptors for the characteristic
         openXCPeripheral.discoverDescriptorsForCharacteristic(characteristic)
       }
     }
@@ -1219,23 +1322,31 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // Core Bluetooth has data received from a characteristic
   public func peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
     // vmlog("in peripheral:didUpdateValueForCharacteristic")
     
+    // If we have a trace input file enabled, we need to mask any
+    // data coming in from BLE. Just ignore the data by returning early.
     if traceFilesourceEnabled {return}
     
+    // grab the data from the characteristic
     let data = characteristic.value!
     
+    // if there is actually data, append it to the rx data buffer,
+    // and try to parse any messages held in the buffer. The separator
+    // in this case is nil because messages arriving from BLE is
+    // delineated by null characters
     if data.length > 0 {
       RxDataBuffer.appendData(data)
+      RxDataParser(0x00)
     }
-    
-    RxDataParser(0x00)
-    
     
   }
   
   
+  // Core Bluetooth has discovered a description for a characteristic
+  // don't need to save or use it in this case
   public func peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
     vmlog("in peripheral:didDiscoverDescriptorsForCharacteristic")
     vmlog(characteristic.descriptors)
@@ -1262,6 +1373,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // Core Bluetooth has written a value to a characteristic
   public func peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic characteristic: CBCharacteristic, error: NSError?) {
     vmlog("in peripheral:didWriteValueForCharacteristic")
     if error != nil {
@@ -1270,12 +1382,21 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     } else {
 
     }
+    
+    // Thread sleep for a small time interval, allowing some time to pass before we
+    // call the BLESendFunction method again. This prevents deadlocks/issues with
+    // the semaphore that is altered here and in that method. The Core Bluetooth 
+    // methods are all running outside of the main thread, so this short sleep will
+    // not affect any UI
     NSThread.sleepForTimeInterval(0.05)
-    //vmlog("pdwv: b4 BLETxWriteCount = \(BLETxWriteCount)")
+    // Decrement the tx write semaphone, indicating that we have received acknowledgement
+    // for sending one chunk of data
     BLETxWriteCount -= 1
+    // Call the BLESendFunction again, in case this is the last chunk of data acknowledged for
+    // a message, and we have another message queued up in the buffer. If this is not the last chunk
+    // for this message (tx write semaphore>0) or there aren't any other messages queued
+    // (tx buffer count==0), then the BLESendFunction returns immediately
     BLESendFunction()
-    //vmlog("pdwv: af BLETxWriteCount = \(BLETxWriteCount)")
-    //vmlog("pdwv: exit")
   }
   
   
