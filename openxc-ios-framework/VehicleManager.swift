@@ -28,9 +28,10 @@ public enum VehicleManagerStatusMessage: Int {
 // values reported in public variable connectionState
 public enum VehicleManagerConnectionState: Int {
   case NotConnected=0           // not connected to any C5 VI
-  case ConnectionInProgress=1   // connection in progress (connecting/searching for services)
-  case Connected=2              // connection established (but not ready to receive btle writes)
-  case Operational=3            // C5 VI operational (notify enabled and writes accepted)
+  case Scanning=1               // VM is allocation and scanning for nearby VIs
+  case ConnectionInProgress=2   // connection in progress (connecting/searching for services)
+  case Connected=3              // connection established (but not ready to receive btle writes)
+  case Operational=4            // C5 VI operational (notify enabled and writes accepted)
 }
 
 
@@ -64,6 +65,12 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var openXCService: CBService!
   private var openXCNotifyChar: CBCharacteristic!
   private var openXCWriteChar: CBCharacteristic!
+  
+  // dictionary of discovered openXC peripherals when scanning
+  private var foundOpenXCPeripherals: [String:CBPeripheral] = [String:CBPeripheral]()
+  
+  // config for auto connecting to first discovered VI
+  private var autoConnectPeripheral : Bool = true
   
   // config for outputting debug messages to console
   private var managerDebug : Bool = false
@@ -161,29 +168,94 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       print("")
     }
   }
+
+  
+  // change the auto connect config for the VM
+  public func setAutoconnect(on:Bool) {
+    autoConnectPeripheral = on
+  }
   
   
-  // connect the VM to the VI
-  public func connect() {
-    
-    // TODO: allow VI to be chosen from a list
-    // instead of auto connecting to first VI
-    
+  // return array of discovered peripherals
+  public func discoveredVI() -> [String] {
+    return Array(foundOpenXCPeripherals.keys)
+  }
+  
+  
+  // initialize the VM and scan for nearby VIs
+  public func scan() {
+  
     // if the VM is already connected, don't do anything
     if connectionState != .NotConnected {
-      vmlog("VehicleManager already connected! Sorry!")
+      vmlog("VehicleManager already scanning or connected! Sorry!")
       return
     }
-    
+
     // run the core bluetooth framework on a separate thread from main thread
     let cbqueue: dispatch_queue_t = dispatch_queue_create("CBQ", DISPATCH_QUEUE_SERIAL)
-    
-    // start the connection process
-    vmlog("VehicleManager connect started")
-    connectionState = .ConnectionInProgress
+
+    // initialize the BLE manager process
+    vmlog("VehicleManager scan started")
+    connectionState = .Scanning
     messageCount = 0
     openXCPeripheral=nil
     centralManager = CBCentralManager(delegate: self, queue: cbqueue, options:nil)
+
+  }
+  
+  
+  // connect the VM to the first VI found
+  public func connect() {
+    
+    // if the VM is not scanning, don't do anything
+    if connectionState != .Scanning {
+      vmlog("VehicleManager be scanning before a connect can occur!")
+      return
+    }
+    
+    // if the found VI list is empty, just return
+    if foundOpenXCPeripherals.count == 0 {
+      vmlog("VehicleManager has not found any VIs!")
+      return
+    }
+    
+    // for this method, just connect to first one found
+    openXCPeripheral = foundOpenXCPeripherals.first?.1
+    openXCPeripheral.delegate = self
+
+    // start the connection process
+    vmlog("VehicleManager connect started")
+    centralManager.connectPeripheral(openXCPeripheral, options:nil)
+    connectionState = .ConnectionInProgress
+    messageCount = 0
+    
+  }
+  
+  
+  // connect the VM to a specific VI
+  public func connect(name:String) {
+    
+    // if the VM is not scanning, don't do anything
+    if connectionState != .Scanning {
+      vmlog("VehicleManager be scanning before a connect can occur!")
+      return
+    }
+    
+    // if the found VI list is empty, just return
+    if foundOpenXCPeripherals[name] == nil {
+      vmlog("VehicleManager has not found this peripheral!")
+      return
+    }
+    
+    // for this method, just connect to first one found
+    openXCPeripheral = foundOpenXCPeripherals[name]
+    openXCPeripheral.delegate = self
+    
+    // start the connection process
+    vmlog("VehicleManager connect started")
+    centralManager.connectPeripheral(openXCPeripheral, options:nil)
+    connectionState = .ConnectionInProgress
+    messageCount = 0
     
   }
   
@@ -1144,9 +1216,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       vmlog(" Other")
     }
   
-    // TODO: might have to make this part of a separate call if we want
-    // to track what VIs we find and not just connect to the first one!
-    if central.state == CBCentralManagerState.PoweredOn && connectionState == .ConnectionInProgress {
+    if central.state == CBCentralManagerState.PoweredOn && connectionState == .Scanning {
       centralManager.scanForPeripheralsWithServices(nil, options: nil)
     }
     
@@ -1158,23 +1228,26 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   public func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
     vmlog("in centralManager:didDiscover")
     
-    // run through the next bit of code only if we haven't already found an openXC peripheral
-    // TODO: must change to handle more than 1 VI
     if openXCPeripheral == nil {
-      vmlog("FOUND:")
-      vmlog(peripheral.name)
-      vmlog(advertisementData["kCBAdvDataLocalName"])
       
       // only find the right kinds of the BLE devices (C5 VI)
-      // TODO: look at advData, or just either possible name, confirm with Ford
-      if peripheral.name==OpenXCConstants.C5_VI_NAME || peripheral.name==OpenXCConstants.C5_VI_NAME_ALT {
-        // save the discovered peripheral
-        openXCPeripheral = peripheral
-        openXCPeripheral.delegate = self
-        
-        // auto connect to this peripheral
-        // TODO: NO!
-        centralManager.connectPeripheral(openXCPeripheral, options:nil)
+      if peripheral.name==OpenXCConstants.C5_VI_NAME {
+        let advName = advertisementData["kCBAdvDataLocalName"] as! String
+        // check to see if we already have this one
+        // and save the discovered peripheral
+        if foundOpenXCPeripherals[advName] == nil {
+          vmlog("FOUND:")
+          vmlog(peripheral.name)
+          vmlog(peripheral.identifier.UUIDString)
+          vmlog(advertisementData["kCBAdvDataLocalName"])
+          
+          foundOpenXCPeripherals[advName] = peripheral
+          
+          // if we're in auto connect mode, just connect right away
+          if autoConnectPeripheral {
+            connect()
+          }
+        }
         
         // notify client if the callback is enabled
         if let act = managerCallback {
@@ -1223,9 +1296,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     // just reconnect for now
     // TODO: allow configuration of auto-reconnect?
     if peripheral.name==OpenXCConstants.C5_VI_NAME {
-      centralManager.connectPeripheral(openXCPeripheral, options:nil)
-    }
-    if peripheral.name==OpenXCConstants.C5_VI_NAME_ALT {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
     }
 
