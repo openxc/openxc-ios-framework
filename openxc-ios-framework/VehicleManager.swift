@@ -10,6 +10,7 @@ import Foundation
 import CoreBluetooth
 
 
+// TODO comment here
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
@@ -98,6 +99,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var measurementCallbacks = [NSString:TargetAction]()
   // default callback action for measurement messages not registered above
   private var defaultMeasurementCallback : TargetAction?
+  // dictionary holding last received measurement message for each measurement type
+  // TODO clear on disconnection
+  private var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   
   // dictionary for holding registered diagnostic message callbacks
   // pairing bus-id-mode(-pid) String with callback action
@@ -131,9 +135,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // public variable holding number of messages received since last Connection established
   public var messageCount: Int = 0
   
-  
-  // dictionary holding last received measurement message for each measurement type
-  private var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   
   
   
@@ -227,7 +228,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     vmlog("VehicleManager connect started")
     centralManager.connectPeripheral(openXCPeripheral, options:nil)
     connectionState = .ConnectionInProgress
-    messageCount = 0
     
   }
   
@@ -255,7 +255,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     vmlog("VehicleManager connect started")
     centralManager.connectPeripheral(openXCPeripheral, options:nil)
     connectionState = .ConnectionInProgress
-    messageCount = 0
     
   }
   
@@ -1231,28 +1230,31 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     if openXCPeripheral == nil {
       
       // only find the right kinds of the BLE devices (C5 VI)
-      if peripheral.name==OpenXCConstants.C5_VI_NAME {
-        let advName = advertisementData["kCBAdvDataLocalName"] as! String
-        // check to see if we already have this one
-        // and save the discovered peripheral
-        if foundOpenXCPeripherals[advName] == nil {
-          vmlog("FOUND:")
-          vmlog(peripheral.name)
-          vmlog(peripheral.identifier.UUIDString)
-          vmlog(advertisementData["kCBAdvDataLocalName"])
-          
-          foundOpenXCPeripherals[advName] = peripheral
-          
-          // if we're in auto connect mode, just connect right away
-          if autoConnectPeripheral {
-            connect()
+      if let advNameCheck : String = advertisementData["kCBAdvDataLocalName"] as? String {
+        let advName = advNameCheck.uppercaseString
+        if advName.hasPrefix(OpenXCConstants.C5_VI_NAME_PREFIX) {
+          // check to see if we already have this one
+          // and save the discovered peripheral
+          if foundOpenXCPeripherals[advName] == nil {
+            vmlog("FOUND:")
+            vmlog(peripheral.identifier.UUIDString)
+            vmlog(advertisementData["kCBAdvDataLocalName"])
+            
+            foundOpenXCPeripherals[advName] = peripheral
+            
+            // if we're in auto connect mode, just connect right away
+            if autoConnectPeripheral {
+              connect()
+            }
+            
+            // notify client if the callback is enabled
+            if let act = managerCallback {
+              act.performAction(["status":VehicleManagerStatusMessage.C5DETECTED.rawValue] as NSDictionary)
+            }
+            
           }
         }
         
-        // notify client if the callback is enabled
-        if let act = managerCallback {
-          act.performAction(["status":VehicleManagerStatusMessage.C5DETECTED.rawValue] as NSDictionary)
-        }
       }
       
     }
@@ -1261,7 +1263,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // Core Bluetooth has connected to a BLE peripheral
   public func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
     vmlog("in centralManager:didConnectPeripheral:")
-    vmlog(peripheral.name!)
     
     // update the connection state
     connectionState = .Connected
@@ -1278,7 +1279,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   public func centralManager(central: CBCentralManager, didFailToConnectPeripheral peripheral: CBPeripheral, error: NSError?) {
     vmlog("in centralManager:didFailToConnectPeripheral:")
-    vmlog(peripheral.name!)
   }
   
   
@@ -1290,22 +1290,21 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // Core Bluetooth has disconnected from BLE peripheral
   public func centralManager(central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: NSError?) {
     vmlog("in centralManager:didDisconnectPeripheral:")
-    vmlog(peripheral.name!)
     vmlog(error)
     
     // just reconnect for now
     // TODO: allow configuration of auto-reconnect?
-    if peripheral.name==OpenXCConstants.C5_VI_NAME {
+    if peripheral == openXCPeripheral {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
-    }
 
-    // notify client if the callback is enabled
-    if let act = managerCallback {
-      act.performAction(["status":VehicleManagerStatusMessage.C5DISCONNECTED.rawValue] as NSDictionary)
-    }
+      // notify client if the callback is enabled
+      if let act = managerCallback {
+        act.performAction(["status":VehicleManagerStatusMessage.C5DISCONNECTED.rawValue] as NSDictionary)
+      }
 
-    // update the connection state
-    connectionState = .ConnectionInProgress
+      // update the connection state
+      connectionState = .ConnectionInProgress
+    }
     
   }
   
