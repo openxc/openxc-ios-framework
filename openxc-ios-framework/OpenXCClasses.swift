@@ -30,6 +30,13 @@ public enum VehicleMessageType: NSString {
 public enum VehicleCommandType: NSString {
   case version
   case device_id
+  case passthrough
+  case af_bypass
+  case payload_format
+  case predefined_odb2
+  case modem_configuration
+  case sd_mount_status
+  case rtc_configuration
 }
 
 
@@ -96,6 +103,10 @@ public class VehicleCommandRequest : VehicleBaseMessage {
   public var bus : NSString = ""
   public var enabled : Bool = false
   public var bypass : Bool = false
+  public var format : NSString = ""
+  public var server_host : NSString = ""
+  public var server_port : NSInteger = 0
+  public var unix_time : NSString = ""
 }
 
 public class VehicleCommandResponse : VehicleBaseMessage {
