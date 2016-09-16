@@ -10,7 +10,7 @@ import Foundation
 import CoreBluetooth
 
 
-// TODO comment here
+
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
@@ -23,6 +23,9 @@ public enum VehicleManagerStatusMessage: Int {
   case TRACE_SINK_WRITE_ERROR=7   // error in writing message to trace file
   case BLE_RX_DATA_PARSE_ERROR=8  // error in parsing data received from VI
 }
+// This enum is outside of the main class for ease of use in the client app. It allows
+// for referencing the enum without the class hierarchy in front of it. Ie. the enums
+// can be accessed directly as .C5DETECTED for example
 
 
 // public enum VehicleManagerConnectionState
@@ -34,6 +37,9 @@ public enum VehicleManagerConnectionState: Int {
   case Connected=3              // connection established (but not ready to receive btle writes)
   case Operational=4            // C5 VI operational (notify enabled and writes accepted)
 }
+// This enum is outside of the main class for ease of use in the client app. It allows
+// for referencing the enum without the class hierarchy in front of it. Ie. the enums
+// can be accessed directly as .C5DETECTED for example
 
 
 
@@ -93,6 +99,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var BLETxCommandCallback = [TargetAction]()
   // mirrored ordered list for storing command token for in progress vehicle commands
   private var BLETxCommandToken = [String]()
+  // 'default' command callback. If this is defined, it takes priority over any other callback
+  // defined above
+  private var defaultCommandCallback : TargetAction?
+
   
   // dictionary for holding registered measurement message callbacks
   // pairing measurement String with callback action
@@ -100,7 +110,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // default callback action for measurement messages not registered above
   private var defaultMeasurementCallback : TargetAction?
   // dictionary holding last received measurement message for each measurement type
-  // TODO clear on disconnection
   private var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   
   // dictionary for holding registered diagnostic message callbacks
@@ -456,6 +465,22 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   }
   
   
+  // add a default callback for any measurement messages not include in specified callbacks
+  public func setCommandDefaultTarget<T: AnyObject>(target: T, action: (T) -> (NSDictionary) -> ()) {
+    defaultCommandCallback = TargetActionWrapper(key:"", target: target, action: action)
+  }
+  
+  // clear default callback (by setting the default callback to a null method)
+  public func clearCommandDefaultTarget() {
+    defaultCommandCallback = nil
+  }
+  
+  
+
+  
+  
+  
+  
   
   // send a diagnostic message with a callback for when the diag command response is received
   public func sendDiagReq<T: AnyObject>(cmd:VehicleDiagnosticRequest, target: T, cmdaction: (T) -> (NSDictionary) -> ()) -> String {
@@ -626,14 +651,43 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // common function for sending a VehicleCommandRequest
   private func sendCommandCommon(cmd:VehicleCommandRequest) {
     vmlog("in sendCommandCommon")
-    
-    // for now the only commands supported are VERSION and DEVICE_ID
-    if (cmd.command == .version || cmd.command == .device_id) {
+
+    var cmdstr = ""
+    // decode the command type and build the command depending on the command
+    if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status {
       // build the command json
-      let cmd = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
-      // append to tx buffer
-      BLETxDataBuffer.addObject(cmd.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
     }
+    else if cmd.command == .passthrough {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"bus\":\(cmd.bus),\"enabled\":\(cmd.enabled)}\0"
+    }
+    else if cmd.command == .af_bypass {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"bus\":\(cmd.bus),\"bypass\":\(cmd.bypass)}\0"
+    }
+    else if cmd.command == .payload_format {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"format\":\"\(cmd.format)\"}\0"
+    }
+    else if cmd.command == .predefined_odb2 {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"enabled\":\(cmd.enabled)}\0"
+    }
+    else if cmd.command == .modem_configuration {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"server\":{\"host\":\"\(cmd.server_host)\",\"port\":\(cmd.server_port)}}\0"
+    }
+    else if cmd.command == .rtc_configuration {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
+    } else {
+      // unknown command!
+      return
+    }
+    
+    // append to tx buffer
+    BLETxDataBuffer.addObject(cmdstr.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
     
     // trigger a BLE data send
     BLESendFunction()
@@ -651,9 +705,11 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     if cmd.pid != nil {
       cmdjson.appendString(",\"pid\":\(cmd.pid!)")
     }
+    if cmd.frequency > 0 {
+      cmdjson.appendString(",\"frequency\":\(cmd.frequency)")
+    }
     cmdjson.appendString("}}\0")
     
-    // TODO: what about recurring diagnostic messages
     
     vmlog("sending diag cmd:",cmdjson)
     // append to tx buffer
@@ -748,7 +804,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private func RxDataParser(separator:UInt8) {
     
     // JSON decoding
-    // TODO: handle protbuf!!!
+    // TODO: protobuf support will be added later
     ////////////////
     
     // see if we can find a separator in the buffered data
@@ -895,13 +951,19 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           rsp.command_response = cmd_rsp
           rsp.status = status
           
-          // Grab the first callback message in the list of command callbacks.
+          // First see if the default command callback is defined. If it is
+          // then that takes priority. This will be the most likely use case,
+          // with a single command response handler.
+          if let act = defaultCommandCallback {
+            act.performAction(["vehiclemessage":rsp] as NSDictionary)
+          }
+          // Otherwise, grab the first callback message in the list of command callbacks.
           // They will be in order relative to when the commands are sent (VI guarantees
           // to response order). We need to check that the list of command callbacks
           // actually has something in it here (check for count>0) because if we're
           // receiving command responses via a trace file, then there was never an
           // actual command request message sent to the VI.
-          if BLETxCommandCallback.count > 0 {
+          else if BLETxCommandCallback.count > 0 {
             let ta : TargetAction = BLETxCommandCallback.removeFirst()
             let s : String = BLETxCommandToken.removeFirst()
             ta.performAction(["vehiclemessage":rsp,"key":s] as NSDictionary)
@@ -1013,6 +1075,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             
             // TODO: remove debug statement?
             vmlog("CAN bus:\(bus) status:\(id) payload:\(data)")
+            /////////////////////////////////
             
             
             // build the key that identifies this CAN response
@@ -1085,6 +1148,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           
         }
         */
+        //////////////////////////////////////////////
+        
         
         
         // if trace file output is enabled, create a string from the message
@@ -1292,8 +1357,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     vmlog("in centralManager:didDisconnectPeripheral:")
     vmlog(error)
     
-    // just reconnect for now
-    // TODO: allow configuration of auto-reconnect?
+    // just reconnect automatically to the same device for now
     if peripheral == openXCPeripheral {
       centralManager.connectPeripheral(openXCPeripheral, options:nil)
 
@@ -1302,6 +1366,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         act.performAction(["status":VehicleManagerStatusMessage.C5DISCONNECTED.rawValue] as NSDictionary)
       }
 
+      // clear any saved context
+      latestVehicleMeasurements = NSMutableDictionary()
+      
       // update the connection state
       connectionState = .ConnectionInProgress
     }
