@@ -4,6 +4,7 @@
 //
 //  Created by Tim Buick on 2016-08-10.
 //  Copyright © 2016 Bug Labs. All rights reserved.
+//  Version 0.9.2
 //
 
 import Foundation
