@@ -3,7 +3,7 @@
 //  openXCSwift
 //
 //  Created by Tim Buick on 2016-06-16.
-//  Copyright © 2016 BugLabs. All rights reserved.
+//  Copyright (c) 2016 Ford Motor Company Licensed under the BSD license.
 //  Version 0.9.2
 //
 
@@ -287,7 +287,13 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
     // save the trace file name
     traceFilesinkEnabled = true
-    traceFilesinkName = filename
+    
+    // append date to filename
+    let d = NSDate()
+    let df = NSDateFormatter()
+    df.dateFormat = "MMMd,yyyy-H:m:ss"
+    let datedFilename = (filename as String) + "-" + df.stringFromDate(d)
+    traceFilesinkName = datedFilename
     
     // find the file, and overwrite it if it already exists
     if let dir = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory,
