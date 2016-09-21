@@ -9,6 +9,7 @@
 
 import Foundation
 import CoreBluetooth
+import ProtocolBuffers
 
 
 
@@ -83,6 +84,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // config for outputting debug messages to console
   private var managerDebug : Bool = false
   
+  // config for protobuf vs json BLE mode, defaults to JSON
+  // TODO default to JSON
+  private var jsonMode : Bool = false
+  
   // optional variable holding callback for VehicleManager status updates
   private var managerCallback: TargetAction?
   
@@ -138,6 +143,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var traceFilesourceTimer: NSTimer = NSTimer()
   // private file handle to trace input file
   private var traceFilesourceHandle: NSFileHandle?
+  // private variable holding timestamp of last message received
+  private var traceFilesourceLastTime: NSInteger = 0
   
   
   // public variable holding VehicleManager connection state enum
@@ -195,7 +202,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   // initialize the VM and scan for nearby VIs
   public func scan() {
-  
+    
     // if the VM is already connected, don't do anything
     if connectionState != .NotConnected {
       vmlog("VehicleManager already scanning or connected! Sorry!")
@@ -337,10 +344,12 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // turn on trace file input instead of data from BTLE
   // specify a filename to read from, and a speed that lines
   // are read from the file in ms
-  public func enableTraceFileSource(filename:NSString, speed:NSInteger=500) -> Bool {
+  public func enableTraceFileSource(filename:NSString, speed:NSInteger?=nil) -> Bool {
     
     // only allow a reasonable range of values for speed, not too fast or slow
-    if speed < 50 || speed > 1000 {return false}
+    if speed != nil {
+      if speed < 50 || speed > 1000 {return false}
+    }
     
     // check for file sharing in the bundle
     if let fs : Bool? = NSBundle.mainBundle().infoDictionary?["UIFileSharingEnabled"] as? Bool {
@@ -378,8 +387,14 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         }
         
         // create a timer to handle reading from the trace input filehandle
-        let spdf:Double = Double(speed) / 1000.0
-        traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(spdf, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
+        // if speed parameter exists
+        if speed != nil {
+          let spdf:Double = Double(speed!) / 1000.0
+          traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(spdf, target: self, selector: #selector(traceFileReaderAuto), userInfo: nil, repeats: true)
+        } else {
+          traceFilesourceLastTime = 0
+          traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(50, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: false)
+        }
         
         return true
         
@@ -808,12 +823,102 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // The separator parameter allows data to be parsed when each message is
   // separated by different things, for example messages are separated by \0
   // when coming via BLE, and separated by 0xa when coming via a trace file
-  private func RxDataParser(separator:UInt8) {
+  // RXDataParser returns the timestamp of the parsed message out of convenience.
+  private func RxDataParser(separator:UInt8) -> NSInteger {
     
     // JSON decoding
+    
+    
     // TODO: protobuf support will be added later
     ////////////////
     
+    if !jsonMode && RxDataBuffer.length > 0 {
+      var packetlenbyte:UInt8 = 0
+      RxDataBuffer.getBytes(&packetlenbyte, length:sizeof(UInt8))
+      let packetlen = Int(packetlenbyte)
+      
+      if RxDataBuffer.length > packetlen+1 {
+        vmlog("found \(packetlen)B protobuf frame")
+
+//        var bytes = [UInt8](count: RxDataBuffer.length, repeatedValue: 0)
+//        RxDataBuffer.getBytes(&bytes, length:RxDataBuffer.length * sizeof(UInt8))
+//        vmlog(bytes)
+
+        let data_chunk : NSMutableData = NSMutableData()
+        data_chunk.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(1,packetlen)))
+
+//        vmlog(data_chunk)
+        
+        var msg : VehicleMessage
+        do {
+          msg = try VehicleMessage.parseFromData(data_chunk)
+          print(msg)
+        } catch {
+          print("protobuf parse error")
+          return 0
+        }
+        
+        let data_left : NSMutableData = NSMutableData()
+        data_left.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(packetlen+1, RxDataBuffer.length-packetlen-1)))
+        RxDataBuffer = data_left
+
+        
+        if msg.types == .Simple {
+          
+          let name = msg.simpleMessage.name
+          
+          // build measurement message
+          let rsp : VehicleMeasurementResponse = VehicleMeasurementResponse()
+          rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+          rsp.name = msg.simpleMessage.name
+          if msg.simpleMessage.value.hasStringValue {rsp.value = msg.simpleMessage.value.stringValue}
+          if msg.simpleMessage.value.hasBooleanValue {rsp.value = msg.simpleMessage.value.booleanValue}
+          if msg.simpleMessage.value.hasNumericValue {rsp.value = msg.simpleMessage.value.numericValue}
+          if msg.simpleMessage.hasEvent {
+            rsp.isEvented = true
+            if msg.simpleMessage.event.hasStringValue {rsp.value = msg.simpleMessage.event.stringValue}
+            if msg.simpleMessage.event.hasBooleanValue {rsp.value = msg.simpleMessage.event.booleanValue}
+            if msg.simpleMessage.event.hasNumericValue {rsp.value = msg.simpleMessage.event.numericValue}
+          }
+          
+          // capture this message into the dictionary of latest messages
+          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
+          
+          // look for a specific callback for this measurement name
+          var found=false
+          for key in measurementCallbacks.keys {
+            let act = measurementCallbacks[key]
+            if act!.returnKey() == name {
+              found=true
+              act!.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+          // otherwise use the default callback if it exists
+          if !found {
+            if let act = defaultMeasurementCallback {
+              act.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+
+        }
+        
+        
+        
+        
+        
+        
+      }
+      
+    }
+    
+    return 0
+    
+    
+    
+
+    // init timestamp to 0
+    var timestamp : NSInteger = 0
+
     // see if we can find a separator in the buffered data
     let sepdata = NSData(bytes: [separator] as [UInt8], length: 1)
     let rangedata = NSMakeRange(0, RxDataBuffer.length)
@@ -1184,6 +1289,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       
     }
     
+    return timestamp
+    
   }
   
   
@@ -1239,7 +1346,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   
   // Read a chunk of data from the trace input file.
   // 20B is chosen as the chunk size to mirror the BLE data size.
-  private dynamic func traceFileReader () {
+  // Called by timer function when client app provides a speed value for
+  // trace input file
+  private dynamic func traceFileReaderAuto () {
     
     // if the trace file is enabled and open, read 20B
     if traceFilesourceEnabled && traceFilesourceHandle != nil {
@@ -1267,6 +1376,66 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     }
     
   }
+  
+  
+  // Read a chunk of data from the trace input file.
+  // 20B is chosen as the chunk size to mirror the BLE data size.
+  // Called by timer function when client app provides a speed value for
+  // trace input file
+  private dynamic func traceFileReader () {
+    
+    // if the last timestamp is 0, read twice because this is the first message
+    // we're reading
+    if traceFilesourceLastTime == 0 && traceFilesourceEnabled && traceFilesourceHandle != nil {
+      let rdData = traceFilesourceHandle!.readDataOfLength(20)
+      // we have read some data, append it to the rx data buffer
+      if rdData.length > 0 {
+        RxDataBuffer.appendData(rdData)
+        // Try parsing the data that was added to the buffer. Use
+        // LF as the message delimiter because that's what's used
+        // in trace files.
+        traceFilesourceLastTime = RxDataParser(0x0a)
+      } else {
+        // There was no data read, so we're at the end of the
+        // trace input file. Close the input file.
+        vmlog("traceFilesource EOF")
+        traceFilesourceHandle!.closeFile()
+        traceFilesourceHandle = nil
+        // notify the client app if the callback is enabled
+        if let act = managerCallback {
+          act.performAction(["status":VehicleManagerStatusMessage.TRACE_SOURCE_END.rawValue] as Dictionary)
+        }
+        return
+      }
+    }
+
+    // if the trace file is enabled and open, read 20B
+    if traceFilesourceEnabled && traceFilesourceHandle != nil {
+      let rdData = traceFilesourceHandle!.readDataOfLength(20)
+      
+      // we have read some data, append it to the rx data buffer
+      if rdData.length > 0 {
+        RxDataBuffer.appendData(rdData)
+        // Try parsing the data that was added to the buffer. Use
+        // LF as the message delimiter because that's what's used
+        // in trace files.
+        RxDataParser(0x0a)
+      } else {
+        // There was no data read, so we're at the end of the
+        // trace input file. Close the input file.
+        vmlog("traceFilesource EOF")
+        traceFilesourceHandle!.closeFile()
+        traceFilesourceHandle = nil
+        // notify the client app if the callback is enabled
+        if let act = managerCallback {
+          act.performAction(["status":VehicleManagerStatusMessage.TRACE_SOURCE_END.rawValue] as Dictionary)
+        }
+      }
+      
+    }
+    
+  }
+  
   
   
   
