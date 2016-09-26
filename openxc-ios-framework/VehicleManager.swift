@@ -85,8 +85,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var managerDebug : Bool = false
   
   // config for protobuf vs json BLE mode, defaults to JSON
-  // TODO default to JSON
-  private var jsonMode : Bool = false
+  private var jsonMode : Bool = true
   
   // optional variable holding callback for VehicleManager status updates
   private var managerCallback: TargetAction?
@@ -143,9 +142,11 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private var traceFilesourceTimer: NSTimer = NSTimer()
   // private file handle to trace input file
   private var traceFilesourceHandle: NSFileHandle?
-  // private variable holding timestamp of last message received
-  private var traceFilesourceLastTime: NSInteger = 0
-  
+  // private variable holding timestamps when last message received
+  private var traceFilesourceLastMsgTime: NSInteger = 0
+  private var traceFilesourceLastActualTime: NSInteger = 0
+  // this tells us we're tracking the time held in the trace file
+  private var traceFilesourceTimeTracking: Bool = false
   
   // public variable holding VehicleManager connection state enum
   public var connectionState: VehicleManagerConnectionState! = .NotConnected
@@ -191,6 +192,12 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // change the auto connect config for the VM
   public func setAutoconnect(on:Bool) {
     autoConnectPeripheral = on
+  }
+  
+  
+  // change the data format for the VM
+  public func setProtobufMode(on:Bool) {
+    jsonMode = !on
   }
   
   
@@ -298,7 +305,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     // append date to filename
     let d = NSDate()
     let df = NSDateFormatter()
-    df.dateFormat = "MMMd,yyyy-H:m:ss"
+    df.dateFormat = "MMMd,yyyy-Hmmss"
     let datedFilename = (filename as String) + "-" + df.stringFromDate(d)
     traceFilesinkName = datedFilename
     
@@ -344,6 +351,8 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // turn on trace file input instead of data from BTLE
   // specify a filename to read from, and a speed that lines
   // are read from the file in ms
+  // If the speed is not specified, the framework will use the timestamp
+  // values found in the trace file to determine when to send the next message
   public func enableTraceFileSource(filename:NSString, speed:NSInteger?=nil) -> Bool {
     
     // only allow a reasonable range of values for speed, not too fast or slow
@@ -390,10 +399,16 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         // if speed parameter exists
         if speed != nil {
           let spdf:Double = Double(speed!) / 1000.0
-          traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(spdf, target: self, selector: #selector(traceFileReaderAuto), userInfo: nil, repeats: true)
+          traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(spdf, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
         } else {
-          traceFilesourceLastTime = 0
-          traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(50, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: false)
+          // if it doesn't exist, we're tracking the time held in the
+          // trace file
+          traceFilesourceTimeTracking = true
+          traceFilesourceLastMsgTime = 0
+          traceFilesourceLastActualTime = 0
+          // call the timer as fast as possible, the data parser will sleep to delay the
+          // messages when necessary
+          traceFilesourceTimer = NSTimer.scheduledTimerWithTimeInterval(0.001, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
         }
         
         return true
@@ -675,10 +690,11 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     vmlog("in sendCommandCommon")
 
     if !jsonMode {
-      // in protobuf mode
+      // in protobuf mode, build the command message
       let cbuild = ControlCommand.Builder()
       if cmd.command == .version {cbuild.setTypes(.Version)}
       if cmd.command == .device_id {cbuild.setTypes(.DeviceId)}
+      // TODO more command types
       let mbuild = VehicleMessage.Builder()
       mbuild.setTypes(.ControlCommand)
 
@@ -709,6 +725,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       return
     }
     
+    // we're in json mode
     var cmdstr = ""
     // decode the command type and build the command depending on the command
     if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status {
@@ -755,6 +772,57 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // common function for sending a VehicleDiagnosticRequest
   private func sendDiagCommon(cmd:VehicleDiagnosticRequest) {
     vmlog("in sendDiagCommon")
+ 
+    if !jsonMode {
+      // in protobuf mode, build diag message
+      let cbuild = ControlCommand.Builder()
+      cbuild.setTypes(.Diagnostic)
+      let c2build = DiagnosticControlCommand.Builder()
+      c2build.setAction(.Add)
+      let dbuild = DiagnosticRequest.Builder()
+      dbuild.setBus(Int32(cmd.bus))
+      dbuild.setMessageId(UInt32(cmd.message_id))
+      dbuild.setMode(UInt32(cmd.mode))
+      if cmd.pid != nil {
+        dbuild.setPid(UInt32(cmd.pid!))
+      }
+      if cmd.frequency>0 {
+        dbuild.setFrequency(Double(cmd.frequency))
+      }
+      let mbuild = VehicleMessage.Builder()
+      mbuild.setTypes(.Diagnostic)
+      
+      do {
+        let dmsg = try dbuild.build()
+        c2build.setRequest(dmsg)
+        let c2msg = try c2build.build()
+        cbuild.setDiagnosticRequest(c2msg)
+        let cmsg = try cbuild.build()
+        mbuild.setControlCommand(cmsg)
+        let mmsg = try mbuild.build()
+        print (mmsg)
+        
+        
+        let cdata = mmsg.data()
+        let cdata2 = NSMutableData()
+        let prepend : [UInt8] = [UInt8(cdata.length)]
+        cdata2.appendData(NSData(bytes: prepend, length:1))
+        cdata2.appendData(cdata)
+        print(cdata2)
+        
+        // append to tx buffer
+        BLETxDataBuffer.addObject(cdata2)
+        
+        // trigger a BLE data send
+        BLESendFunction()
+        
+      } catch {
+        print("cmd msg build failed")
+      }
+      
+      return
+    }
+
     
     // build the command json
     let cmdjson : NSMutableString = ""
@@ -781,6 +849,48 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // common function for sending a VehicleCanRequest
   private func sendCanCommon(cmd:VehicleCanRequest) {
     vmlog("in sendCanCommon")
+    
+    
+    
+    if !jsonMode {
+      // in protobuf mode, build the CAN message
+      let cbuild = CanMessage.Builder()
+      cbuild.setBus(Int32(cmd.bus))
+      cbuild.setId(UInt32(cmd.id))
+      // TODO handle data field
+
+      let mbuild = VehicleMessage.Builder()
+      mbuild.setTypes(.Can)
+      
+      do {
+        let cmsg = try cbuild.build()
+        mbuild.setCanMessage(cmsg)
+        let mmsg = try mbuild.build()
+        print (mmsg)
+        
+        
+        let cdata = mmsg.data()
+        let cdata2 = NSMutableData()
+        let prepend : [UInt8] = [UInt8(cdata.length)]
+        cdata2.appendData(NSData(bytes: prepend, length:1))
+        cdata2.appendData(cdata)
+        print(cdata2)
+        
+        // append to tx buffer
+        BLETxDataBuffer.addObject(cdata2)
+        
+        // trigger a BLE data send
+        BLESendFunction()
+        
+      } catch {
+        print("cmd msg build failed")
+      }
+      
+      return
+    }
+    
+
+    
     
     // build the command json
     let cmd = "{\"bus\":\(cmd.bus),\"id\":\(cmd.id),\"data\":\"\(cmd.data)\"}"
@@ -859,13 +969,12 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // separated by different things, for example messages are separated by \0
   // when coming via BLE, and separated by 0xa when coming via a trace file
   // RXDataParser returns the timestamp of the parsed message out of convenience.
-  private func RxDataParser(separator:UInt8) -> NSInteger {
-    
-    // JSON decoding
+  private func RxDataParser(separator:UInt8) {
     
     
-    // TODO: protobuf support will be added later
     ////////////////
+    // Protobuf decoding
+    /////////////////
     
     if !jsonMode && RxDataBuffer.length > 0 {
       var packetlenbyte:UInt8 = 0
@@ -874,10 +983,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       
       if RxDataBuffer.length > packetlen+1 {
         vmlog("found \(packetlen)B protobuf frame")
-
-//        var bytes = [UInt8](count: RxDataBuffer.length, repeatedValue: 0)
-//        RxDataBuffer.getBytes(&bytes, length:RxDataBuffer.length * sizeof(UInt8))
-//        vmlog(bytes)
 
         let data_chunk : NSMutableData = NSMutableData()
         data_chunk.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(1,packetlen)))
@@ -890,13 +995,12 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           print(msg)
         } catch {
           print("protobuf parse error")
-          return 0
+          return
         }
         
         let data_left : NSMutableData = NSMutableData()
         data_left.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(packetlen+1, RxDataBuffer.length-packetlen-1)))
         RxDataBuffer = data_left
-
         
         
         // measurement messages (normal and evented)
@@ -977,6 +1081,113 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
  
         
         
+        // Diagnostic messages
+        /////////////////////////////
+        if msg.types == .Diagnostic {
+          
+          // build diag response message
+          let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
+          rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+          rsp.bus = Int(msg.diagnosticResponse.bus)
+          rsp.message_id = Int(msg.diagnosticResponse.messageId)
+          rsp.mode = Int(msg.diagnosticResponse.mode)
+          if msg.diagnosticResponse.hasPid {rsp.pid = Int(msg.diagnosticResponse.pid)}
+          rsp.success = msg.diagnosticResponse.success
+          if msg.diagnosticResponse.hasPayload {rsp.payload = String(data:msg.diagnosticResponse.payload,encoding: NSUTF8StringEncoding)!}
+          if msg.diagnosticResponse.hasPayload {rsp.value = Int(msg.diagnosticResponse.value)}
+          
+          // build the key that identifies this diagnostic response
+          // bus-id-mode-[X or pid]
+          let tupple : NSMutableString = ""
+          tupple.appendString("\(String(rsp.bus))-\(String(rsp.message_id))-\(String(rsp.mode))-")
+          if rsp.pid != nil {
+            tupple.appendString(String(rsp.pid))
+          } else {
+            tupple.appendString("X")
+          }
+          
+          // TODO: debug printouts, maybe remove
+          if rsp.value != nil {
+            if rsp.pid != nil {
+              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(rsp.pid) success:\(rsp.success) value:\(rsp.value)")
+            } else {
+              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(rsp.value)")
+            }
+          } else {
+            if rsp.pid != nil {
+              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(rsp.pid) success:\(rsp.success) payload:\(rsp.payload)")
+            } else {
+              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(rsp.payload)")
+            }
+          }
+          ////////////////////////////
+          
+          // look for a specific callback for this diag response based on tupple created above
+          var found=false
+          for key in diagCallbacks.keys {
+            let act = diagCallbacks[key]
+            if act!.returnKey() == tupple {
+              found=true
+              act!.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+          // otherwise use the default callback if it exists
+          if !found {
+            if let act = defaultDiagCallback {
+              act.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+          
+        }
+        
+        
+        
+        // CAN messages
+        /////////////////////////////
+        if msg.types == .Can {
+          
+          
+          // build CAN response message
+          let rsp : VehicleCanResponse = VehicleCanResponse()
+          rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+          rsp.bus = Int(msg.canMessage.bus)
+          rsp.id = Int(msg.canMessage.id)
+          rsp.data = String(data:msg.canMessage.data,encoding: NSUTF8StringEncoding)!
+          
+          // TODO: remove debug statement?
+          vmlog("CAN bus:\(rsp.bus) status:\(rsp.id) payload:\(rsp.data)")
+          /////////////////////////////////
+          
+          
+          // build the key that identifies this CAN response
+          // bus-id
+          let tupple = "\(String(rsp.bus))-\(String(rsp.id))"
+          
+          // look for a specific callback for this CAN response based on tupple created above
+          var found=false
+          for key in canCallbacks.keys {
+            let act = canCallbacks[key]
+            if act!.returnKey() == tupple {
+              found=true
+              act!.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+          // otherwise use the default callback if it exists
+          if !found {
+            if let act = defaultCanCallback {
+              act.performAction(["vehiclemessage":rsp] as NSDictionary)
+            }
+          }
+          
+        } else {
+          // should never get here!
+          if let act = managerCallback {
+            act.performAction(["status":VehicleManagerStatusMessage.BLE_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+          }
+        }
+
+       
+        
         
         // Keep a count of how many messages were received in total
         // since connection. Can be used by the client app.
@@ -986,16 +1197,15 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         
       }
 
-      return 0
+      return
 
     }
     
     
-    
-    
-
-    // init timestamp to 0
-    var timestamp : NSInteger = 0
+    ////////////////
+    // JSON decoding
+    /////////////////
+   
 
     // see if we can find a separator in the buffered data
     let sepdata = NSData(bytes: [separator] as [UInt8], length: 1)
@@ -1022,7 +1232,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       // TODO: remove this, just for debug
       let str = String(data: data_chunk,encoding: NSUTF8StringEncoding)
       if str != nil {
-  //             vmlog(str!)
+     //          vmlog(str!)
       } else {
         vmlog("not UTF8")
       }
@@ -1042,8 +1252,28 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         if json["timestamp"] != nil {
           timestamp = json["timestamp"] as! NSInteger
         }
-        
-        
+
+
+        // insert a delay if we're reading from a tracefile
+        // and we're tracking the timestamps in the file to
+        // decide when to send the next message
+        if traceFilesourceTimeTracking {
+          let msTimeNow = Int(NSDate.timeIntervalSinceReferenceDate()*1000)
+          if traceFilesourceLastMsgTime == 0 {
+            // first time
+            traceFilesourceLastMsgTime = timestamp
+            traceFilesourceLastActualTime = msTimeNow
+          }
+          let msgDelta = timestamp - traceFilesourceLastMsgTime
+          let actualDelta = msTimeNow - traceFilesourceLastActualTime
+          let deltaDelta : Double = (Double(msgDelta) - Double(actualDelta))/1000.0
+          if deltaDelta > 0 {
+            NSThread.sleepForTimeInterval(deltaDelta)
+          }
+          traceFilesourceLastMsgTime = timestamp
+          traceFilesourceLastActualTime = msTimeNow
+        }
+
         
         // evented measurement rsp
         ///////////////////
@@ -1367,7 +1597,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       
     }
     
-    return timestamp
     
   }
   
@@ -1426,7 +1655,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   // 20B is chosen as the chunk size to mirror the BLE data size.
   // Called by timer function when client app provides a speed value for
   // trace input file
-  private dynamic func traceFileReaderAuto () {
+  private dynamic func traceFileReader() {
     
     // if the trace file is enabled and open, read 20B
     if traceFilesourceEnabled && traceFilesourceHandle != nil {
@@ -1441,10 +1670,11 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         RxDataParser(0x0a)
       } else {
         // There was no data read, so we're at the end of the
-        // trace input file. Close the input file.
+        // trace input file. Close the input file and timer
         vmlog("traceFilesource EOF")
         traceFilesourceHandle!.closeFile()
         traceFilesourceHandle = nil
+        traceFilesourceTimer.invalidate()
         // notify the client app if the callback is enabled
         if let act = managerCallback {
           act.performAction(["status":VehicleManagerStatusMessage.TRACE_SOURCE_END.rawValue] as Dictionary)
@@ -1455,64 +1685,6 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
     
   }
   
-  
-  // Read a chunk of data from the trace input file.
-  // 20B is chosen as the chunk size to mirror the BLE data size.
-  // Called by timer function when client app provides a speed value for
-  // trace input file
-  private dynamic func traceFileReader () {
-    
-    // if the last timestamp is 0, read twice because this is the first message
-    // we're reading
-    if traceFilesourceLastTime == 0 && traceFilesourceEnabled && traceFilesourceHandle != nil {
-      let rdData = traceFilesourceHandle!.readDataOfLength(20)
-      // we have read some data, append it to the rx data buffer
-      if rdData.length > 0 {
-        RxDataBuffer.appendData(rdData)
-        // Try parsing the data that was added to the buffer. Use
-        // LF as the message delimiter because that's what's used
-        // in trace files.
-        traceFilesourceLastTime = RxDataParser(0x0a)
-      } else {
-        // There was no data read, so we're at the end of the
-        // trace input file. Close the input file.
-        vmlog("traceFilesource EOF")
-        traceFilesourceHandle!.closeFile()
-        traceFilesourceHandle = nil
-        // notify the client app if the callback is enabled
-        if let act = managerCallback {
-          act.performAction(["status":VehicleManagerStatusMessage.TRACE_SOURCE_END.rawValue] as Dictionary)
-        }
-        return
-      }
-    }
-
-    // if the trace file is enabled and open, read 20B
-    if traceFilesourceEnabled && traceFilesourceHandle != nil {
-      let rdData = traceFilesourceHandle!.readDataOfLength(20)
-      
-      // we have read some data, append it to the rx data buffer
-      if rdData.length > 0 {
-        RxDataBuffer.appendData(rdData)
-        // Try parsing the data that was added to the buffer. Use
-        // LF as the message delimiter because that's what's used
-        // in trace files.
-        RxDataParser(0x0a)
-      } else {
-        // There was no data read, so we're at the end of the
-        // trace input file. Close the input file.
-        vmlog("traceFilesource EOF")
-        traceFilesourceHandle!.closeFile()
-        traceFilesourceHandle = nil
-        // notify the client app if the callback is enabled
-        if let act = managerCallback {
-          act.performAction(["status":VehicleManagerStatusMessage.TRACE_SOURCE_END.rawValue] as Dictionary)
-        }
-      }
-      
-    }
-    
-  }
   
   
   
