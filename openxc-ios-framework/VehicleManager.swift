@@ -674,6 +674,41 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
   private func sendCommandCommon(cmd:VehicleCommandRequest) {
     vmlog("in sendCommandCommon")
 
+    if !jsonMode {
+      // in protobuf mode
+      let cbuild = ControlCommand.Builder()
+      if cmd.command == .version {cbuild.setTypes(.Version)}
+      if cmd.command == .device_id {cbuild.setTypes(.DeviceId)}
+      let mbuild = VehicleMessage.Builder()
+      mbuild.setTypes(.ControlCommand)
+
+      do {
+        let cmsg = try cbuild.build()
+        mbuild.setControlCommand(cmsg)
+        let mmsg = try mbuild.build()
+        print (mmsg)
+        
+        
+        let cdata = mmsg.data()
+        let cdata2 = NSMutableData()
+        let prepend : [UInt8] = [UInt8(cdata.length)]
+        cdata2.appendData(NSData(bytes: prepend, length:1))
+        cdata2.appendData(cdata)
+        print(cdata2)
+        
+        // append to tx buffer
+        BLETxDataBuffer.addObject(cdata2)
+        
+        // trigger a BLE data send
+        BLESendFunction()
+
+      } catch {
+        print("cmd msg build failed")
+      }
+      
+      return
+    }
+    
     var cmdstr = ""
     // decode the command type and build the command depending on the command
     if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status {
@@ -847,7 +882,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         let data_chunk : NSMutableData = NSMutableData()
         data_chunk.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(1,packetlen)))
 
-//        vmlog(data_chunk)
+        vmlog(data_chunk)
         
         var msg : VehicleMessage
         do {
@@ -863,6 +898,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         RxDataBuffer = data_left
 
         
+        
+        // measurement messages (normal and evented)
+        ///////////////////////////////////////////
         if msg.types == .Simple {
           
           let name = msg.simpleMessage.name
@@ -903,15 +941,55 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         }
         
         
+        // Command Response messages
+        /////////////////////////////
+        if msg.types == .CommandResponse {
+          
+          let name = msg.commandResponse.types.toString()
+          
+          
+          // build command response message
+          let rsp : VehicleCommandResponse = VehicleCommandResponse()
+          rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+          rsp.command_response = name.lowercaseString
+          rsp.message = msg.commandResponse.message_
+          rsp.status = msg.commandResponse.status
+          
+          // First see if the default command callback is defined. If it is
+          // then that takes priority. This will be the most likely use case,
+          // with a single command response handler.
+          if let act = defaultCommandCallback {
+            act.performAction(["vehiclemessage":rsp] as NSDictionary)
+          }
+            // Otherwise, grab the first callback message in the list of command callbacks.
+            // They will be in order relative to when the commands are sent (VI guarantees
+            // to response order). We need to check that the list of command callbacks
+            // actually has something in it here (check for count>0) because if we're
+            // receiving command responses via a trace file, then there was never an
+            // actual command request message sent to the VI.
+          else if BLETxCommandCallback.count > 0 {
+            let ta : TargetAction = BLETxCommandCallback.removeFirst()
+            let s : String = BLETxCommandToken.removeFirst()
+            ta.performAction(["vehiclemessage":rsp,"key":s] as NSDictionary)
+          }
+          
+        }
+ 
         
         
         
+        // Keep a count of how many messages were received in total
+        // since connection. Can be used by the client app.
+        messageCount += 1
+        
+
         
       }
-      
+
+      return 0
+
     }
     
-    return 0
     
     
     
