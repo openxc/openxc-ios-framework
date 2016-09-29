@@ -1,0 +1,4 @@
+[submodule "protobuf"]
+	path = protobuf
+	url = https://github.com/alexeyxo/protobuf-swift.git
+	branch = ProtoBuf3.0-Swift2.0
