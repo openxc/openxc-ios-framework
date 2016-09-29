@@ -22,7 +22,7 @@
 		</data>
 		<key>Modules/ProtocolBuffers.swiftmodule/arm.swiftmodule</key>
 		<data>
-		ZUxypfMcKDJtLS0XjeTV/F1Kgws=
+		tF32ZscVkrSEj2IpIkmadhKcWHQ=
 		</data>
 		<key>Modules/ProtocolBuffers.swiftmodule/arm64.swiftdoc</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Modules/ProtocolBuffers.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		/7COUFd2X7vcjfPRLmU3ehOdPBU=
+		yCSd9Gd3nQ3ZxhG0jxReUK5qKjc=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -76,11 +76,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ZUxypfMcKDJtLS0XjeTV/F1Kgws=
+			tF32ZscVkrSEj2IpIkmadhKcWHQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			g739uJs4FTx91pctJmotLDH0rF5nhu6CqwqnktZy6mE=
+			s6ZOqHElaPQBJgGmWxhI499uMd2RLmJkx7PIWE2VOVw=
 			</data>
 		</dict>
 		<key>Modules/ProtocolBuffers.swiftmodule/arm64.swiftdoc</key>
@@ -98,11 +98,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			/7COUFd2X7vcjfPRLmU3ehOdPBU=
+			yCSd9Gd3nQ3ZxhG0jxReUK5qKjc=
 			</data>
 			<key>hash2</key>
 			<data>
-			JRwD13g7Qtym6HD/GJlpouJOuWo2+6bCW/TQheJeKXc=
+			zsWTYx6jY5NvLqVr3MSL6kn8CM5JuXoZJva38gZCLuA=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
