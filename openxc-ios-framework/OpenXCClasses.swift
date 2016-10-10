@@ -101,13 +101,13 @@ public class VehicleCommandRequest : VehicleBaseMessage {
     type = .CommandResponse
   }
   public var command : VehicleCommandType = .version
-  public var bus : NSString = ""
+  public var bus : NSInteger = 0
   public var enabled : Bool = false
   public var bypass : Bool = false
   public var format : NSString = ""
   public var server_host : NSString = ""
   public var server_port : NSInteger = 0
-  public var unix_time : NSString = ""
+  public var unix_time : NSInteger = 0
 }
 
 public class VehicleCommandResponse : VehicleBaseMessage {

@@ -694,7 +694,50 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       let cbuild = ControlCommand.Builder()
       if cmd.command == .version {cbuild.setTypes(.Version)}
       if cmd.command == .device_id {cbuild.setTypes(.DeviceId)}
-      // TODO more command types
+      if cmd.command == .passthrough {
+        let cbuild2 = PassthroughModeControlCommand.Builder()
+        cbuild2.setBus(Int32(cmd.bus))
+        cbuild2.setEnabled(cmd.enabled)
+        cbuild.setPassthroughModeRequest(cbuild2.buildPartial())
+        cbuild.setTypes(.Passthrough)
+      }
+      if cmd.command == .af_bypass {
+        let cbuild2 = AcceptanceFilterBypassCommand.Builder()
+        cbuild2.setBus(Int32(cmd.bus))
+        cbuild2.setBypass(cmd.bypass)
+        cbuild.setAcceptanceFilterBypassCommand(cbuild2.buildPartial())
+        cbuild.setTypes(.AcceptanceFilterBypass)
+      }
+      if cmd.command == .payload_format {
+        let cbuild2 = PayloadFormatCommand.Builder()
+        if cmd.format == "json" {cbuild2.setFormat(.Json)}
+        if cmd.format == "protobuf" {cbuild2.setFormat(.Protobuf)}
+        cbuild.setPayloadFormatCommand(cbuild2.buildPartial())
+        cbuild.setTypes(.PayloadFormat)
+      }
+      if cmd.command == .predefined_odb2 {
+        let cbuild2 = PredefinedObd2RequestsCommand.Builder()
+        cbuild2.setEnabled(cmd.enabled)
+        cbuild.setPredefinedObd2RequestsCommand(cbuild2.buildPartial())
+        cbuild.setTypes(.PredefinedObd2Requests)
+      }
+      if cmd.command == .modem_configuration {
+        cbuild.setTypes(.ModemConfiguration)
+        let cbuild2 = ModemConfigurationCommand.Builder()
+        let srv = ServerConnectSettings.Builder()
+        srv.setHost(cmd.server_host as String)
+        srv.setPort(UInt32(cmd.server_port))
+        cbuild2.setServerConnectSettings(srv.buildPartial())
+        cbuild.setModemConfigurationCommand(cbuild2.buildPartial())
+      }
+      if cmd.command == .rtc_configuration {
+        let cbuild2 = RtcconfigurationCommand.Builder()
+        cbuild2.setUnixTime(UInt32(cmd.unix_time))
+        cbuild.setRtcConfigurationCommand(cbuild2.buildPartial())
+        cbuild.setTypes(.RtcConfiguration)
+      }
+      if cmd.command == .sd_mount_status {cbuild.setTypes(.SdMountStatus)}
+
       let mbuild = VehicleMessage.Builder()
       mbuild.setTypes(.ControlCommand)
 
@@ -857,7 +900,15 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
       let cbuild = CanMessage.Builder()
       cbuild.setBus(Int32(cmd.bus))
       cbuild.setId(UInt32(cmd.id))
-      // TODO handle data field
+      let data = NSMutableData()
+      var str : NSString = cmd.data
+      while str.length>0 {
+        let substr = str.substringToIndex(1)
+        var num = UInt8(substr, radix: 16)
+        data.appendBytes(&num, length:1)
+        str = str.substringFromIndex(2)
+      }
+      cbuild.setData(data)
 
       let mbuild = VehicleMessage.Builder()
       mbuild.setTypes(.Can)
@@ -1094,7 +1145,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           if msg.diagnosticResponse.hasPid {rsp.pid = Int(msg.diagnosticResponse.pid)}
           rsp.success = msg.diagnosticResponse.success
           if msg.diagnosticResponse.hasPayload {rsp.payload = String(data:msg.diagnosticResponse.payload,encoding: NSUTF8StringEncoding)!}
-          if msg.diagnosticResponse.hasPayload {rsp.value = Int(msg.diagnosticResponse.value)}
+          if msg.diagnosticResponse.hasValue {rsp.value = Int(msg.diagnosticResponse.value)}
           
           // build the key that identifies this diagnostic response
           // bus-id-mode-[X or pid]
