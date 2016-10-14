@@ -1053,11 +1053,12 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         data_left.appendData(RxDataBuffer.subdataWithRange(NSMakeRange(packetlen+1, RxDataBuffer.length-packetlen-1)))
         RxDataBuffer = data_left
         
+        var decoded = false
         
         // measurement messages (normal and evented)
         ///////////////////////////////////////////
         if msg.types == .Simple {
-          
+          decoded = true
           let name = msg.simpleMessage.name
           
           // build measurement message
@@ -1069,9 +1070,9 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
           if msg.simpleMessage.value.hasNumericValue {rsp.value = msg.simpleMessage.value.numericValue}
           if msg.simpleMessage.hasEvent {
             rsp.isEvented = true
-            if msg.simpleMessage.event.hasStringValue {rsp.value = msg.simpleMessage.event.stringValue}
-            if msg.simpleMessage.event.hasBooleanValue {rsp.value = msg.simpleMessage.event.booleanValue}
-            if msg.simpleMessage.event.hasNumericValue {rsp.value = msg.simpleMessage.event.numericValue}
+            if msg.simpleMessage.event.hasStringValue {rsp.event = msg.simpleMessage.event.stringValue}
+            if msg.simpleMessage.event.hasBooleanValue {rsp.event = msg.simpleMessage.event.booleanValue}
+            if msg.simpleMessage.event.hasNumericValue {rsp.event = msg.simpleMessage.event.numericValue}
           }
           
           // capture this message into the dictionary of latest messages
@@ -1099,6 +1100,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         // Command Response messages
         /////////////////////////////
         if msg.types == .CommandResponse {
+          decoded = true
           
           let name = msg.commandResponse.types.toString()
           
@@ -1135,6 +1137,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         // Diagnostic messages
         /////////////////////////////
         if msg.types == .Diagnostic {
+          decoded = true
           
           // build diag response message
           let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
@@ -1196,6 +1199,7 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
         // CAN messages
         /////////////////////////////
         if msg.types == .Can {
+          decoded = true
           
           
           // build CAN response message
@@ -1230,7 +1234,10 @@ public class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDel
             }
           }
           
-        } else {
+        }
+        
+        
+        if (!decoded) {
           // should never get here!
           if let act = managerCallback {
             act.performAction(["status":VehicleManagerStatusMessage.BLE_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
