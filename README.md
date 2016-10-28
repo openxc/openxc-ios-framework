@@ -4,8 +4,8 @@ This framework is part of the OpenXC project. This iOS framework contains the to
 OpenXC iOS framework for use with the C5 BLE device. See also the [openxc-ios-app](https://github.com/openxc/openxc-ios-app-demo)
 
 ##Supported versions:
-* iOS - upto 9
-* XCode - upto 7
+* iOS - upto 9.3
+* XCode - upto 7.3.1
 * Swift - Swift2
 
 
