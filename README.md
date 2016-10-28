@@ -13,3 +13,6 @@ OpenXC iOS framework for use with the C5 BLE device. See also the [openxc-ios-ap
 
 Make sure you have XCode7 installed with iOS 9 to build it from XCode. This framework must be included in any iOS application that needs to connect to a VI
 
+## License
+Copyright (c) 2011-2013 Ford Motor Company
+Licensed under the BSD license.
