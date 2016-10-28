@@ -15,6 +15,8 @@ Make sure you have XCode7 installed with iOS 9 to build it from XCode. This fram
 
 Refer to this [document](https://github.com/openxc/openxc-ios-framework/blob/master/OpenXC_iOS_Document.docx) for more details on installation and usage.
 
+API usage details are available [here](https://github.com/openxc/openxc-ios-framework/blob/master/iOS%20Framework%20API%20Guide.pdf). 
+
 ## License
 Copyright (c) 2011-2013 Ford Motor Company
 Licensed under the BSD license.
