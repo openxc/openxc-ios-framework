@@ -43,5 +43,3 @@ top of things.
 
 * [General GitHub documentation](http://help.github.com/)
 * [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
-
-[gh-issues]: https://github.com/openxc/openxc-android/issues
