@@ -13,7 +13,7 @@ top of things.
 * If one does not already exist, [create a new ticket](https://github.com/openxc/openxc-ios-framework/issues/new)
   * Clearly describe the issue including steps to reproduce when it is a bug.
   * Make sure you include in the earliest version that you know has the issue.
-  * Follow the [GitHub Labels document] () when creating a new ticket
+  * Follow the [GitHub Labels document] (https://github.com/openxc/openxc-ios-framework/blob/master/Using%20GitHub%20Labels%20in%20OpenXC%20iOS.docx) when creating a new ticket
 
 ## Making Changes
 
