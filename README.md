@@ -18,5 +18,5 @@ Refer to this [document](https://github.com/openxc/openxc-ios-framework/blob/mas
 API usage details are available [here](https://github.com/openxc/openxc-ios-framework/blob/master/iOS%20Framework%20API%20Guide.pdf). 
 
 ## License
-Copyright (c) 2011-2013 Ford Motor Company
+Copyright (c) 2016 Ford Motor Company
 Licensed under the BSD license.
