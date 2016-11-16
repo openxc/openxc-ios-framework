@@ -14,6 +14,7 @@
 		3AAF15BC1D9242DF0094E9D9 /* Openxc.proto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAF15BB1D9242DF0094E9D9 /* Openxc.proto.swift */; };
 		E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */; };
 		E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */; };
+		E7C63D501DDC9C3500EE9790 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A57C2B71D9D6DC900A074EE /* ProtocolBuffers.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7C63D501DDC9C3500EE9790 /* ProtocolBuffers.framework in Frameworks */,
 				E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
