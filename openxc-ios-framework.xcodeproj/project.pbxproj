@@ -511,6 +511,7 @@
 				E7C63D421DDC56BB00EE9790 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
