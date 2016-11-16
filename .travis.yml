@@ -5,5 +5,3 @@ xcode_scheme: openxc-ios-framework #4
 xcode_sdk: iphonesimulator9.3 #5
 git:
     submodules_depth: 50
-before_install:
-  - git submodule update --init --recursive
