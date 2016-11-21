@@ -4,8 +4,5 @@ xcode_project: openxc-ios-framework.xcodeproj #3
 xcode_scheme: openxc-ios-framework #4
 xcode_sdk: iphonesimulator9.3 #5
 
-git:
-    submodule: false
-
-before_install:
-    - git submodule update --init --recursive
+before_install: #6
+    - git submodule update --init --recursive #7
