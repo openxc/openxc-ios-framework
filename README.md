@@ -21,7 +21,7 @@ Also see [Step by Step Guide] (https://github.com/openxc/openxc-ios-framework/bl
 
 
 ## Tests
-<to be added>
+* to be added
 
 
 ## Building from Command Line
