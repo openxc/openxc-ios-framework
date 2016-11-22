@@ -14,6 +14,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "3F85569819C71BCF003802F2"
+               BuildableName = "ProtocolBuffers.framework"
+               BlueprintName = "ProtocolBuffers"
+               ReferencedContainer = "container:protobuf/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "3A1017051D5941C8006C5E93"
                BuildableName = "openXCiOSFramework.framework"
                BlueprintName = "openxc-ios-framework"
@@ -64,10 +78,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3A1017051D5941C8006C5E93"
-            BuildableName = "openXCiOSFramework.framework"
-            BlueprintName = "openxc-ios-framework"
-            ReferencedContainer = "container:openxc-ios-framework.xcodeproj">
+            BlueprintIdentifier = "3F85569819C71BCF003802F2"
+            BuildableName = "ProtocolBuffers.framework"
+            BlueprintName = "ProtocolBuffers"
+            ReferencedContainer = "container:protobuf/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
