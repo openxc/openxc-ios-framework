@@ -19,6 +19,28 @@ API usage details are available [here](https://github.com/openxc/openxc-ios-fram
 
 Also see [Step by Step Guide] (https://github.com/openxc/openxc-ios-framework/blob/master/StepsToBuildOpenXCiOSFrameworkAndDemoApp.docx) to build framework. 
 
+
+## Tests
+* to be added
+
+
+## Building from Command Line
+The project requires XCode, XCode command line tools installed. 
+
+To install XCode command line tools, follow these steps for XCode7:
+
+* Launch XCode
+* Go to Preferences - Locations - Command Line Tools - Install
+
+
+## Releasing the App and Library
+
+* Update CHANGELOG.mkd
+* Merge into master push to GitHub
+* Travis CI will take care of the rest.
+
+
+
 ## Contributing
 
 Please see our [Contribution Documents] (https://github.com/openxc/openxc-ios-framework/blob/master/CONTRIBUTING.mkd)

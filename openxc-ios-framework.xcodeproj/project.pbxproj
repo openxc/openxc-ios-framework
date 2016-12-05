@@ -12,6 +12,10 @@
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
 		3AAF15BC1D9242DF0094E9D9 /* Openxc.proto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAF15BB1D9242DF0094E9D9 /* Openxc.proto.swift */; };
+		E708CCBF1DE439FE00D0AD14 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A57C2B71D9D6DC900A074EE /* ProtocolBuffers.framework */; };
+		E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */; };
+		E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */; };
+		E7C63D501DDC9C3500EE9790 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A57C2B71D9D6DC900A074EE /* ProtocolBuffers.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,13 @@
 			remoteGlobalIDString = 3F31A1A91BA199C000F477C1;
 			remoteInfo = "ProtocolBuffers(watchOS)";
 		};
+		E7C63D3F1DDC56BB00EE9790 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3A1016FD1D5941C7006C5E93 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3A1017051D5941C8006C5E93;
+			remoteInfo = "openxc-ios-framework";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +72,9 @@
 		3A1017331D5BA223006C5E93 /* TargetAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetAction.swift; sourceTree = "<group>"; };
 		3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ProtocolBuffers.xcodeproj; path = protobuf/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj; sourceTree = "<group>"; };
 		3AAF15BB1D9242DF0094E9D9 /* Openxc.proto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Openxc.proto.swift; sourceTree = "<group>"; };
+		E7C63D391DDC56BB00EE9790 /* openXCiOSFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = openXCiOSFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openXCiOSFrameworkTests.swift; sourceTree = "<group>"; };
+		E7C63D3D1DDC56BB00EE9790 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +82,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E708CCBF1DE439FE00D0AD14 /* ProtocolBuffers.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E7C63D361DDC56BB00EE9790 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7C63D501DDC9C3500EE9790 /* ProtocolBuffers.framework in Frameworks */,
+				E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +103,7 @@
 			children = (
 				3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */,
 				3A1017081D5941C8006C5E93 /* openxc-ios-framework */,
+				E7C63D3A1DDC56BB00EE9790 /* openXCiOSFrameworkTests */,
 				3A1017071D5941C8006C5E93 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */,
+				E7C63D391DDC56BB00EE9790 /* openXCiOSFrameworkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -114,6 +140,15 @@
 				3A57C2BF1D9D6DC900A074EE /* ProtocolBuffers.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E7C63D3A1DDC56BB00EE9790 /* openXCiOSFrameworkTests */ = {
+			isa = PBXGroup;
+			children = (
+				E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */,
+				E7C63D3D1DDC56BB00EE9790 /* Info.plist */,
+			);
+			path = openXCiOSFrameworkTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,16 +183,38 @@
 			productReference = 3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		E7C63D381DDC56BB00EE9790 /* openXCiOSFrameworkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E7C63D481DDC56BB00EE9790 /* Build configuration list for PBXNativeTarget "openXCiOSFrameworkTests" */;
+			buildPhases = (
+				E7C63D351DDC56BB00EE9790 /* Sources */,
+				E7C63D361DDC56BB00EE9790 /* Frameworks */,
+				E7C63D371DDC56BB00EE9790 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E7C63D401DDC56BB00EE9790 /* PBXTargetDependency */,
+			);
+			name = openXCiOSFrameworkTests;
+			productName = openXCiOSFrameworkTests;
+			productReference = E7C63D391DDC56BB00EE9790 /* openXCiOSFrameworkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		3A1016FD1D5941C7006C5E93 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Bug Labs";
 				TargetAttributes = {
 					3A1017051D5941C8006C5E93 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					E7C63D381DDC56BB00EE9790 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
@@ -181,6 +238,7 @@
 			projectRoot = "";
 			targets = (
 				3A1017051D5941C8006C5E93 /* openxc-ios-framework */,
+				E7C63D381DDC56BB00EE9790 /* openXCiOSFrameworkTests */,
 			);
 		};
 /* End PBXProject section */
@@ -231,6 +289,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E7C63D371DDC56BB00EE9790 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -245,7 +310,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E7C63D351DDC56BB00EE9790 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E7C63D401DDC56BB00EE9790 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3A1017051D5941C8006C5E93 /* openxc-ios-framework */;
+			targetProxy = E7C63D3F1DDC56BB00EE9790 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3A10170C1D5941C8006C5E93 /* Debug */ = {
@@ -384,6 +465,28 @@
 			};
 			name = Release;
 		};
+		E7C63D411DDC56BB00EE9790 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = openXCiOSFrameworkTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ford.openXCiOSFrameworkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Debug;
+		};
+		E7C63D421DDC56BB00EE9790 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = openXCiOSFrameworkTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ford.openXCiOSFrameworkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -401,6 +504,15 @@
 			buildConfigurations = (
 				3A10170F1D5941C8006C5E93 /* Debug */,
 				3A1017101D5941C8006C5E93 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E7C63D481DDC56BB00EE9790 /* Build configuration list for PBXNativeTarget "openXCiOSFrameworkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7C63D411DDC56BB00EE9790 /* Debug */,
+				E7C63D421DDC56BB00EE9790 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

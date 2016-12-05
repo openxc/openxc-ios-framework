@@ -4,7 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>openxc-ios-framework.xcscheme</key>
+		<key>openXCiOSFrameworkTests.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>openxc-ios-framework.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>3</integer>
@@ -13,6 +18,11 @@
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>3A1017051D5941C8006C5E93</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E7C63D381DDC56BB00EE9790</key>
 		<dict>
 			<key>primary</key>
 			<true/>
