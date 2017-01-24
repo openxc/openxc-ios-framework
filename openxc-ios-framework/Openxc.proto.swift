@@ -256,69 +256,70 @@ public struct OpenxcRoot {
     extensionRegistry = ExtensionRegistry()
     registerAllExtensions(extensionRegistry)
   }
-  public func registerAllExtensions(registry:ExtensionRegistry) {
+  public func registerAllExtensions(_ registry:ExtensionRegistry) {
   }
 }
 
 final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
+    
 
 
     //Enum type declaration start 
 
     public enum Types:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case Can = 1
-      case Simple = 2
-      case Diagnostic = 3
-      case ControlCommand = 4
-      case CommandResponse = 5
+      case can = 1
+      case simple = 2
+      case diagnostic = 3
+      case controlCommand = 4
+      case commandResponse = 5
       public func toString() -> String {
         switch self {
-        case .Can: return "CAN"
-        case .Simple: return "SIMPLE"
-        case .Diagnostic: return "DIAGNOSTIC"
-        case .ControlCommand: return "CONTROL_COMMAND"
-        case .CommandResponse: return "COMMAND_RESPONSE"
+        case .can: return "CAN"
+        case .simple: return "SIMPLE"
+        case .diagnostic: return "DIAGNOSTIC"
+        case .controlCommand: return "CONTROL_COMMAND"
+        case .commandResponse: return "COMMAND_RESPONSE"
         }
       }
-      public static func fromString(str:String) throws -> VehicleMessage.Types {
+      public static func fromString(_ str:String) throws -> VehicleMessage.Types {
         switch str {
-        case "CAN":  return .Can
-        case "SIMPLE":  return .Simple
-        case "DIAGNOSTIC":  return .Diagnostic
-        case "CONTROL_COMMAND":  return .ControlCommand
-        case "COMMAND_RESPONSE":  return .CommandResponse
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "CAN":  return .can
+        case "SIMPLE":  return .simple
+        case "DIAGNOSTIC":  return .diagnostic
+        case "CONTROL_COMMAND":  return .controlCommand
+        case "COMMAND_RESPONSE":  return .commandResponse
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .Can: return ".Can"
-              case .Simple: return ".Simple"
-              case .Diagnostic: return ".Diagnostic"
-              case .ControlCommand: return ".ControlCommand"
-              case .CommandResponse: return ".CommandResponse"
+              case .can: return ".Can"
+              case .simple: return ".Simple"
+              case .diagnostic: return ".Diagnostic"
+              case .controlCommand: return ".ControlCommand"
+              case .commandResponse: return ".CommandResponse"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var types:VehicleMessage.Types = VehicleMessage.Types.Can
-  public private(set) var hasTypes:Bool = false
-  public private(set) var hasCanMessage:Bool = false
-  public private(set) var canMessage:CanMessage!
-  public private(set) var hasSimpleMessage:Bool = false
-  public private(set) var simpleMessage:SimpleMessage!
-  public private(set) var hasDiagnosticResponse:Bool = false
-  public private(set) var diagnosticResponse:DiagnosticResponse!
-  public private(set) var hasControlCommand:Bool = false
-  public private(set) var controlCommand:ControlCommand!
-  public private(set) var hasCommandResponse:Bool = false
-  public private(set) var commandResponse:CommandResponse!
-  public private(set) var hasTimestamp:Bool = false
-  public private(set) var timestamp:UInt64 = UInt64(0)
+  public fileprivate(set) var types:VehicleMessage.Types = VehicleMessage.Types.can
+  public fileprivate(set) var hasTypes:Bool = false
+  public fileprivate(set) var hasCanMessage:Bool = false
+  public fileprivate(set) var canMessage:CanMessage!
+  public fileprivate(set) var hasSimpleMessage:Bool = false
+  public fileprivate(set) var simpleMessage:SimpleMessage!
+  public fileprivate(set) var hasDiagnosticResponse:Bool = false
+  public fileprivate(set) var diagnosticResponse:DiagnosticResponse!
+  public fileprivate(set) var hasControlCommand:Bool = false
+  public fileprivate(set) var controlCommand:ControlCommand!
+  public fileprivate(set) var hasCommandResponse:Bool = false
+  public fileprivate(set) var commandResponse:CommandResponse!
+  public fileprivate(set) var hasTimestamp:Bool = false
+  public fileprivate(set) var timestamp:UInt64 = UInt64(0)
 
   required public init() {
        super.init()
@@ -326,27 +327,27 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasTypes {
-      try output.writeEnum(1, value:types.rawValue)
+        try output.writeEnum(fieldNumber: 1, value:types.rawValue)
     }
     if hasCanMessage {
-      try output.writeMessage(2, value:canMessage)
+      try output.writeMessage(fieldNumber: 2, value:canMessage)
     }
     if hasSimpleMessage {
-      try output.writeMessage(3, value:simpleMessage)
+      try output.writeMessage(fieldNumber: 3, value:simpleMessage)
     }
     if hasDiagnosticResponse {
-      try output.writeMessage(4, value:diagnosticResponse)
+      try output.writeMessage(fieldNumber: 4, value:diagnosticResponse)
     }
     if hasControlCommand {
-      try output.writeMessage(5, value:controlCommand)
+      try output.writeMessage(fieldNumber: 5, value:controlCommand)
     }
     if hasCommandResponse {
-      try output.writeMessage(6, value:commandResponse)
+      try output.writeMessage(fieldNumber: 6, value:commandResponse)
     }
     if hasTimestamp {
-      try output.writeUInt64(7, value:timestamp)
+      try output.writeUInt64(fieldNumber: 7, value:timestamp)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -358,122 +359,138 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
 
     serialize_size = 0
     if (hasTypes) {
-      serialize_size += types.rawValue.computeEnumSize(1)
+      serialize_size += types.rawValue.computeEnumSize(fieldNumber: 1)
     }
     if hasCanMessage {
-        if let varSizecanMessage = canMessage?.computeMessageSize(2) {
+        if let varSizecanMessage = canMessage?.computeMessageSize(fieldNumber: 2) {
             serialize_size += varSizecanMessage
         }
     }
     if hasSimpleMessage {
-        if let varSizesimpleMessage = simpleMessage?.computeMessageSize(3) {
+        if let varSizesimpleMessage = simpleMessage?.computeMessageSize(fieldNumber: 3) {
             serialize_size += varSizesimpleMessage
         }
     }
     if hasDiagnosticResponse {
-        if let varSizediagnosticResponse = diagnosticResponse?.computeMessageSize(4) {
+        if let varSizediagnosticResponse = diagnosticResponse?.computeMessageSize(fieldNumber: 4) {
             serialize_size += varSizediagnosticResponse
         }
     }
     if hasControlCommand {
-        if let varSizecontrolCommand = controlCommand?.computeMessageSize(5) {
+        if let varSizecontrolCommand = controlCommand?.computeMessageSize(fieldNumber: 5) {
             serialize_size += varSizecontrolCommand
         }
     }
     if hasCommandResponse {
-        if let varSizecommandResponse = commandResponse?.computeMessageSize(6) {
+        if let varSizecommandResponse = commandResponse?.computeMessageSize(fieldNumber: 6) {
             serialize_size += varSizecommandResponse
         }
     }
     if hasTimestamp {
-      serialize_size += timestamp.computeUInt64Size(7)
+      serialize_size += timestamp.computeUInt64Size(fieldNumber: 7)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<VehicleMessage> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<VehicleMessage> {
     var mergedArray = Array<VehicleMessage>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> VehicleMessage? {
+    
+    /////////////
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> VehicleMessage? {
     return try VehicleMessage.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> VehicleMessage {
-    return try VehicleMessage.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
-  }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> VehicleMessage {
-    return try VehicleMessage.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream) throws -> VehicleMessage {
-    return try VehicleMessage.Builder().mergeFromInputStream(input).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> VehicleMessage {
-    return try VehicleMessage.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> VehicleMessage {
-    return try VehicleMessage.Builder().mergeFromCodedInputStream(input).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> VehicleMessage {
+    
+
+    /////////
+    
+    public static func parseFrom(data: Data) throws -> Self {
+        return try VehicleMessage.Builder().parseFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
+    }
+
+    public static func parseFrom(data: Data, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try VehicleMessage.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
+    }
+    
+    public static func parseFrom(inputStream:InputStream) throws -> Self {
+        return try VehicleMessage.Builder().mergeFromInputStream(input).build()
+
+    }
+    
+    public static func parseFrom(inputStream:InputStream, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try VehicleMessage.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
+
+    }
+    
+    public static func parseFrom(codedInputStream:CodedInputStream) throws -> Self {
+        return try VehicleMessage.Builder().mergeFromCodedInputStream(input).build()
+    }
+    
+    public static func parseFrom(codedInputStream:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> Self {
     return try VehicleMessage.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
+    }
+
+
+  
   public class func getBuilder() -> VehicleMessage.Builder {
     return VehicleMessage.classBuilder() as! VehicleMessage.Builder
   }
   public func getBuilder() -> VehicleMessage.Builder {
     return classBuilder() as! VehicleMessage.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return VehicleMessage.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return VehicleMessage.Builder()
   }
   public func toBuilder() throws -> VehicleMessage.Builder {
     return try VehicleMessage.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:VehicleMessage) throws -> VehicleMessage.Builder {
+  public class func builderWithPrototype(_ prototype:VehicleMessage) throws -> VehicleMessage.Builder {
     return try VehicleMessage.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasTypes {
-      jsonMap["type"] = types.toString()
+      jsonMap["type"] = types.toString() as AnyObject?
     }
     if hasCanMessage {
-      jsonMap["canMessage"] = try canMessage.encode()
+      jsonMap["canMessage"] = try canMessage.encode() as AnyObject?
     }
     if hasSimpleMessage {
-      jsonMap["simpleMessage"] = try simpleMessage.encode()
+      jsonMap["simpleMessage"] = try simpleMessage.encode() as AnyObject?
     }
     if hasDiagnosticResponse {
-      jsonMap["diagnosticResponse"] = try diagnosticResponse.encode()
+      jsonMap["diagnosticResponse"] = try diagnosticResponse.encode() as AnyObject?
     }
     if hasControlCommand {
-      jsonMap["controlCommand"] = try controlCommand.encode()
+      jsonMap["controlCommand"] = try controlCommand.encode() as AnyObject?
     }
     if hasCommandResponse {
-      jsonMap["commandResponse"] = try commandResponse.encode()
+      jsonMap["commandResponse"] = try commandResponse.encode() as AnyObject?
     }
     if hasTimestamp {
-      jsonMap["timestamp"] = "\(timestamp)"
+      jsonMap["timestamp"] = "\(timestamp)" as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> VehicleMessage {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> VehicleMessage {
     return try VehicleMessage.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> VehicleMessage {
-    return try VehicleMessage.Builder.fromJSONToBuilder(data).build()
+  class public func fromJSON(_ data:Data) throws -> VehicleMessage {
+    return try VehicleMessage.Builder.fromJSONToBuilder(data: data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if (hasTypes) {
       output += "\(indent) types: \(types.description)\n"
@@ -488,14 +505,14 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
     if hasSimpleMessage {
       output += "\(indent) simpleMessage {\n"
       if let outDescSimpleMessage = simpleMessage {
-        output += try outDescSimpleMessage.getDescription("\(indent)  ")
+        output += try outDescSimpleMessage.getDescription(indent: "\(indent)  ")
       }
       output += "\(indent) }\n"
     }
     if hasDiagnosticResponse {
       output += "\(indent) diagnosticResponse {\n"
       if let outDescDiagnosticResponse = diagnosticResponse {
-        output += try outDescDiagnosticResponse.getDescription("\(indent)  ")
+        output += try outDescDiagnosticResponse.getDescription(indent: "\(indent)  ")
       }
       output += "\(indent) }\n"
     }
@@ -516,7 +533,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
     if hasTimestamp {
       output += "\(indent) timestamp: \(timestamp) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -567,13 +584,13 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
   override public func className() -> String {
       return "VehicleMessage"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return VehicleMessage.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:VehicleMessage = VehicleMessage()
+    fileprivate var builderResult:VehicleMessage = VehicleMessage()
     public func getMessage() -> VehicleMessage {
         return builderResult
     }
@@ -595,13 +612,13 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
               builderResult.types = value
           }
       }
-      public func setTypes(value:VehicleMessage.Types) -> VehicleMessage.Builder {
+      public func setTypes(_ value:VehicleMessage.Types) -> VehicleMessage.Builder {
         self.types = value
         return self
       }
       public func clearTypes() -> VehicleMessage.Builder {
          builderResult.hasTypes = false
-         builderResult.types = .Can
+         builderResult.types = .can
          return self
       }
     public var hasCanMessage:Bool {
@@ -621,7 +638,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.canMessage = value
          }
     }
-    private var canMessageBuilder_:CanMessage.Builder! {
+    fileprivate var canMessageBuilder_:CanMessage.Builder! {
          didSet {
             builderResult.hasCanMessage = true
          }
@@ -636,11 +653,11 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return canMessageBuilder_
     }
-    public func setCanMessage(value:CanMessage!) -> VehicleMessage.Builder {
+    public func setCanMessage(_ value:CanMessage!) -> VehicleMessage.Builder {
       self.canMessage = value
       return self
     }
-    public func mergeCanMessage(value:CanMessage) throws -> VehicleMessage.Builder {
+    public func mergeCanMessage(_ value:CanMessage) throws -> VehicleMessage.Builder {
       if builderResult.hasCanMessage {
         builderResult.canMessage = try CanMessage.builderWithPrototype(builderResult.canMessage).mergeFrom(value).buildPartial()
       } else {
@@ -672,7 +689,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.simpleMessage = value
          }
     }
-    private var simpleMessageBuilder_:SimpleMessage.Builder! {
+    fileprivate var simpleMessageBuilder_:SimpleMessage.Builder! {
          didSet {
             builderResult.hasSimpleMessage = true
          }
@@ -687,11 +704,11 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return simpleMessageBuilder_
     }
-    public func setSimpleMessage(value:SimpleMessage!) -> VehicleMessage.Builder {
+    public func setSimpleMessage(_ value:SimpleMessage!) -> VehicleMessage.Builder {
       self.simpleMessage = value
       return self
     }
-    public func mergeSimpleMessage(value:SimpleMessage) throws -> VehicleMessage.Builder {
+    public func mergeSimpleMessage(_ value:SimpleMessage) throws -> VehicleMessage.Builder {
       if builderResult.hasSimpleMessage {
         builderResult.simpleMessage = try SimpleMessage.builderWithPrototype(builderResult.simpleMessage).mergeFrom(value).buildPartial()
       } else {
@@ -723,7 +740,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.diagnosticResponse = value
          }
     }
-    private var diagnosticResponseBuilder_:DiagnosticResponse.Builder! {
+    fileprivate var diagnosticResponseBuilder_:DiagnosticResponse.Builder! {
          didSet {
             builderResult.hasDiagnosticResponse = true
          }
@@ -738,11 +755,11 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return diagnosticResponseBuilder_
     }
-    public func setDiagnosticResponse(value:DiagnosticResponse!) -> VehicleMessage.Builder {
+    public func setDiagnosticResponse(_ value:DiagnosticResponse!) -> VehicleMessage.Builder {
       self.diagnosticResponse = value
       return self
     }
-    public func mergeDiagnosticResponse(value:DiagnosticResponse) throws -> VehicleMessage.Builder {
+    public func mergeDiagnosticResponse(_ value:DiagnosticResponse) throws -> VehicleMessage.Builder {
       if builderResult.hasDiagnosticResponse {
         builderResult.diagnosticResponse = try DiagnosticResponse.builderWithPrototype(builderResult.diagnosticResponse).mergeFrom(value).buildPartial()
       } else {
@@ -774,7 +791,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.controlCommand = value
          }
     }
-    private var controlCommandBuilder_:ControlCommand.Builder! {
+    fileprivate var controlCommandBuilder_:ControlCommand.Builder! {
          didSet {
             builderResult.hasControlCommand = true
          }
@@ -789,11 +806,11 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return controlCommandBuilder_
     }
-    public func setControlCommand(value:ControlCommand!) -> VehicleMessage.Builder {
+    public func setControlCommand(_ value:ControlCommand!) -> VehicleMessage.Builder {
       self.controlCommand = value
       return self
     }
-    public func mergeControlCommand(value:ControlCommand) throws -> VehicleMessage.Builder {
+    public func mergeControlCommand(_ value:ControlCommand) throws -> VehicleMessage.Builder {
       if builderResult.hasControlCommand {
         builderResult.controlCommand = try ControlCommand.builderWithPrototype(builderResult.controlCommand).mergeFrom(value).buildPartial()
       } else {
@@ -825,7 +842,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.commandResponse = value
          }
     }
-    private var commandResponseBuilder_:CommandResponse.Builder! {
+    fileprivate var commandResponseBuilder_:CommandResponse.Builder! {
          didSet {
             builderResult.hasCommandResponse = true
          }
@@ -840,11 +857,11 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return commandResponseBuilder_
     }
-    public func setCommandResponse(value:CommandResponse!) -> VehicleMessage.Builder {
+    public func setCommandResponse(_ value:CommandResponse!) -> VehicleMessage.Builder {
       self.commandResponse = value
       return self
     }
-    public func mergeCommandResponse(value:CommandResponse) throws -> VehicleMessage.Builder {
+    public func mergeCommandResponse(_ value:CommandResponse) throws -> VehicleMessage.Builder {
       if builderResult.hasCommandResponse {
         builderResult.commandResponse = try CommandResponse.builderWithPrototype(builderResult.commandResponse).mergeFrom(value).buildPartial()
       } else {
@@ -873,7 +890,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.timestamp = value
          }
     }
-    public func setTimestamp(value:UInt64) -> VehicleMessage.Builder {
+    public func setTimestamp(_ value:UInt64) -> VehicleMessage.Builder {
       self.timestamp = value
       return self
     }
@@ -902,7 +919,7 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
       let returnMe:VehicleMessage = builderResult
       return returnMe
     }
-    public func mergeFrom(other:VehicleMessage) throws -> VehicleMessage.Builder {
+    public func mergeFrom(_ other:VehicleMessage) throws -> VehicleMessage.Builder {
       if other == VehicleMessage() {
        return self
       }
@@ -910,31 +927,32 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
            types = other.types
       }
       if (other.hasCanMessage) {
-          try mergeCanMessage(other.canMessage)
+          try _ = mergeCanMessage(other.canMessage)
       }
       if (other.hasSimpleMessage) {
-          try mergeSimpleMessage(other.simpleMessage)
+          try _ = mergeSimpleMessage(other.simpleMessage)
       }
       if (other.hasDiagnosticResponse) {
-          try mergeDiagnosticResponse(other.diagnosticResponse)
+          try _ = mergeDiagnosticResponse(other.diagnosticResponse)
       }
       if (other.hasControlCommand) {
-          try mergeControlCommand(other.controlCommand)
+          try _ = mergeControlCommand(other.controlCommand)
       }
       if (other.hasCommandResponse) {
-          try mergeCommandResponse(other.commandResponse)
+          try _ = mergeCommandResponse(other.commandResponse)
       }
       if other.hasTimestamp {
            timestamp = other.timestamp
       }
-      try mergeUnknownFields(other.unknownFields)
-      return self
+//      try mergeUnknownFields(other.unknownFields)
+        try merge(unknownField: other.unknownFields)
+    return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> VehicleMessage.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> VehicleMessage.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> VehicleMessage.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> VehicleMessage.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -947,61 +965,65 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
           if let enumstypes = VehicleMessage.Types(rawValue:valueInttypes){
                types = enumstypes
           } else {
-               try unknownFieldsBuilder.mergeVarintField(1, value:Int64(valueInttypes))
+               try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueInttypes))
           }
 
         case 18:
           let subBuilder:CanMessage.Builder = CanMessage.Builder()
           if hasCanMessage {
-            try subBuilder.mergeFrom(canMessage)
+            try _ = subBuilder.mergeFrom(canMessage)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           canMessage = subBuilder.buildPartial()
 
         case 26:
           let subBuilder:SimpleMessage.Builder = SimpleMessage.Builder()
           if hasSimpleMessage {
-            try subBuilder.mergeFrom(simpleMessage)
+            try _ = subBuilder.mergeFrom(simpleMessage)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           simpleMessage = subBuilder.buildPartial()
 
         case 34:
           let subBuilder:DiagnosticResponse.Builder = DiagnosticResponse.Builder()
           if hasDiagnosticResponse {
-            try subBuilder.mergeFrom(diagnosticResponse)
+            try _ = subBuilder.mergeFrom(diagnosticResponse)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           diagnosticResponse = subBuilder.buildPartial()
 
         case 42:
           let subBuilder:ControlCommand.Builder = ControlCommand.Builder()
           if hasControlCommand {
-            try subBuilder.mergeFrom(controlCommand)
+            try _ = subBuilder.mergeFrom(controlCommand)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           controlCommand = subBuilder.buildPartial()
 
         case 50:
           let subBuilder:CommandResponse.Builder = CommandResponse.Builder()
           if hasCommandResponse {
-            try subBuilder.mergeFrom(commandResponse)
+            try _ = subBuilder.mergeFrom(commandResponse)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           commandResponse = subBuilder.buildPartial()
 
         case 56:
           timestamp = try input.readUInt64()
 
         default:
-          if (!(try parseUnknownField(input,unknownFields:unknownFieldsBuilder, extensionRegistry:extensionRegistry, tag:protobufTag))) {
+            if (!(try parse(codedInputStream: input, unknownFields: unknownFieldsBuilder, extensionRegistry: extensionRegistry, tag: protobufTag)) {
+                unknownFields = try unknownFieldsBuilder.build()
+                return self
+}
+/*          if (!(try parseUnknownField(input,unknownFields:unknownFieldsBuilder, extensionRegistry:extensionRegistry, tag:protobufTag))) {
              unknownFields = try unknownFieldsBuilder.build()
              return self
           }
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> VehicleMessage.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> VehicleMessage.Builder {
       let resultDecodedBuilder = VehicleMessage.Builder()
       if let jsonValueTypes = jsonMap["type"] as? String {
         resultDecodedBuilder.types = try VehicleMessage.Types.fromString(jsonValueTypes)
@@ -1031,10 +1053,10 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> VehicleMessage.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    override class public func fromJSONToBuilder(data:Data) throws -> VehicleMessage.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try VehicleMessage.Builder.decodeToBuilder(jsDataCast)
     }
@@ -1043,67 +1065,72 @@ final public class VehicleMessage : GeneratedMessage, GeneratedMessageProtocol {
 }
 
 final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
+    public static func parseFrom(codedInputStream: CodedInputStream, extensionRegistry: ExtensionRegistry) throws -> Self {
+        
+    }
+
+
 
 
     //Enum type declaration start 
 
     public enum FrameFormat:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case Standard = 1
-      case Extended = 2
+      case standard = 1
+      case extended = 2
       public func toString() -> String {
         switch self {
-        case .Standard: return "STANDARD"
-        case .Extended: return "EXTENDED"
+        case .standard: return "STANDARD"
+        case .extended: return "EXTENDED"
         }
       }
-      public static func fromString(str:String) throws -> CanMessage.FrameFormat {
+      public static func fromString(_ str:String) throws -> CanMessage.FrameFormat {
         switch str {
-        case "STANDARD":  return .Standard
-        case "EXTENDED":  return .Extended
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "STANDARD":  return .standard
+        case "EXTENDED":  return .extended
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .Standard: return ".Standard"
-              case .Extended: return ".Extended"
+              case .standard: return ".Standard"
+              case .extended: return ".Extended"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var hasBus:Bool = false
-  public private(set) var bus:Int32 = Int32(0)
+  public fileprivate(set) var hasBus:Bool = false
+  public fileprivate(set) var bus:Int32 = Int32(0)
 
-  public private(set) var hasId:Bool = false
-  public private(set) var id:UInt32 = UInt32(0)
+  public fileprivate(set) var hasId:Bool = false
+  public fileprivate(set) var id:UInt32 = UInt32(0)
 
-  public private(set) var hasData:Bool = false
-  public private(set) var data:NSData = NSData()
+  public fileprivate(set) var hasData:Bool = false
+  public fileprivate(set) var data:Data = Data()
 
-  public private(set) var frameFormat:CanMessage.FrameFormat = CanMessage.FrameFormat.Standard
-  public private(set) var hasFrameFormat:Bool = false
+  public fileprivate(set) var frameFormat:CanMessage.FrameFormat = CanMessage.FrameFormat.standard
+  public fileprivate(set) var hasFrameFormat:Bool = false
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasBus {
-      try output.writeInt32(1, value:bus)
+      try output.writeInt32(fieldNumber: 1, value:bus)
     }
     if hasId {
-      try output.writeUInt32(2, value:id)
+      try output.writeUInt32(fieldNumber:2, value:id)
     }
     if hasData {
-      try output.writeData(3, value:data)
+      try output.writeData(fieldNumber:3, value:data)
     }
     if hasFrameFormat {
-      try output.writeEnum(4, value:frameFormat.rawValue)
+      try output.writeEnum(fieldNumber:4, value:frameFormat.rawValue)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -1115,94 +1142,99 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
 
     serialize_size = 0
     if hasBus {
-      serialize_size += bus.computeInt32Size(1)
+      serialize_size += bus.computeInt32Size(fieldNumber:1)
     }
     if hasId {
-      serialize_size += id.computeUInt32Size(2)
+      serialize_size += id.computeUInt32Size(fieldNumber:2)
     }
     if hasData {
-      serialize_size += data.computeDataSize(3)
+      serialize_size += data.computeDataSize(fieldNumber:3)
     }
     if (hasFrameFormat) {
-      serialize_size += frameFormat.rawValue.computeEnumSize(4)
+      serialize_size += frameFormat.rawValue.computeEnumSize(fieldNumber:4)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<CanMessage> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<CanMessage> {
     var mergedArray = Array<CanMessage>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> CanMessage? {
-    return try CanMessage.Builder().mergeDelimitedFromInputStream(input)?.build()
-  }
-  public class func parseFromData(data:NSData) throws -> CanMessage {
-    return try CanMessage.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
-  }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> CanMessage {
-    return try CanMessage.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream) throws -> CanMessage {
-    return try CanMessage.Builder().mergeFromInputStream(input).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> CanMessage {
-    return try CanMessage.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> CanMessage {
-    return try CanMessage.Builder().mergeFromCodedInputStream(input).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> CanMessage {
-    return try CanMessage.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
+
+    public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> CanMessage? {
+        return try CanMessage.Builder().mergeDelimitedFromInputStream(input)?.build()
+    }
+    
+    public static func parseFrom(inputStream: InputStream, extensionRegistry: ExtensionRegistry) throws -> Self {
+        return try CanMessage.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
+    }
+    
+    public static func parseFrom(data: Data, extensionRegistry: ExtensionRegistry) throws -> Self {
+        return try CanMessage.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
+    }
+    
+    public static func parseFrom(codedInputStream: CodedInputStream) throws -> Self {
+        return try CanMessage.Builder().mergeFromCodedInputStream(input).build()
+    }
+    
+    public static func parseFrom(inputStream: InputStream) throws -> Self {
+        return try CanMessage.Builder().mergeFromInputStream(input).build()
+    }
+    
+    public static func parseFrom(data: Data) throws -> Self {
+        return try CanMessage.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
+    }
+
+    
   public class func getBuilder() -> CanMessage.Builder {
     return CanMessage.classBuilder() as! CanMessage.Builder
   }
   public func getBuilder() -> CanMessage.Builder {
     return classBuilder() as! CanMessage.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return CanMessage.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return CanMessage.Builder()
   }
   public func toBuilder() throws -> CanMessage.Builder {
     return try CanMessage.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:CanMessage) throws -> CanMessage.Builder {
+  public class func builderWithPrototype(_ prototype:CanMessage) throws -> CanMessage.Builder {
     return try CanMessage.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasBus {
-      jsonMap["bus"] = NSNumber(int:bus)
+      jsonMap["bus"] = NSNumber(value: bus as Int32)
     }
     if hasId {
-      jsonMap["id"] = NSNumber(unsignedInt:id)
+      jsonMap["id"] = NSNumber(value: id as UInt32)
     }
     if hasData {
-      jsonMap["data"] = data.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+      jsonMap["data"] = data.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0)) as AnyObject?
     }
     if hasFrameFormat {
-      jsonMap["frameFormat"] = frameFormat.toString()
+      jsonMap["frameFormat"] = frameFormat.toString() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> CanMessage {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> CanMessage {
     return try CanMessage.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> CanMessage {
-    return try CanMessage.Builder.fromJSONToBuilder(data).build()
+  class public func fromJSON(_ data:Data) throws -> CanMessage {
+    return try CanMessage.Builder.fromJSONToBuilder(data: data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasBus {
       output += "\(indent) bus: \(bus) \n"
@@ -1216,7 +1248,7 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
     if (hasFrameFormat) {
       output += "\(indent) frameFormat: \(frameFormat.description)\n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -1248,13 +1280,13 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
   override public func className() -> String {
       return "CanMessage"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return CanMessage.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:CanMessage = CanMessage()
+    fileprivate var builderResult:CanMessage = CanMessage()
     public func getMessage() -> CanMessage {
         return builderResult
     }
@@ -1276,7 +1308,7 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.bus = value
          }
     }
-    public func setBus(value:Int32) -> CanMessage.Builder {
+    public func setBus(_ value:Int32) -> CanMessage.Builder {
       self.bus = value
       return self
     }
@@ -1299,7 +1331,7 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.id = value
          }
     }
-    public func setId(value:UInt32) -> CanMessage.Builder {
+    public func setId(_ value:UInt32) -> CanMessage.Builder {
       self.id = value
       return self
     }
@@ -1313,7 +1345,7 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
               return builderResult.hasData
          }
     }
-    public var data:NSData {
+    public var data:Data {
          get {
               return builderResult.data
          }
@@ -1322,13 +1354,13 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.data = value
          }
     }
-    public func setData(value:NSData) -> CanMessage.Builder {
+    public func setData(_ value:Data) -> CanMessage.Builder {
       self.data = value
       return self
     }
     public func clearData() -> CanMessage.Builder{
          builderResult.hasData = false
-         builderResult.data = NSData()
+         builderResult.data = Data()
          return self
     }
       public var hasFrameFormat:Bool{
@@ -1345,13 +1377,13 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
               builderResult.frameFormat = value
           }
       }
-      public func setFrameFormat(value:CanMessage.FrameFormat) -> CanMessage.Builder {
+      public func setFrameFormat(_ value:CanMessage.FrameFormat) -> CanMessage.Builder {
         self.frameFormat = value
         return self
       }
       public func clearFrameFormat() -> CanMessage.Builder {
          builderResult.hasFrameFormat = false
-         builderResult.frameFormat = .Standard
+         builderResult.frameFormat = .standard
          return self
       }
     override public var internalGetResult:GeneratedMessage {
@@ -1374,7 +1406,7 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
       let returnMe:CanMessage = builderResult
       return returnMe
     }
-    public func mergeFrom(other:CanMessage) throws -> CanMessage.Builder {
+    public func mergeFrom(_ other:CanMessage) throws -> CanMessage.Builder {
       if other == CanMessage() {
        return self
       }
@@ -1393,11 +1425,11 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> CanMessage.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> CanMessage.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> CanMessage.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> CanMessage.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -1419,7 +1451,7 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
           if let enumsframeFormat = CanMessage.FrameFormat(rawValue:valueIntframeFormat){
                frameFormat = enumsframeFormat
           } else {
-               try unknownFieldsBuilder.mergeVarintField(4, value:Int64(valueIntframeFormat))
+               try unknownFieldsBuilder.mergeVarintField(fieldNumber: 4, value:Int64(valueIntframeFormat))
           }
 
         default:
@@ -1430,26 +1462,26 @@ final public class CanMessage : GeneratedMessage, GeneratedMessageProtocol {
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> CanMessage.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> CanMessage.Builder {
       let resultDecodedBuilder = CanMessage.Builder()
       if let jsonValueBus = jsonMap["bus"] as? NSNumber {
-        resultDecodedBuilder.bus = jsonValueBus.intValue
+        resultDecodedBuilder.bus = Int32(jsonValueBus.intValue)
       }
       if let jsonValueId = jsonMap["id"] as? NSNumber {
-        resultDecodedBuilder.id = jsonValueId.unsignedIntValue
+        resultDecodedBuilder.id = jsonValueId.uint32Value
       }
       if let jsonValueData = jsonMap["data"] as? String {
-        resultDecodedBuilder.data = NSData(base64EncodedString:jsonValueData, options: NSDataBase64DecodingOptions(rawValue:0))!
+        resultDecodedBuilder.data = Data(base64EncodedString:jsonValueData, options: NSData.Base64DecodingOptions(rawValue:0))!
       }
       if let jsonValueFrameFormat = jsonMap["frameFormat"] as? String {
         resultDecodedBuilder.frameFormat = try CanMessage.FrameFormat.fromString(jsonValueFrameFormat)
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> CanMessage.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    override class public func fromJSONToBuilder(data:Data) throws -> CanMessage.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try CanMessage.Builder.decodeToBuilder(jsDataCast)
     }
@@ -1463,115 +1495,115 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
     //Enum type declaration start 
 
     public enum Types:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case Version = 1
-      case DeviceId = 2
-      case Diagnostic = 3
-      case Passthrough = 4
-      case AcceptanceFilterBypass = 5
-      case PayloadFormat = 6
-      case PredefinedObd2Requests = 7
-      case ModemConfiguration = 8
-      case RtcConfiguration = 9
-      case SdMountStatus = 10
-      case Platform = 11
+      case version = 1
+      case deviceId = 2
+      case diagnostic = 3
+      case passthrough = 4
+      case acceptanceFilterBypass = 5
+      case payloadFormat = 6
+      case predefinedObd2Requests = 7
+      case modemConfiguration = 8
+      case rtcConfiguration = 9
+      case sdMountStatus = 10
+      case platform = 11
       public func toString() -> String {
         switch self {
-        case .Version: return "VERSION"
-        case .DeviceId: return "DEVICE_ID"
-        case .Diagnostic: return "DIAGNOSTIC"
-        case .Passthrough: return "PASSTHROUGH"
-        case .AcceptanceFilterBypass: return "ACCEPTANCE_FILTER_BYPASS"
-        case .PayloadFormat: return "PAYLOAD_FORMAT"
-        case .PredefinedObd2Requests: return "PREDEFINED_OBD2_REQUESTS"
-        case .ModemConfiguration: return "MODEM_CONFIGURATION"
-        case .RtcConfiguration: return "RTC_CONFIGURATION"
-        case .SdMountStatus: return "SD_MOUNT_STATUS"
-        case .Platform: return "PLATFORM"
+        case .version: return "VERSION"
+        case .deviceId: return "DEVICE_ID"
+        case .diagnostic: return "DIAGNOSTIC"
+        case .passthrough: return "PASSTHROUGH"
+        case .acceptanceFilterBypass: return "ACCEPTANCE_FILTER_BYPASS"
+        case .payloadFormat: return "PAYLOAD_FORMAT"
+        case .predefinedObd2Requests: return "PREDEFINED_OBD2_REQUESTS"
+        case .modemConfiguration: return "MODEM_CONFIGURATION"
+        case .rtcConfiguration: return "RTC_CONFIGURATION"
+        case .sdMountStatus: return "SD_MOUNT_STATUS"
+        case .platform: return "PLATFORM"
         }
       }
-      public static func fromString(str:String) throws -> ControlCommand.Types {
+      public static func fromString(_ str:String) throws -> ControlCommand.Types {
         switch str {
-        case "VERSION":  return .Version
-        case "DEVICE_ID":  return .DeviceId
-        case "DIAGNOSTIC":  return .Diagnostic
-        case "PASSTHROUGH":  return .Passthrough
-        case "ACCEPTANCE_FILTER_BYPASS":  return .AcceptanceFilterBypass
-        case "PAYLOAD_FORMAT":  return .PayloadFormat
-        case "PREDEFINED_OBD2_REQUESTS":  return .PredefinedObd2Requests
-        case "MODEM_CONFIGURATION":  return .ModemConfiguration
-        case "RTC_CONFIGURATION":  return .RtcConfiguration
-        case "SD_MOUNT_STATUS":  return .SdMountStatus
-        case "PLATFORM":  return .Platform
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "VERSION":  return .version
+        case "DEVICE_ID":  return .deviceId
+        case "DIAGNOSTIC":  return .diagnostic
+        case "PASSTHROUGH":  return .passthrough
+        case "ACCEPTANCE_FILTER_BYPASS":  return .acceptanceFilterBypass
+        case "PAYLOAD_FORMAT":  return .payloadFormat
+        case "PREDEFINED_OBD2_REQUESTS":  return .predefinedObd2Requests
+        case "MODEM_CONFIGURATION":  return .modemConfiguration
+        case "RTC_CONFIGURATION":  return .rtcConfiguration
+        case "SD_MOUNT_STATUS":  return .sdMountStatus
+        case "PLATFORM":  return .platform
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .Version: return ".Version"
-              case .DeviceId: return ".DeviceId"
-              case .Diagnostic: return ".Diagnostic"
-              case .Passthrough: return ".Passthrough"
-              case .AcceptanceFilterBypass: return ".AcceptanceFilterBypass"
-              case .PayloadFormat: return ".PayloadFormat"
-              case .PredefinedObd2Requests: return ".PredefinedObd2Requests"
-              case .ModemConfiguration: return ".ModemConfiguration"
-              case .RtcConfiguration: return ".RtcConfiguration"
-              case .SdMountStatus: return ".SdMountStatus"
-              case .Platform: return ".Platform"
+              case .version: return ".Version"
+              case .deviceId: return ".DeviceId"
+              case .diagnostic: return ".Diagnostic"
+              case .passthrough: return ".Passthrough"
+              case .acceptanceFilterBypass: return ".AcceptanceFilterBypass"
+              case .payloadFormat: return ".PayloadFormat"
+              case .predefinedObd2Requests: return ".PredefinedObd2Requests"
+              case .modemConfiguration: return ".ModemConfiguration"
+              case .rtcConfiguration: return ".RtcConfiguration"
+              case .sdMountStatus: return ".SdMountStatus"
+              case .platform: return ".Platform"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var types:ControlCommand.Types = ControlCommand.Types.Version
-  public private(set) var hasTypes:Bool = false
-  public private(set) var hasDiagnosticRequest:Bool = false
-  public private(set) var diagnosticRequest:DiagnosticControlCommand!
-  public private(set) var hasPassthroughModeRequest:Bool = false
-  public private(set) var passthroughModeRequest:PassthroughModeControlCommand!
-  public private(set) var hasAcceptanceFilterBypassCommand:Bool = false
-  public private(set) var acceptanceFilterBypassCommand:AcceptanceFilterBypassCommand!
-  public private(set) var hasPayloadFormatCommand:Bool = false
-  public private(set) var payloadFormatCommand:PayloadFormatCommand!
-  public private(set) var hasPredefinedObd2RequestsCommand:Bool = false
-  public private(set) var predefinedObd2RequestsCommand:PredefinedObd2RequestsCommand!
-  public private(set) var hasModemConfigurationCommand:Bool = false
-  public private(set) var modemConfigurationCommand:ModemConfigurationCommand!
-  public private(set) var hasRtcConfigurationCommand:Bool = false
-  public private(set) var rtcConfigurationCommand:RtcconfigurationCommand!
+  public fileprivate(set) var types:ControlCommand.Types = ControlCommand.Types.version
+  public fileprivate(set) var hasTypes:Bool = false
+  public fileprivate(set) var hasDiagnosticRequest:Bool = false
+  public fileprivate(set) var diagnosticRequest:DiagnosticControlCommand!
+  public fileprivate(set) var hasPassthroughModeRequest:Bool = false
+  public fileprivate(set) var passthroughModeRequest:PassthroughModeControlCommand!
+  public fileprivate(set) var hasAcceptanceFilterBypassCommand:Bool = false
+  public fileprivate(set) var acceptanceFilterBypassCommand:AcceptanceFilterBypassCommand!
+  public fileprivate(set) var hasPayloadFormatCommand:Bool = false
+  public fileprivate(set) var payloadFormatCommand:PayloadFormatCommand!
+  public fileprivate(set) var hasPredefinedObd2RequestsCommand:Bool = false
+  public fileprivate(set) var predefinedObd2RequestsCommand:PredefinedObd2RequestsCommand!
+  public fileprivate(set) var hasModemConfigurationCommand:Bool = false
+  public fileprivate(set) var modemConfigurationCommand:ModemConfigurationCommand!
+  public fileprivate(set) var hasRtcConfigurationCommand:Bool = false
+  public fileprivate(set) var rtcConfigurationCommand:RtcconfigurationCommand!
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasTypes {
-      try output.writeEnum(1, value:types.rawValue)
+      try output.writeEnum(fieldNumber: 1, value:types.rawValue)
     }
     if hasDiagnosticRequest {
-      try output.writeMessage(2, value:diagnosticRequest)
+      try output.writeMessage(fieldNumber: 2, value:diagnosticRequest)
     }
     if hasPassthroughModeRequest {
-      try output.writeMessage(3, value:passthroughModeRequest)
+      try output.writeMessage(fieldNumber: 3, value:passthroughModeRequest)
     }
     if hasAcceptanceFilterBypassCommand {
-      try output.writeMessage(4, value:acceptanceFilterBypassCommand)
+      try output.writeMessage(fieldNumber: 4, value:acceptanceFilterBypassCommand)
     }
     if hasPayloadFormatCommand {
-      try output.writeMessage(5, value:payloadFormatCommand)
+      try output.writeMessage(fieldNumber: 5, value:payloadFormatCommand)
     }
     if hasPredefinedObd2RequestsCommand {
-      try output.writeMessage(6, value:predefinedObd2RequestsCommand)
+      try output.writeMessage(fieldNumber: 6, value:predefinedObd2RequestsCommand)
     }
     if hasModemConfigurationCommand {
-      try output.writeMessage(7, value:modemConfigurationCommand)
+      try output.writeMessage(fieldNumber: 7, value:modemConfigurationCommand)
     }
     if hasRtcConfigurationCommand {
-      try output.writeMessage(8, value:rtcConfigurationCommand)
+      try output.writeMessage(fieldNumber: 8, value:rtcConfigurationCommand)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -1583,40 +1615,40 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
 
     serialize_size = 0
     if (hasTypes) {
-      serialize_size += types.rawValue.computeEnumSize(1)
+      serialize_size += types.rawValue.computeEnumSize(fieldNumber: 1)
     }
     if hasDiagnosticRequest {
-        if let varSizediagnosticRequest = diagnosticRequest?.computeMessageSize(2) {
+        if let varSizediagnosticRequest = diagnosticRequest?.computeMessageSize(fieldNumber: 2) {
             serialize_size += varSizediagnosticRequest
         }
     }
     if hasPassthroughModeRequest {
-        if let varSizepassthroughModeRequest = passthroughModeRequest?.computeMessageSize(3) {
+        if let varSizepassthroughModeRequest = passthroughModeRequest?.computeMessageSize(fieldNumber: 3) {
             serialize_size += varSizepassthroughModeRequest
         }
     }
     if hasAcceptanceFilterBypassCommand {
-        if let varSizeacceptanceFilterBypassCommand = acceptanceFilterBypassCommand?.computeMessageSize(4) {
+        if let varSizeacceptanceFilterBypassCommand = acceptanceFilterBypassCommand?.computeMessageSize(fieldNumber: 4) {
             serialize_size += varSizeacceptanceFilterBypassCommand
         }
     }
     if hasPayloadFormatCommand {
-        if let varSizepayloadFormatCommand = payloadFormatCommand?.computeMessageSize(5) {
+        if let varSizepayloadFormatCommand = payloadFormatCommand?.computeMessageSize(fieldNumber: 5) {
             serialize_size += varSizepayloadFormatCommand
         }
     }
     if hasPredefinedObd2RequestsCommand {
-        if let varSizepredefinedObd2RequestsCommand = predefinedObd2RequestsCommand?.computeMessageSize(6) {
+        if let varSizepredefinedObd2RequestsCommand = predefinedObd2RequestsCommand?.computeMessageSize(fieldNumber: 6) {
             serialize_size += varSizepredefinedObd2RequestsCommand
         }
     }
     if hasModemConfigurationCommand {
-        if let varSizemodemConfigurationCommand = modemConfigurationCommand?.computeMessageSize(7) {
+        if let varSizemodemConfigurationCommand = modemConfigurationCommand?.computeMessageSize(fieldNumber: 7) {
             serialize_size += varSizemodemConfigurationCommand
         }
     }
     if hasRtcConfigurationCommand {
-        if let varSizertcConfigurationCommand = rtcConfigurationCommand?.computeMessageSize(8) {
+        if let varSizertcConfigurationCommand = rtcConfigurationCommand?.computeMessageSize(fieldNumber: 8) {
             serialize_size += varSizertcConfigurationCommand
         }
     }
@@ -1624,91 +1656,101 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<ControlCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<ControlCommand> {
     var mergedArray = Array<ControlCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> ControlCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> ControlCommand? {
     return try ControlCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> ControlCommand {
-    return try ControlCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
-  }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> ControlCommand {
-    return try ControlCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream) throws -> ControlCommand {
-    return try ControlCommand.Builder().mergeFromInputStream(input).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> ControlCommand {
-    return try ControlCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> ControlCommand {
-    return try ControlCommand.Builder().mergeFromCodedInputStream(input).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ControlCommand {
-    return try ControlCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
+   
+    public static func parseFrom(data: Data) throws -> Self {
+            return try ControlCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
+    }
+    
+    public static func parseFrom(data: Data, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try ControlCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
+
+    }
+    public static func parseFrom(inputStream:InputStream) throws -> Self {
+        return try ControlCommand.Builder().mergeFromInputStream(input).build()
+
+    }
+    public static func parseFrom(inputStream:InputStream, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try ControlCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
+
+    }
+    public static func parseFrom(codedInputStream:CodedInputStream) throws -> Self {
+        return try ControlCommand.Builder().mergeFromCodedInputStream(input).build()
+
+    }
+    public static func parseFrom(codedInputStream:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try ControlCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
+
+    }
+
+    
+    
   public class func getBuilder() -> ControlCommand.Builder {
     return ControlCommand.classBuilder() as! ControlCommand.Builder
   }
   public func getBuilder() -> ControlCommand.Builder {
     return classBuilder() as! ControlCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return ControlCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return ControlCommand.Builder()
   }
   public func toBuilder() throws -> ControlCommand.Builder {
     return try ControlCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:ControlCommand) throws -> ControlCommand.Builder {
+  public class func builderWithPrototype(_ prototype:ControlCommand) throws -> ControlCommand.Builder {
     return try ControlCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasTypes {
-      jsonMap["type"] = types.toString()
+      jsonMap["type"] = types.toString() as AnyObject?
     }
     if hasDiagnosticRequest {
-      jsonMap["diagnosticRequest"] = try diagnosticRequest.encode()
+      jsonMap["diagnosticRequest"] = try diagnosticRequest.encode() as AnyObject?
     }
     if hasPassthroughModeRequest {
-      jsonMap["passthroughModeRequest"] = try passthroughModeRequest.encode()
+      jsonMap["passthroughModeRequest"] = try passthroughModeRequest.encode() as AnyObject?
     }
     if hasAcceptanceFilterBypassCommand {
-      jsonMap["acceptanceFilterBypassCommand"] = try acceptanceFilterBypassCommand.encode()
+      jsonMap["acceptanceFilterBypassCommand"] = try acceptanceFilterBypassCommand.encode() as AnyObject?
     }
     if hasPayloadFormatCommand {
-      jsonMap["payloadFormatCommand"] = try payloadFormatCommand.encode()
+      jsonMap["payloadFormatCommand"] = try payloadFormatCommand.encode() as AnyObject?
     }
     if hasPredefinedObd2RequestsCommand {
-      jsonMap["predefinedObd2RequestsCommand"] = try predefinedObd2RequestsCommand.encode()
+      jsonMap["predefinedObd2RequestsCommand"] = try predefinedObd2RequestsCommand.encode() as AnyObject?
     }
     if hasModemConfigurationCommand {
-      jsonMap["modemConfigurationCommand"] = try modemConfigurationCommand.encode()
+      jsonMap["modemConfigurationCommand"] = try modemConfigurationCommand.encode() as AnyObject?
     }
     if hasRtcConfigurationCommand {
-      jsonMap["rtcConfigurationCommand"] = try rtcConfigurationCommand.encode()
+      jsonMap["rtcConfigurationCommand"] = try rtcConfigurationCommand.encode() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> ControlCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> ControlCommand {
     return try ControlCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> ControlCommand {
-    return try ControlCommand.Builder.fromJSONToBuilder(data).build()
+  class public func fromJSON(_ data:Data) throws -> ControlCommand {
+    return try ControlCommand.Builder.fromJSONToBuilder(data: data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if (hasTypes) {
       output += "\(indent) types: \(types.description)\n"
@@ -1716,21 +1758,21 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
     if hasDiagnosticRequest {
       output += "\(indent) diagnosticRequest {\n"
       if let outDescDiagnosticRequest = diagnosticRequest {
-        output += try outDescDiagnosticRequest.getDescription("\(indent)  ")
+        output += try outDescDiagnosticRequest.getDescription(indent: "\(indent)  ")
       }
       output += "\(indent) }\n"
     }
     if hasPassthroughModeRequest {
       output += "\(indent) passthroughModeRequest {\n"
       if let outDescPassthroughModeRequest = passthroughModeRequest {
-        output += try outDescPassthroughModeRequest.getDescription("\(indent)  ")
+        output += try outDescPassthroughModeRequest.getDescription(indent: "\(indent)  ")
       }
       output += "\(indent) }\n"
     }
     if hasAcceptanceFilterBypassCommand {
       output += "\(indent) acceptanceFilterBypassCommand {\n"
       if let outDescAcceptanceFilterBypassCommand = acceptanceFilterBypassCommand {
-        output += try outDescAcceptanceFilterBypassCommand.getDescription("\(indent)  ")
+        output += try outDescAcceptanceFilterBypassCommand.getDescription(indent: "\(indent)  ")
       }
       output += "\(indent) }\n"
     }
@@ -1762,7 +1804,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       output += "\(indent) }\n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -1820,13 +1862,13 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
   override public func className() -> String {
       return "ControlCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return ControlCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:ControlCommand = ControlCommand()
+    fileprivate var builderResult:ControlCommand = ControlCommand()
     public func getMessage() -> ControlCommand {
         return builderResult
     }
@@ -1848,13 +1890,13 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
               builderResult.types = value
           }
       }
-      public func setTypes(value:ControlCommand.Types) -> ControlCommand.Builder {
+      public func setTypes(_ value:ControlCommand.Types) -> ControlCommand.Builder {
         self.types = value
         return self
       }
       public func clearTypes() -> ControlCommand.Builder {
          builderResult.hasTypes = false
-         builderResult.types = .Version
+         builderResult.types = .version
          return self
       }
     public var hasDiagnosticRequest:Bool {
@@ -1874,7 +1916,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.diagnosticRequest = value
          }
     }
-    private var diagnosticRequestBuilder_:DiagnosticControlCommand.Builder! {
+    fileprivate var diagnosticRequestBuilder_:DiagnosticControlCommand.Builder! {
          didSet {
             builderResult.hasDiagnosticRequest = true
          }
@@ -1889,11 +1931,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return diagnosticRequestBuilder_
     }
-    public func setDiagnosticRequest(value:DiagnosticControlCommand!) -> ControlCommand.Builder {
+    public func setDiagnosticRequest(_ value:DiagnosticControlCommand!) -> ControlCommand.Builder {
       self.diagnosticRequest = value
       return self
     }
-    public func mergeDiagnosticRequest(value:DiagnosticControlCommand) throws -> ControlCommand.Builder {
+    public func mergeDiagnosticRequest(_ value:DiagnosticControlCommand) throws -> ControlCommand.Builder {
       if builderResult.hasDiagnosticRequest {
         builderResult.diagnosticRequest = try DiagnosticControlCommand.builderWithPrototype(builderResult.diagnosticRequest).mergeFrom(value).buildPartial()
       } else {
@@ -1925,7 +1967,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.passthroughModeRequest = value
          }
     }
-    private var passthroughModeRequestBuilder_:PassthroughModeControlCommand.Builder! {
+    fileprivate var passthroughModeRequestBuilder_:PassthroughModeControlCommand.Builder! {
          didSet {
             builderResult.hasPassthroughModeRequest = true
          }
@@ -1940,11 +1982,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return passthroughModeRequestBuilder_
     }
-    public func setPassthroughModeRequest(value:PassthroughModeControlCommand!) -> ControlCommand.Builder {
+    public func setPassthroughModeRequest(_ value:PassthroughModeControlCommand!) -> ControlCommand.Builder {
       self.passthroughModeRequest = value
       return self
     }
-    public func mergePassthroughModeRequest(value:PassthroughModeControlCommand) throws -> ControlCommand.Builder {
+    public func mergePassthroughModeRequest(_ value:PassthroughModeControlCommand) throws -> ControlCommand.Builder {
       if builderResult.hasPassthroughModeRequest {
         builderResult.passthroughModeRequest = try PassthroughModeControlCommand.builderWithPrototype(builderResult.passthroughModeRequest).mergeFrom(value).buildPartial()
       } else {
@@ -1976,7 +2018,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.acceptanceFilterBypassCommand = value
          }
     }
-    private var acceptanceFilterBypassCommandBuilder_:AcceptanceFilterBypassCommand.Builder! {
+    fileprivate var acceptanceFilterBypassCommandBuilder_:AcceptanceFilterBypassCommand.Builder! {
          didSet {
             builderResult.hasAcceptanceFilterBypassCommand = true
          }
@@ -1991,11 +2033,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return acceptanceFilterBypassCommandBuilder_
     }
-    public func setAcceptanceFilterBypassCommand(value:AcceptanceFilterBypassCommand!) -> ControlCommand.Builder {
+    public func setAcceptanceFilterBypassCommand(_ value:AcceptanceFilterBypassCommand!) -> ControlCommand.Builder {
       self.acceptanceFilterBypassCommand = value
       return self
     }
-    public func mergeAcceptanceFilterBypassCommand(value:AcceptanceFilterBypassCommand) throws -> ControlCommand.Builder {
+    public func mergeAcceptanceFilterBypassCommand(_ value:AcceptanceFilterBypassCommand) throws -> ControlCommand.Builder {
       if builderResult.hasAcceptanceFilterBypassCommand {
         builderResult.acceptanceFilterBypassCommand = try AcceptanceFilterBypassCommand.builderWithPrototype(builderResult.acceptanceFilterBypassCommand).mergeFrom(value).buildPartial()
       } else {
@@ -2027,7 +2069,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.payloadFormatCommand = value
          }
     }
-    private var payloadFormatCommandBuilder_:PayloadFormatCommand.Builder! {
+    fileprivate var payloadFormatCommandBuilder_:PayloadFormatCommand.Builder! {
          didSet {
             builderResult.hasPayloadFormatCommand = true
          }
@@ -2042,11 +2084,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return payloadFormatCommandBuilder_
     }
-    public func setPayloadFormatCommand(value:PayloadFormatCommand!) -> ControlCommand.Builder {
+    public func setPayloadFormatCommand(_ value:PayloadFormatCommand!) -> ControlCommand.Builder {
       self.payloadFormatCommand = value
       return self
     }
-    public func mergePayloadFormatCommand(value:PayloadFormatCommand) throws -> ControlCommand.Builder {
+    public func mergePayloadFormatCommand(_ value:PayloadFormatCommand) throws -> ControlCommand.Builder {
       if builderResult.hasPayloadFormatCommand {
         builderResult.payloadFormatCommand = try PayloadFormatCommand.builderWithPrototype(builderResult.payloadFormatCommand).mergeFrom(value).buildPartial()
       } else {
@@ -2078,7 +2120,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.predefinedObd2RequestsCommand = value
          }
     }
-    private var predefinedObd2RequestsCommandBuilder_:PredefinedObd2RequestsCommand.Builder! {
+    fileprivate var predefinedObd2RequestsCommandBuilder_:PredefinedObd2RequestsCommand.Builder! {
          didSet {
             builderResult.hasPredefinedObd2RequestsCommand = true
          }
@@ -2093,11 +2135,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return predefinedObd2RequestsCommandBuilder_
     }
-    public func setPredefinedObd2RequestsCommand(value:PredefinedObd2RequestsCommand!) -> ControlCommand.Builder {
+    public func setPredefinedObd2RequestsCommand(_ value:PredefinedObd2RequestsCommand!) -> ControlCommand.Builder {
       self.predefinedObd2RequestsCommand = value
       return self
     }
-    public func mergePredefinedObd2RequestsCommand(value:PredefinedObd2RequestsCommand) throws -> ControlCommand.Builder {
+    public func mergePredefinedObd2RequestsCommand(_ value:PredefinedObd2RequestsCommand) throws -> ControlCommand.Builder {
       if builderResult.hasPredefinedObd2RequestsCommand {
         builderResult.predefinedObd2RequestsCommand = try PredefinedObd2RequestsCommand.builderWithPrototype(builderResult.predefinedObd2RequestsCommand).mergeFrom(value).buildPartial()
       } else {
@@ -2129,7 +2171,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.modemConfigurationCommand = value
          }
     }
-    private var modemConfigurationCommandBuilder_:ModemConfigurationCommand.Builder! {
+    fileprivate var modemConfigurationCommandBuilder_:ModemConfigurationCommand.Builder! {
          didSet {
             builderResult.hasModemConfigurationCommand = true
          }
@@ -2144,11 +2186,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return modemConfigurationCommandBuilder_
     }
-    public func setModemConfigurationCommand(value:ModemConfigurationCommand!) -> ControlCommand.Builder {
+    public func setModemConfigurationCommand(_ value:ModemConfigurationCommand!) -> ControlCommand.Builder {
       self.modemConfigurationCommand = value
       return self
     }
-    public func mergeModemConfigurationCommand(value:ModemConfigurationCommand) throws -> ControlCommand.Builder {
+    public func mergeModemConfigurationCommand(_ value:ModemConfigurationCommand) throws -> ControlCommand.Builder {
       if builderResult.hasModemConfigurationCommand {
         builderResult.modemConfigurationCommand = try ModemConfigurationCommand.builderWithPrototype(builderResult.modemConfigurationCommand).mergeFrom(value).buildPartial()
       } else {
@@ -2180,7 +2222,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.rtcConfigurationCommand = value
          }
     }
-    private var rtcConfigurationCommandBuilder_:RtcconfigurationCommand.Builder! {
+    fileprivate var rtcConfigurationCommandBuilder_:RtcconfigurationCommand.Builder! {
          didSet {
             builderResult.hasRtcConfigurationCommand = true
          }
@@ -2195,11 +2237,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return rtcConfigurationCommandBuilder_
     }
-    public func setRtcConfigurationCommand(value:RtcconfigurationCommand!) -> ControlCommand.Builder {
+    public func setRtcConfigurationCommand(_ value:RtcconfigurationCommand!) -> ControlCommand.Builder {
       self.rtcConfigurationCommand = value
       return self
     }
-    public func mergeRtcConfigurationCommand(value:RtcconfigurationCommand) throws -> ControlCommand.Builder {
+    public func mergeRtcConfigurationCommand(_ value:RtcconfigurationCommand) throws -> ControlCommand.Builder {
       if builderResult.hasRtcConfigurationCommand {
         builderResult.rtcConfigurationCommand = try RtcconfigurationCommand.builderWithPrototype(builderResult.rtcConfigurationCommand).mergeFrom(value).buildPartial()
       } else {
@@ -2234,7 +2276,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       let returnMe:ControlCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:ControlCommand) throws -> ControlCommand.Builder {
+    public func mergeFrom(_ other:ControlCommand) throws -> ControlCommand.Builder {
       if other == ControlCommand() {
        return self
       }
@@ -2265,11 +2307,11 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> ControlCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> ControlCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ControlCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ControlCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -2282,7 +2324,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if let enumstypes = ControlCommand.Types(rawValue:valueInttypes){
                types = enumstypes
           } else {
-               try unknownFieldsBuilder.mergeVarintField(1, value:Int64(valueInttypes))
+               try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueInttypes))
           }
 
         case 18:
@@ -2290,7 +2332,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if hasDiagnosticRequest {
             try subBuilder.mergeFrom(diagnosticRequest)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           diagnosticRequest = subBuilder.buildPartial()
 
         case 26:
@@ -2298,7 +2340,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if hasPassthroughModeRequest {
             try subBuilder.mergeFrom(passthroughModeRequest)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           passthroughModeRequest = subBuilder.buildPartial()
 
         case 34:
@@ -2306,7 +2348,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if hasAcceptanceFilterBypassCommand {
             try subBuilder.mergeFrom(acceptanceFilterBypassCommand)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           acceptanceFilterBypassCommand = subBuilder.buildPartial()
 
         case 42:
@@ -2314,7 +2356,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if hasPayloadFormatCommand {
             try subBuilder.mergeFrom(payloadFormatCommand)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           payloadFormatCommand = subBuilder.buildPartial()
 
         case 50:
@@ -2322,7 +2364,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if hasPredefinedObd2RequestsCommand {
             try subBuilder.mergeFrom(predefinedObd2RequestsCommand)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           predefinedObd2RequestsCommand = subBuilder.buildPartial()
 
         case 58:
@@ -2330,7 +2372,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if hasModemConfigurationCommand {
             try subBuilder.mergeFrom(modemConfigurationCommand)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           modemConfigurationCommand = subBuilder.buildPartial()
 
         case 66:
@@ -2338,7 +2380,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
           if hasRtcConfigurationCommand {
             try subBuilder.mergeFrom(rtcConfigurationCommand)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           rtcConfigurationCommand = subBuilder.buildPartial()
 
         default:
@@ -2349,7 +2391,7 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> ControlCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> ControlCommand.Builder {
       let resultDecodedBuilder = ControlCommand.Builder()
       if let jsonValueTypes = jsonMap["type"] as? String {
         resultDecodedBuilder.types = try ControlCommand.Types.fromString(jsonValueTypes)
@@ -2384,10 +2426,10 @@ final public class ControlCommand : GeneratedMessage, GeneratedMessageProtocol {
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> ControlCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    override class public func fromJSONToBuilder(data:Data) throws -> ControlCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try ControlCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -2401,49 +2443,49 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
     //Enum type declaration start 
 
     public enum Action:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case Add = 1
-      case Cancel = 2
+      case add = 1
+      case cancel = 2
       public func toString() -> String {
         switch self {
-        case .Add: return "ADD"
-        case .Cancel: return "CANCEL"
+        case .add: return "ADD"
+        case .cancel: return "CANCEL"
         }
       }
-      public static func fromString(str:String) throws -> DiagnosticControlCommand.Action {
+      public static func fromString(_ str:String) throws -> DiagnosticControlCommand.Action {
         switch str {
-        case "ADD":  return .Add
-        case "CANCEL":  return .Cancel
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "ADD":  return .add
+        case "CANCEL":  return .cancel
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .Add: return ".Add"
-              case .Cancel: return ".Cancel"
+              case .add: return ".Add"
+              case .cancel: return ".Cancel"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var hasRequest:Bool = false
-  public private(set) var request:DiagnosticRequest!
-  public private(set) var action:DiagnosticControlCommand.Action = DiagnosticControlCommand.Action.Add
-  public private(set) var hasAction:Bool = false
+  public fileprivate(set) var hasRequest:Bool = false
+  public fileprivate(set) var request:DiagnosticRequest!
+  public fileprivate(set) var action:DiagnosticControlCommand.Action = DiagnosticControlCommand.Action.add
+  public fileprivate(set) var hasAction:Bool = false
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasRequest {
-      try output.writeMessage(1, value:request)
+        try output.writeMessage(fieldNumber:1, value:request)
     }
     if hasAction {
-      try output.writeEnum(2, value:action.rawValue)
+        try output.writeEnum(fieldNumber: 2, value:action.rawValue)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -2455,82 +2497,90 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
 
     serialize_size = 0
     if hasRequest {
-        if let varSizerequest = request?.computeMessageSize(1) {
+        if let varSizerequest = request?.computeMessageSize(fieldNumber: 1) {
             serialize_size += varSizerequest
         }
     }
     if (hasAction) {
-      serialize_size += action.rawValue.computeEnumSize(2)
+        serialize_size += action.rawValue.computeEnumSize(fieldNumber: 2)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<DiagnosticControlCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<DiagnosticControlCommand> {
     var mergedArray = Array<DiagnosticControlCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> DiagnosticControlCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> DiagnosticControlCommand? {
     return try DiagnosticControlCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> DiagnosticControlCommand {
-    return try DiagnosticControlCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
-  }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> DiagnosticControlCommand {
-    return try DiagnosticControlCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream) throws -> DiagnosticControlCommand {
-    return try DiagnosticControlCommand.Builder().mergeFromInputStream(input).build()
-  }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticControlCommand {
-    return try DiagnosticControlCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> DiagnosticControlCommand {
-    return try DiagnosticControlCommand.Builder().mergeFromCodedInputStream(input).build()
-  }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticControlCommand {
-    return try DiagnosticControlCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
-  }
+   
+    public static func parseFrom(data: Data) throws -> Self {
+        return try DiagnosticControlCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
+    }
+    
+    public static func parseFrom(data: Data, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try DiagnosticControlCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
+    }
+    
+    public static func parseFrom(inputStream:InputStream) throws -> Self {
+        return try DiagnosticControlCommand.Builder().mergeFromInputStream(input).build()
+    }
+    
+    public static func parseFrom(inputStream:InputStream, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try DiagnosticControlCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
+    }
+    
+    public static func parseFrom(codedInputStream:CodedInputStream) throws -> Self {
+        return try DiagnosticControlCommand.Builder().mergeFromCodedInputStream(input).build()
+    }
+    public static func parseFrom(codedInputStream:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> Self {
+        return try DiagnosticControlCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
+    }
+
+    
+    
   public class func getBuilder() -> DiagnosticControlCommand.Builder {
     return DiagnosticControlCommand.classBuilder() as! DiagnosticControlCommand.Builder
   }
   public func getBuilder() -> DiagnosticControlCommand.Builder {
     return classBuilder() as! DiagnosticControlCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return DiagnosticControlCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return DiagnosticControlCommand.Builder()
   }
   public func toBuilder() throws -> DiagnosticControlCommand.Builder {
     return try DiagnosticControlCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:DiagnosticControlCommand) throws -> DiagnosticControlCommand.Builder {
+  public class func builderWithPrototype(_ prototype:DiagnosticControlCommand) throws -> DiagnosticControlCommand.Builder {
     return try DiagnosticControlCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasRequest {
-      jsonMap["request"] = try request.encode()
+      jsonMap["request"] = try request.encode() as AnyObject?
     }
     if hasAction {
-      jsonMap["action"] = action.toString()
+      jsonMap["action"] = action.toString() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticControlCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticControlCommand {
     return try DiagnosticControlCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> DiagnosticControlCommand {
-    return try DiagnosticControlCommand.Builder.fromJSONToBuilder(data).build()
+  override class public func fromJSON(data:Data) throws -> DiagnosticControlCommand {
+    return try DiagnosticControlCommand.Builder.fromJSONToBuilder(data: data).build()
   }
   override public func getDescription(indent:String) throws -> String {
     var output = ""
@@ -2544,7 +2594,7 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
     if (hasAction) {
       output += "\(indent) action: \(action.description)\n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -2572,13 +2622,13 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
   override public func className() -> String {
       return "DiagnosticControlCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return DiagnosticControlCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:DiagnosticControlCommand = DiagnosticControlCommand()
+    fileprivate var builderResult:DiagnosticControlCommand = DiagnosticControlCommand()
     public func getMessage() -> DiagnosticControlCommand {
         return builderResult
     }
@@ -2603,7 +2653,7 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
              builderResult.request = value
          }
     }
-    private var requestBuilder_:DiagnosticRequest.Builder! {
+    fileprivate var requestBuilder_:DiagnosticRequest.Builder! {
          didSet {
             builderResult.hasRequest = true
          }
@@ -2618,11 +2668,11 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
       }
       return requestBuilder_
     }
-    public func setRequest(value:DiagnosticRequest!) -> DiagnosticControlCommand.Builder {
+    public func setRequest(_ value:DiagnosticRequest!) -> DiagnosticControlCommand.Builder {
       self.request = value
       return self
     }
-    public func mergeRequest(value:DiagnosticRequest) throws -> DiagnosticControlCommand.Builder {
+    public func mergeRequest(_ value:DiagnosticRequest) throws -> DiagnosticControlCommand.Builder {
       if builderResult.hasRequest {
         builderResult.request = try DiagnosticRequest.builderWithPrototype(builderResult.request).mergeFrom(value).buildPartial()
       } else {
@@ -2651,13 +2701,13 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
               builderResult.action = value
           }
       }
-      public func setAction(value:DiagnosticControlCommand.Action) -> DiagnosticControlCommand.Builder {
+      public func setAction(_ value:DiagnosticControlCommand.Action) -> DiagnosticControlCommand.Builder {
         self.action = value
         return self
       }
       public func clearAction() -> DiagnosticControlCommand.Builder {
          builderResult.hasAction = false
-         builderResult.action = .Add
+         builderResult.action = .add
          return self
       }
     override public var internalGetResult:GeneratedMessage {
@@ -2680,7 +2730,7 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
       let returnMe:DiagnosticControlCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:DiagnosticControlCommand) throws -> DiagnosticControlCommand.Builder {
+    public func mergeFrom(_ other:DiagnosticControlCommand) throws -> DiagnosticControlCommand.Builder {
       if other == DiagnosticControlCommand() {
        return self
       }
@@ -2693,11 +2743,11 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> DiagnosticControlCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> DiagnosticControlCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticControlCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticControlCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -2710,7 +2760,7 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
           if hasRequest {
             try subBuilder.mergeFrom(request)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           request = subBuilder.buildPartial()
 
         case 16:
@@ -2729,7 +2779,7 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticControlCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticControlCommand.Builder {
       let resultDecodedBuilder = DiagnosticControlCommand.Builder()
       if let jsonValueRequest = jsonMap["request"] as? Dictionary<String,AnyObject> {
         resultDecodedBuilder.request = try DiagnosticRequest.Builder.decodeToBuilder(jsonValueRequest).build()
@@ -2740,10 +2790,10 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> DiagnosticControlCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    override class public func fromJSONToBuilder(data:Data) throws -> DiagnosticControlCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try DiagnosticControlCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -2752,11 +2802,11 @@ final public class DiagnosticControlCommand : GeneratedMessage, GeneratedMessage
 }
 
 final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasBus:Bool = false
-  public private(set) var bus:Int32 = Int32(0)
+  public fileprivate(set) var hasBus:Bool = false
+  public fileprivate(set) var bus:Int32 = Int32(0)
 
-  public private(set) var hasEnabled:Bool = false
-  public private(set) var enabled:Bool = false
+  public fileprivate(set) var hasEnabled:Bool = false
+  public fileprivate(set) var enabled:Bool = false
 
   required public init() {
        super.init()
@@ -2764,12 +2814,12 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasBus {
-      try output.writeInt32(1, value:bus)
+      try output.writeInt32(fieldNumber: 1, value:bus)
     }
     if hasEnabled {
-      try output.writeBool(2, value:enabled)
+      try output.writeBool(fieldNumber: 2, value:enabled)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -2781,41 +2831,41 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
 
     serialize_size = 0
     if hasBus {
-      serialize_size += bus.computeInt32Size(1)
+      serialize_size += bus.computeInt32Size(fieldNumber: 1)
     }
     if hasEnabled {
-      serialize_size += enabled.computeBoolSize(2)
+      serialize_size += enabled.computeBoolSize(fieldNumber: 2)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<PassthroughModeControlCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<PassthroughModeControlCommand> {
     var mergedArray = Array<PassthroughModeControlCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> PassthroughModeControlCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> PassthroughModeControlCommand? {
     return try PassthroughModeControlCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> PassthroughModeControlCommand {
+  public class func parseFromData(_ data:Data) throws -> PassthroughModeControlCommand {
     return try PassthroughModeControlCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand {
     return try PassthroughModeControlCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> PassthroughModeControlCommand {
+  public class func parseFromInputStream(_ input:InputStream) throws -> PassthroughModeControlCommand {
     return try PassthroughModeControlCommand.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand {
     return try PassthroughModeControlCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> PassthroughModeControlCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> PassthroughModeControlCommand {
     return try PassthroughModeControlCommand.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand {
     return try PassthroughModeControlCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> PassthroughModeControlCommand.Builder {
@@ -2824,37 +2874,37 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
   public func getBuilder() -> PassthroughModeControlCommand.Builder {
     return classBuilder() as! PassthroughModeControlCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return PassthroughModeControlCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return PassthroughModeControlCommand.Builder()
   }
   public func toBuilder() throws -> PassthroughModeControlCommand.Builder {
     return try PassthroughModeControlCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:PassthroughModeControlCommand) throws -> PassthroughModeControlCommand.Builder {
+  public class func builderWithPrototype(_ prototype:PassthroughModeControlCommand) throws -> PassthroughModeControlCommand.Builder {
     return try PassthroughModeControlCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasBus {
-      jsonMap["bus"] = NSNumber(int:bus)
+      jsonMap["bus"] = NSNumber(value: bus as Int32)
     }
     if hasEnabled {
-      jsonMap["enabled"] = enabled
+      jsonMap["enabled"] = enabled as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> PassthroughModeControlCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> PassthroughModeControlCommand {
     return try PassthroughModeControlCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> PassthroughModeControlCommand {
-    return try PassthroughModeControlCommand.Builder.fromJSONToBuilder(data).build()
+  override class public func fromJSON(data:Data) throws -> PassthroughModeControlCommand {
+    return try PassthroughModeControlCommand.Builder.fromJSONToBuilder(data: data).build()
   }
   override public func getDescription(indent:String) throws -> String {
     var output = ""
@@ -2864,7 +2914,7 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
     if hasEnabled {
       output += "\(indent) enabled: \(enabled) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -2890,13 +2940,13 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
   override public func className() -> String {
       return "PassthroughModeControlCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return PassthroughModeControlCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:PassthroughModeControlCommand = PassthroughModeControlCommand()
+    fileprivate var builderResult:PassthroughModeControlCommand = PassthroughModeControlCommand()
     public func getMessage() -> PassthroughModeControlCommand {
         return builderResult
     }
@@ -2918,7 +2968,7 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
              builderResult.bus = value
          }
     }
-    public func setBus(value:Int32) -> PassthroughModeControlCommand.Builder {
+    public func setBus(_ value:Int32) -> PassthroughModeControlCommand.Builder {
       self.bus = value
       return self
     }
@@ -2941,7 +2991,7 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
              builderResult.enabled = value
          }
     }
-    public func setEnabled(value:Bool) -> PassthroughModeControlCommand.Builder {
+    public func setEnabled(_ value:Bool) -> PassthroughModeControlCommand.Builder {
       self.enabled = value
       return self
     }
@@ -2970,7 +3020,7 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
       let returnMe:PassthroughModeControlCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:PassthroughModeControlCommand) throws -> PassthroughModeControlCommand.Builder {
+    public func mergeFrom(_ other:PassthroughModeControlCommand) throws -> PassthroughModeControlCommand.Builder {
       if other == PassthroughModeControlCommand() {
        return self
       }
@@ -2983,11 +3033,11 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> PassthroughModeControlCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> PassthroughModeControlCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PassthroughModeControlCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -3009,20 +3059,20 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> PassthroughModeControlCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> PassthroughModeControlCommand.Builder {
       let resultDecodedBuilder = PassthroughModeControlCommand.Builder()
       if let jsonValueBus = jsonMap["bus"] as? NSNumber {
-        resultDecodedBuilder.bus = jsonValueBus.intValue
+        resultDecodedBuilder.bus = Int32(jsonValueBus.intValue)
       }
       if let jsonValueEnabled = jsonMap["enabled"] as? Bool {
         resultDecodedBuilder.enabled = jsonValueEnabled
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> PassthroughModeControlCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    override class public func fromJSONToBuilder(data:Data) throws -> PassthroughModeControlCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try PassthroughModeControlCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -3031,11 +3081,11 @@ final public class PassthroughModeControlCommand : GeneratedMessage, GeneratedMe
 }
 
 final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasBus:Bool = false
-  public private(set) var bus:Int32 = Int32(0)
+  public fileprivate(set) var hasBus:Bool = false
+  public fileprivate(set) var bus:Int32 = Int32(0)
 
-  public private(set) var hasBypass:Bool = false
-  public private(set) var bypass:Bool = false
+  public fileprivate(set) var hasBypass:Bool = false
+  public fileprivate(set) var bypass:Bool = false
 
   required public init() {
        super.init()
@@ -3043,12 +3093,12 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasBus {
-      try output.writeInt32(1, value:bus)
+      try output.writeInt32(fieldNumber: 1, value:bus)
     }
     if hasBypass {
-      try output.writeBool(2, value:bypass)
+      try output.writeBool(fieldNumber: 2, value:bypass)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -3060,41 +3110,41 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
 
     serialize_size = 0
     if hasBus {
-      serialize_size += bus.computeInt32Size(1)
+      serialize_size += bus.computeInt32Size(fieldNumber: 1)
     }
     if hasBypass {
-      serialize_size += bypass.computeBoolSize(2)
+      serialize_size += bypass.computeBoolSize(fieldNumber: 2)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<AcceptanceFilterBypassCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<AcceptanceFilterBypassCommand> {
     var mergedArray = Array<AcceptanceFilterBypassCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> AcceptanceFilterBypassCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> AcceptanceFilterBypassCommand? {
     return try AcceptanceFilterBypassCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> AcceptanceFilterBypassCommand {
+  public class func parseFromData(_ data:Data) throws -> AcceptanceFilterBypassCommand {
     return try AcceptanceFilterBypassCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand {
     return try AcceptanceFilterBypassCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> AcceptanceFilterBypassCommand {
+  public class func parseFromInputStream(_ input:InputStream) throws -> AcceptanceFilterBypassCommand {
     return try AcceptanceFilterBypassCommand.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand {
     return try AcceptanceFilterBypassCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> AcceptanceFilterBypassCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> AcceptanceFilterBypassCommand {
     return try AcceptanceFilterBypassCommand.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand {
     return try AcceptanceFilterBypassCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> AcceptanceFilterBypassCommand.Builder {
@@ -3103,37 +3153,37 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
   public func getBuilder() -> AcceptanceFilterBypassCommand.Builder {
     return classBuilder() as! AcceptanceFilterBypassCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return AcceptanceFilterBypassCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return AcceptanceFilterBypassCommand.Builder()
   }
   public func toBuilder() throws -> AcceptanceFilterBypassCommand.Builder {
     return try AcceptanceFilterBypassCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:AcceptanceFilterBypassCommand) throws -> AcceptanceFilterBypassCommand.Builder {
+  public class func builderWithPrototype(_ prototype:AcceptanceFilterBypassCommand) throws -> AcceptanceFilterBypassCommand.Builder {
     return try AcceptanceFilterBypassCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasBus {
-      jsonMap["bus"] = NSNumber(int:bus)
+      jsonMap["bus"] = NSNumber(value: bus as Int32)
     }
     if hasBypass {
-      jsonMap["bypass"] = bypass
+      jsonMap["bypass"] = bypass as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> AcceptanceFilterBypassCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> AcceptanceFilterBypassCommand {
     return try AcceptanceFilterBypassCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> AcceptanceFilterBypassCommand {
-    return try AcceptanceFilterBypassCommand.Builder.fromJSONToBuilder(data).build()
+  override class public func fromJSON(data:Data) throws -> AcceptanceFilterBypassCommand {
+    return try AcceptanceFilterBypassCommand.Builder.fromJSONToBuilder(data: data).build()
   }
   override public func getDescription(indent:String) throws -> String {
     var output = ""
@@ -3143,7 +3193,7 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
     if hasBypass {
       output += "\(indent) bypass: \(bypass) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -3169,13 +3219,13 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
   override public func className() -> String {
       return "AcceptanceFilterBypassCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return AcceptanceFilterBypassCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:AcceptanceFilterBypassCommand = AcceptanceFilterBypassCommand()
+    fileprivate var builderResult:AcceptanceFilterBypassCommand = AcceptanceFilterBypassCommand()
     public func getMessage() -> AcceptanceFilterBypassCommand {
         return builderResult
     }
@@ -3197,7 +3247,7 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
              builderResult.bus = value
          }
     }
-    public func setBus(value:Int32) -> AcceptanceFilterBypassCommand.Builder {
+    public func setBus(_ value:Int32) -> AcceptanceFilterBypassCommand.Builder {
       self.bus = value
       return self
     }
@@ -3220,7 +3270,7 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
              builderResult.bypass = value
          }
     }
-    public func setBypass(value:Bool) -> AcceptanceFilterBypassCommand.Builder {
+    public func setBypass(_ value:Bool) -> AcceptanceFilterBypassCommand.Builder {
       self.bypass = value
       return self
     }
@@ -3249,7 +3299,7 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
       let returnMe:AcceptanceFilterBypassCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:AcceptanceFilterBypassCommand) throws -> AcceptanceFilterBypassCommand.Builder {
+    public func mergeFrom(_ other:AcceptanceFilterBypassCommand) throws -> AcceptanceFilterBypassCommand.Builder {
       if other == AcceptanceFilterBypassCommand() {
        return self
       }
@@ -3262,11 +3312,11 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> AcceptanceFilterBypassCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> AcceptanceFilterBypassCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> AcceptanceFilterBypassCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -3288,20 +3338,20 @@ final public class AcceptanceFilterBypassCommand : GeneratedMessage, GeneratedMe
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> AcceptanceFilterBypassCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> AcceptanceFilterBypassCommand.Builder {
       let resultDecodedBuilder = AcceptanceFilterBypassCommand.Builder()
       if let jsonValueBus = jsonMap["bus"] as? NSNumber {
-        resultDecodedBuilder.bus = jsonValueBus.intValue
+        resultDecodedBuilder.bus = Int32(jsonValueBus.intValue)
       }
       if let jsonValueBypass = jsonMap["bypass"] as? Bool {
         resultDecodedBuilder.bypass = jsonValueBypass
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> AcceptanceFilterBypassCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    override class public func fromJSONToBuilder(data:Data) throws -> AcceptanceFilterBypassCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try AcceptanceFilterBypassCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -3315,48 +3365,48 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
     //Enum type declaration start 
 
     public enum PayloadFormat:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case Json = 1
-      case Protobuf = 2
-      case Messagepack = 3
+      case json = 1
+      case protobuf = 2
+      case messagepack = 3
       public func toString() -> String {
         switch self {
-        case .Json: return "JSON"
-        case .Protobuf: return "PROTOBUF"
-        case .Messagepack: return "MESSAGEPACK"
+        case .json: return "JSON"
+        case .protobuf: return "PROTOBUF"
+        case .messagepack: return "MESSAGEPACK"
         }
       }
-      public static func fromString(str:String) throws -> PayloadFormatCommand.PayloadFormat {
+      public static func fromString(_ str:String) throws -> PayloadFormatCommand.PayloadFormat {
         switch str {
-        case "JSON":  return .Json
-        case "PROTOBUF":  return .Protobuf
-        case "MESSAGEPACK":  return .Messagepack
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "JSON":  return .json
+        case "PROTOBUF":  return .protobuf
+        case "MESSAGEPACK":  return .messagepack
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .Json: return ".Json"
-              case .Protobuf: return ".Protobuf"
-              case .Messagepack: return ".Messagepack"
+              case .json: return ".Json"
+              case .protobuf: return ".Protobuf"
+              case .messagepack: return ".Messagepack"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var format:PayloadFormatCommand.PayloadFormat = PayloadFormatCommand.PayloadFormat.Json
-  public private(set) var hasFormat:Bool = false
+  public fileprivate(set) var format:PayloadFormatCommand.PayloadFormat = PayloadFormatCommand.PayloadFormat.json
+  public fileprivate(set) var hasFormat:Bool = false
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasFormat {
-      try output.writeEnum(1, value:format.rawValue)
+      try output.writeEnum(fieldNumber: 1, value:format.rawValue)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -3368,38 +3418,38 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
 
     serialize_size = 0
     if (hasFormat) {
-      serialize_size += format.rawValue.computeEnumSize(1)
+      serialize_size += format.rawValue.computeEnumSize(fieldNumber: 1)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<PayloadFormatCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<PayloadFormatCommand> {
     var mergedArray = Array<PayloadFormatCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> PayloadFormatCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> PayloadFormatCommand? {
     return try PayloadFormatCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> PayloadFormatCommand {
+  public class func parseFromData(_ data:Data) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> PayloadFormatCommand {
+  public class func parseFromInputStream(_ input:InputStream) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> PayloadFormatCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> PayloadFormatCommand.Builder {
@@ -3408,41 +3458,41 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
   public func getBuilder() -> PayloadFormatCommand.Builder {
     return classBuilder() as! PayloadFormatCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return PayloadFormatCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return PayloadFormatCommand.Builder()
   }
   public func toBuilder() throws -> PayloadFormatCommand.Builder {
     return try PayloadFormatCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:PayloadFormatCommand) throws -> PayloadFormatCommand.Builder {
+  public class func builderWithPrototype(_ prototype:PayloadFormatCommand) throws -> PayloadFormatCommand.Builder {
     return try PayloadFormatCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasFormat {
-      jsonMap["format"] = format.toString()
+      jsonMap["format"] = format.toString() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> PayloadFormatCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> PayloadFormatCommand {
+  class public func fromJSON(_ data:Data) throws -> PayloadFormatCommand {
     return try PayloadFormatCommand.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if (hasFormat) {
       output += "\(indent) format: \(format.description)\n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -3465,13 +3515,13 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
   override public func className() -> String {
       return "PayloadFormatCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return PayloadFormatCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:PayloadFormatCommand = PayloadFormatCommand()
+    fileprivate var builderResult:PayloadFormatCommand = PayloadFormatCommand()
     public func getMessage() -> PayloadFormatCommand {
         return builderResult
     }
@@ -3493,13 +3543,13 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
               builderResult.format = value
           }
       }
-      public func setFormat(value:PayloadFormatCommand.PayloadFormat) -> PayloadFormatCommand.Builder {
+      public func setFormat(_ value:PayloadFormatCommand.PayloadFormat) -> PayloadFormatCommand.Builder {
         self.format = value
         return self
       }
       public func clearFormat() -> PayloadFormatCommand.Builder {
          builderResult.hasFormat = false
-         builderResult.format = .Json
+         builderResult.format = .json
          return self
       }
     override public var internalGetResult:GeneratedMessage {
@@ -3522,7 +3572,7 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
       let returnMe:PayloadFormatCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:PayloadFormatCommand) throws -> PayloadFormatCommand.Builder {
+    public func mergeFrom(_ other:PayloadFormatCommand) throws -> PayloadFormatCommand.Builder {
       if other == PayloadFormatCommand() {
        return self
       }
@@ -3532,11 +3582,11 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> PayloadFormatCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> PayloadFormatCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PayloadFormatCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -3549,7 +3599,7 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
           if let enumsformat = PayloadFormatCommand.PayloadFormat(rawValue:valueIntformat){
                format = enumsformat
           } else {
-               try unknownFieldsBuilder.mergeVarintField(1, value:Int64(valueIntformat))
+               try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueIntformat))
           }
 
         default:
@@ -3560,17 +3610,17 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> PayloadFormatCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> PayloadFormatCommand.Builder {
       let resultDecodedBuilder = PayloadFormatCommand.Builder()
       if let jsonValueFormat = jsonMap["format"] as? String {
         resultDecodedBuilder.format = try PayloadFormatCommand.PayloadFormat.fromString(jsonValueFormat)
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> PayloadFormatCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> PayloadFormatCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try PayloadFormatCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -3579,8 +3629,8 @@ final public class PayloadFormatCommand : GeneratedMessage, GeneratedMessageProt
 }
 
 final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasEnabled:Bool = false
-  public private(set) var enabled:Bool = false
+  public fileprivate(set) var hasEnabled:Bool = false
+  public fileprivate(set) var enabled:Bool = false
 
   required public init() {
        super.init()
@@ -3588,9 +3638,9 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasEnabled {
-      try output.writeBool(1, value:enabled)
+      try output.writeBool(fieldNumber: 1, value:enabled)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -3602,38 +3652,38 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
 
     serialize_size = 0
     if hasEnabled {
-      serialize_size += enabled.computeBoolSize(1)
+      serialize_size += enabled.computeBoolSize(fieldNumber: 1)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<PredefinedObd2RequestsCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<PredefinedObd2RequestsCommand> {
     var mergedArray = Array<PredefinedObd2RequestsCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> PredefinedObd2RequestsCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> PredefinedObd2RequestsCommand? {
     return try PredefinedObd2RequestsCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> PredefinedObd2RequestsCommand {
+  public class func parseFromData(_ data:Data) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> PredefinedObd2RequestsCommand {
+  public class func parseFromInputStream(_ input:InputStream) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> PredefinedObd2RequestsCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> PredefinedObd2RequestsCommand.Builder {
@@ -3642,41 +3692,41 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
   public func getBuilder() -> PredefinedObd2RequestsCommand.Builder {
     return classBuilder() as! PredefinedObd2RequestsCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return PredefinedObd2RequestsCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return PredefinedObd2RequestsCommand.Builder()
   }
   public func toBuilder() throws -> PredefinedObd2RequestsCommand.Builder {
     return try PredefinedObd2RequestsCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:PredefinedObd2RequestsCommand) throws -> PredefinedObd2RequestsCommand.Builder {
+  public class func builderWithPrototype(_ prototype:PredefinedObd2RequestsCommand) throws -> PredefinedObd2RequestsCommand.Builder {
     return try PredefinedObd2RequestsCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasEnabled {
-      jsonMap["enabled"] = enabled
+      jsonMap["enabled"] = enabled as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> PredefinedObd2RequestsCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> PredefinedObd2RequestsCommand {
+  class public func fromJSON(_ data:Data) throws -> PredefinedObd2RequestsCommand {
     return try PredefinedObd2RequestsCommand.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasEnabled {
       output += "\(indent) enabled: \(enabled) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -3699,13 +3749,13 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
   override public func className() -> String {
       return "PredefinedObd2RequestsCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return PredefinedObd2RequestsCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:PredefinedObd2RequestsCommand = PredefinedObd2RequestsCommand()
+    fileprivate var builderResult:PredefinedObd2RequestsCommand = PredefinedObd2RequestsCommand()
     public func getMessage() -> PredefinedObd2RequestsCommand {
         return builderResult
     }
@@ -3727,7 +3777,7 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
              builderResult.enabled = value
          }
     }
-    public func setEnabled(value:Bool) -> PredefinedObd2RequestsCommand.Builder {
+    public func setEnabled(_ value:Bool) -> PredefinedObd2RequestsCommand.Builder {
       self.enabled = value
       return self
     }
@@ -3756,7 +3806,7 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
       let returnMe:PredefinedObd2RequestsCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:PredefinedObd2RequestsCommand) throws -> PredefinedObd2RequestsCommand.Builder {
+    public func mergeFrom(_ other:PredefinedObd2RequestsCommand) throws -> PredefinedObd2RequestsCommand.Builder {
       if other == PredefinedObd2RequestsCommand() {
        return self
       }
@@ -3766,11 +3816,11 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> PredefinedObd2RequestsCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> PredefinedObd2RequestsCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> PredefinedObd2RequestsCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -3789,17 +3839,17 @@ final public class PredefinedObd2RequestsCommand : GeneratedMessage, GeneratedMe
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> PredefinedObd2RequestsCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> PredefinedObd2RequestsCommand.Builder {
       let resultDecodedBuilder = PredefinedObd2RequestsCommand.Builder()
       if let jsonValueEnabled = jsonMap["enabled"] as? Bool {
         resultDecodedBuilder.enabled = jsonValueEnabled
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> PredefinedObd2RequestsCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> PredefinedObd2RequestsCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try PredefinedObd2RequestsCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -3818,50 +3868,50 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
         //Enum type declaration start 
 
         public enum NetworkType:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-          case Gsm = 0
-          case Utran = 2
+          case gsm = 0
+          case utran = 2
           public func toString() -> String {
             switch self {
-            case .Gsm: return "GSM"
-            case .Utran: return "UTRAN"
+            case .gsm: return "GSM"
+            case .utran: return "UTRAN"
             }
           }
-          public static func fromString(str:String) throws -> NetworkOperatorSettings.NetworkDescriptor.NetworkType {
+          public static func fromString(_ str:String) throws -> NetworkOperatorSettings.NetworkDescriptor.NetworkType {
             switch str {
-            case "GSM":  return .Gsm
-            case "UTRAN":  return .Utran
-            default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+            case "GSM":  return .gsm
+            case "UTRAN":  return .utran
+            default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
             }
           }
           public var debugDescription:String { return getDescription() }
           public var description:String { return getDescription() }
-          private func getDescription() -> String { 
+          fileprivate func getDescription() -> String { 
               switch self {
-                  case .Gsm: return ".Gsm"
-                  case .Utran: return ".Utran"
+                  case .gsm: return ".Gsm"
+                  case .utran: return ".Utran"
               }
           }
         }
 
         //Enum type declaration end 
 
-      public private(set) var hasPlmn:Bool = false
-      public private(set) var plmn:UInt32 = UInt32(0)
+      public fileprivate(set) var hasPlmn:Bool = false
+      public fileprivate(set) var plmn:UInt32 = UInt32(0)
 
-      public private(set) var networkType:NetworkOperatorSettings.NetworkDescriptor.NetworkType = NetworkOperatorSettings.NetworkDescriptor.NetworkType.Gsm
-      public private(set) var hasNetworkType:Bool = false
+      public fileprivate(set) var networkType:NetworkOperatorSettings.NetworkDescriptor.NetworkType = NetworkOperatorSettings.NetworkDescriptor.NetworkType.gsm
+      public fileprivate(set) var hasNetworkType:Bool = false
       required public init() {
            super.init()
       }
       override public func isInitialized() -> Bool {
        return true
       }
-      override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+      public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
         if hasPlmn {
-          try output.writeUInt32(1, value:plmn)
+          try output.writeUInt32(fieldNumber: 1, value:plmn)
         }
         if hasNetworkType {
-          try output.writeEnum(2, value:networkType.rawValue)
+          try output.writeEnum(fieldNumber: 2, value:networkType.rawValue)
         }
         try unknownFields.writeToCodedOutputStream(output)
       }
@@ -3873,41 +3923,41 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
 
         serialize_size = 0
         if hasPlmn {
-          serialize_size += plmn.computeUInt32Size(1)
+          serialize_size += plmn.computeUInt32Size(fieldNumber: 1)
         }
         if (hasNetworkType) {
-          serialize_size += networkType.rawValue.computeEnumSize(2)
+          serialize_size += networkType.rawValue.computeEnumSize(fieldNumber: 2)
         }
         serialize_size += unknownFields.serializedSize()
         memoizedSerializedSize = serialize_size
         return serialize_size
       }
-      public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<NetworkOperatorSettings.NetworkDescriptor> {
+      public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<NetworkOperatorSettings.NetworkDescriptor> {
         var mergedArray = Array<NetworkOperatorSettings.NetworkDescriptor>()
         while let value = try parseFromDelimitedFromInputStream(input) {
           mergedArray += [value]
         }
         return mergedArray
       }
-      public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> NetworkOperatorSettings.NetworkDescriptor? {
+      public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> NetworkOperatorSettings.NetworkDescriptor? {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeDelimitedFromInputStream(input)?.build()
       }
-      public class func parseFromData(data:NSData) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      public class func parseFromData(_ data:Data) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
       }
-      public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
       }
-      public class func parseFromInputStream(input:NSInputStream) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      public class func parseFromInputStream(_ input:InputStream) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeFromInputStream(input).build()
       }
-      public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
       }
-      public class func parseFromCodedInputStream(input:CodedInputStream) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeFromCodedInputStream(input).build()
       }
-      public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
       }
       public class func getBuilder() -> NetworkOperatorSettings.NetworkDescriptor.Builder {
@@ -3916,39 +3966,39 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
       public func getBuilder() -> NetworkOperatorSettings.NetworkDescriptor.Builder {
         return classBuilder() as! NetworkOperatorSettings.NetworkDescriptor.Builder
       }
-      override public class func classBuilder() -> MessageBuilder {
+      public class func classBuilder() -> MessageBuilder {
         return NetworkOperatorSettings.NetworkDescriptor.Builder()
       }
-      override public func classBuilder() -> MessageBuilder {
+      public func classBuilder() -> MessageBuilder {
         return NetworkOperatorSettings.NetworkDescriptor.Builder()
       }
       public func toBuilder() throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
         return try NetworkOperatorSettings.NetworkDescriptor.builderWithPrototype(self)
       }
-      public class func builderWithPrototype(prototype:NetworkOperatorSettings.NetworkDescriptor) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+      public class func builderWithPrototype(_ prototype:NetworkOperatorSettings.NetworkDescriptor) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder().mergeFrom(prototype)
       }
-      override public func encode() throws -> Dictionary<String,AnyObject> {
+      public func encode() throws -> Dictionary<String,AnyObject> {
         guard isInitialized() else {
-          throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+          throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
         }
 
         var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
         if hasPlmn {
-          jsonMap["pLMN"] = NSNumber(unsignedInt:plmn)
+          jsonMap["pLMN"] = NSNumber(value: plmn as UInt32)
         }
         if hasNetworkType {
-          jsonMap["networkType"] = networkType.toString()
+          jsonMap["networkType"] = networkType.toString() as AnyObject?
         }
         return jsonMap
       }
-      override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder.decodeToBuilder(jsonMap).build()
       }
-      override class public func fromJSON(data:NSData) throws -> NetworkOperatorSettings.NetworkDescriptor {
+      class public func fromJSON(_ data:Data) throws -> NetworkOperatorSettings.NetworkDescriptor {
         return try NetworkOperatorSettings.NetworkDescriptor.Builder.fromJSONToBuilder(data).build()
       }
-      override public func getDescription(indent:String) throws -> String {
+      public func getDescription(_ indent:String) throws -> String {
         var output = ""
         if hasPlmn {
           output += "\(indent) plmn: \(plmn) \n"
@@ -3956,7 +4006,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
         if (hasNetworkType) {
           output += "\(indent) networkType: \(networkType.description)\n"
         }
-        output += unknownFields.getDescription(indent)
+        output += unknownFields.getDescription(indent: indent)
         return output
       }
       override public var hashValue:Int {
@@ -3982,13 +4032,13 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
       override public func className() -> String {
           return "NetworkOperatorSettings.NetworkDescriptor"
       }
-      override public func classMetaType() -> GeneratedMessage.Type {
+      public func classMetaType() -> GeneratedMessage.Type {
           return NetworkOperatorSettings.NetworkDescriptor.self
       }
       //Meta information declaration end
 
       final public class Builder : GeneratedMessageBuilder {
-        private var builderResult:NetworkOperatorSettings.NetworkDescriptor = NetworkOperatorSettings.NetworkDescriptor()
+        fileprivate var builderResult:NetworkOperatorSettings.NetworkDescriptor = NetworkOperatorSettings.NetworkDescriptor()
         public func getMessage() -> NetworkOperatorSettings.NetworkDescriptor {
             return builderResult
         }
@@ -4010,7 +4060,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
                  builderResult.plmn = value
              }
         }
-        public func setPlmn(value:UInt32) -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+        public func setPlmn(_ value:UInt32) -> NetworkOperatorSettings.NetworkDescriptor.Builder {
           self.plmn = value
           return self
         }
@@ -4033,13 +4083,13 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
                   builderResult.networkType = value
               }
           }
-          public func setNetworkType(value:NetworkOperatorSettings.NetworkDescriptor.NetworkType) -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+          public func setNetworkType(_ value:NetworkOperatorSettings.NetworkDescriptor.NetworkType) -> NetworkOperatorSettings.NetworkDescriptor.Builder {
             self.networkType = value
             return self
           }
           public func clearNetworkType() -> NetworkOperatorSettings.NetworkDescriptor.Builder {
              builderResult.hasNetworkType = false
-             builderResult.networkType = .Gsm
+             builderResult.networkType = .gsm
              return self
           }
         override public var internalGetResult:GeneratedMessage {
@@ -4062,7 +4112,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
           let returnMe:NetworkOperatorSettings.NetworkDescriptor = builderResult
           return returnMe
         }
-        public func mergeFrom(other:NetworkOperatorSettings.NetworkDescriptor) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+        public func mergeFrom(_ other:NetworkOperatorSettings.NetworkDescriptor) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
           if other == NetworkOperatorSettings.NetworkDescriptor() {
            return self
           }
@@ -4075,11 +4125,11 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
           try mergeUnknownFields(other.unknownFields)
           return self
         }
-        override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+        public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
              return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
         }
-        override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
-          let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+        public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+          let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
           while (true) {
             let protobufTag = try input.readTag()
             switch protobufTag {
@@ -4095,7 +4145,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
               if let enumsnetworkType = NetworkOperatorSettings.NetworkDescriptor.NetworkType(rawValue:valueIntnetworkType){
                    networkType = enumsnetworkType
               } else {
-                   try unknownFieldsBuilder.mergeVarintField(2, value:Int64(valueIntnetworkType))
+                   try unknownFieldsBuilder.mergeVarintField(fieldNumber: 2, value:Int64(valueIntnetworkType))
               }
 
             default:
@@ -4106,20 +4156,20 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
             }
           }
         }
-        override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+        class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
           let resultDecodedBuilder = NetworkOperatorSettings.NetworkDescriptor.Builder()
           if let jsonValuePlmn = jsonMap["pLMN"] as? NSNumber {
-            resultDecodedBuilder.plmn = jsonValuePlmn.unsignedIntValue
+            resultDecodedBuilder.plmn = jsonValuePlmn.uint32Value
           }
           if let jsonValueNetworkType = jsonMap["networkType"] as? String {
             resultDecodedBuilder.networkType = try NetworkOperatorSettings.NetworkDescriptor.NetworkType.fromString(jsonValueNetworkType)
           }
           return resultDecodedBuilder
         }
-        override class public func fromJSONToBuilder(data:NSData) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
-          let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+        class public func fromJSONToBuilder(_ data:Data) throws -> NetworkOperatorSettings.NetworkDescriptor.Builder {
+          let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
           guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-            throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+            throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
           }
           return try NetworkOperatorSettings.NetworkDescriptor.Builder.decodeToBuilder(jsDataCast)
         }
@@ -4134,67 +4184,67 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
     //Enum type declaration start 
 
     public enum OperatorSelectMode:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case Automatic = 0
-      case Manual = 1
-      case Deregister = 2
-      case SetOnly = 3
-      case ManualAutomatic = 4
+      case automatic = 0
+      case manual = 1
+      case deregister = 2
+      case setOnly = 3
+      case manualAutomatic = 4
       public func toString() -> String {
         switch self {
-        case .Automatic: return "AUTOMATIC"
-        case .Manual: return "MANUAL"
-        case .Deregister: return "DEREGISTER"
-        case .SetOnly: return "SET_ONLY"
-        case .ManualAutomatic: return "MANUAL_AUTOMATIC"
+        case .automatic: return "AUTOMATIC"
+        case .manual: return "MANUAL"
+        case .deregister: return "DEREGISTER"
+        case .setOnly: return "SET_ONLY"
+        case .manualAutomatic: return "MANUAL_AUTOMATIC"
         }
       }
-      public static func fromString(str:String) throws -> NetworkOperatorSettings.OperatorSelectMode {
+      public static func fromString(_ str:String) throws -> NetworkOperatorSettings.OperatorSelectMode {
         switch str {
-        case "AUTOMATIC":  return .Automatic
-        case "MANUAL":  return .Manual
-        case "DEREGISTER":  return .Deregister
-        case "SET_ONLY":  return .SetOnly
-        case "MANUAL_AUTOMATIC":  return .ManualAutomatic
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "AUTOMATIC":  return .automatic
+        case "MANUAL":  return .manual
+        case "DEREGISTER":  return .deregister
+        case "SET_ONLY":  return .setOnly
+        case "MANUAL_AUTOMATIC":  return .manualAutomatic
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .Automatic: return ".Automatic"
-              case .Manual: return ".Manual"
-              case .Deregister: return ".Deregister"
-              case .SetOnly: return ".SetOnly"
-              case .ManualAutomatic: return ".ManualAutomatic"
+              case .automatic: return ".Automatic"
+              case .manual: return ".Manual"
+              case .deregister: return ".Deregister"
+              case .setOnly: return ".SetOnly"
+              case .manualAutomatic: return ".ManualAutomatic"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var hasAllowDataRoaming:Bool = false
-  public private(set) var allowDataRoaming:Bool = false
+  public fileprivate(set) var hasAllowDataRoaming:Bool = false
+  public fileprivate(set) var allowDataRoaming:Bool = false
 
-  public private(set) var operatorSelectMode:NetworkOperatorSettings.OperatorSelectMode = NetworkOperatorSettings.OperatorSelectMode.Automatic
-  public private(set) var hasOperatorSelectMode:Bool = false
-  public private(set) var hasNetworkDescriptor:Bool = false
-  public private(set) var networkDescriptor:NetworkOperatorSettings.NetworkDescriptor!
+  public fileprivate(set) var operatorSelectMode:NetworkOperatorSettings.OperatorSelectMode = NetworkOperatorSettings.OperatorSelectMode.automatic
+  public fileprivate(set) var hasOperatorSelectMode:Bool = false
+  public fileprivate(set) var hasNetworkDescriptor:Bool = false
+  public fileprivate(set) var networkDescriptor:NetworkOperatorSettings.NetworkDescriptor!
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasAllowDataRoaming {
-      try output.writeBool(1, value:allowDataRoaming)
+      try output.writeBool(fieldNumber: 1, value:allowDataRoaming)
     }
     if hasOperatorSelectMode {
-      try output.writeEnum(2, value:operatorSelectMode.rawValue)
+      try output.writeEnum(fieldNumber: 2, value:operatorSelectMode.rawValue)
     }
     if hasNetworkDescriptor {
-      try output.writeMessage(3, value:networkDescriptor)
+      try output.writeMessage(fieldNumber: 3, value:networkDescriptor)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -4206,13 +4256,13 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
 
     serialize_size = 0
     if hasAllowDataRoaming {
-      serialize_size += allowDataRoaming.computeBoolSize(1)
+      serialize_size += allowDataRoaming.computeBoolSize(fieldNumber: 1)
     }
     if (hasOperatorSelectMode) {
-      serialize_size += operatorSelectMode.rawValue.computeEnumSize(2)
+      serialize_size += operatorSelectMode.rawValue.computeEnumSize(fieldNumber: 2)
     }
     if hasNetworkDescriptor {
-        if let varSizenetworkDescriptor = networkDescriptor?.computeMessageSize(3) {
+        if let varSizenetworkDescriptor = networkDescriptor?.computeMessageSize(fieldNumber: 3) {
             serialize_size += varSizenetworkDescriptor
         }
     }
@@ -4220,32 +4270,32 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<NetworkOperatorSettings> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<NetworkOperatorSettings> {
     var mergedArray = Array<NetworkOperatorSettings>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> NetworkOperatorSettings? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> NetworkOperatorSettings? {
     return try NetworkOperatorSettings.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> NetworkOperatorSettings {
+  public class func parseFromData(_ data:Data) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> NetworkOperatorSettings {
+  public class func parseFromInputStream(_ input:InputStream) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> NetworkOperatorSettings {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> NetworkOperatorSettings.Builder {
@@ -4254,42 +4304,42 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
   public func getBuilder() -> NetworkOperatorSettings.Builder {
     return classBuilder() as! NetworkOperatorSettings.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return NetworkOperatorSettings.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return NetworkOperatorSettings.Builder()
   }
   public func toBuilder() throws -> NetworkOperatorSettings.Builder {
     return try NetworkOperatorSettings.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:NetworkOperatorSettings) throws -> NetworkOperatorSettings.Builder {
+  public class func builderWithPrototype(_ prototype:NetworkOperatorSettings) throws -> NetworkOperatorSettings.Builder {
     return try NetworkOperatorSettings.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasAllowDataRoaming {
-      jsonMap["allowDataRoaming"] = allowDataRoaming
+      jsonMap["allowDataRoaming"] = allowDataRoaming as AnyObject?
     }
     if hasOperatorSelectMode {
-      jsonMap["operatorSelectMode"] = operatorSelectMode.toString()
+      jsonMap["operatorSelectMode"] = operatorSelectMode.toString() as AnyObject?
     }
     if hasNetworkDescriptor {
-      jsonMap["networkDescriptor"] = try networkDescriptor.encode()
+      jsonMap["networkDescriptor"] = try networkDescriptor.encode() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> NetworkOperatorSettings {
+  class public func fromJSON(_ data:Data) throws -> NetworkOperatorSettings {
     return try NetworkOperatorSettings.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasAllowDataRoaming {
       output += "\(indent) allowDataRoaming: \(allowDataRoaming) \n"
@@ -4304,7 +4354,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
       }
       output += "\(indent) }\n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -4335,13 +4385,13 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
   override public func className() -> String {
       return "NetworkOperatorSettings"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return NetworkOperatorSettings.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:NetworkOperatorSettings = NetworkOperatorSettings()
+    fileprivate var builderResult:NetworkOperatorSettings = NetworkOperatorSettings()
     public func getMessage() -> NetworkOperatorSettings {
         return builderResult
     }
@@ -4363,7 +4413,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
              builderResult.allowDataRoaming = value
          }
     }
-    public func setAllowDataRoaming(value:Bool) -> NetworkOperatorSettings.Builder {
+    public func setAllowDataRoaming(_ value:Bool) -> NetworkOperatorSettings.Builder {
       self.allowDataRoaming = value
       return self
     }
@@ -4386,13 +4436,13 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
               builderResult.operatorSelectMode = value
           }
       }
-      public func setOperatorSelectMode(value:NetworkOperatorSettings.OperatorSelectMode) -> NetworkOperatorSettings.Builder {
+      public func setOperatorSelectMode(_ value:NetworkOperatorSettings.OperatorSelectMode) -> NetworkOperatorSettings.Builder {
         self.operatorSelectMode = value
         return self
       }
       public func clearOperatorSelectMode() -> NetworkOperatorSettings.Builder {
          builderResult.hasOperatorSelectMode = false
-         builderResult.operatorSelectMode = .Automatic
+         builderResult.operatorSelectMode = .automatic
          return self
       }
     public var hasNetworkDescriptor:Bool {
@@ -4412,7 +4462,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
              builderResult.networkDescriptor = value
          }
     }
-    private var networkDescriptorBuilder_:NetworkOperatorSettings.NetworkDescriptor.Builder! {
+    fileprivate var networkDescriptorBuilder_:NetworkOperatorSettings.NetworkDescriptor.Builder! {
          didSet {
             builderResult.hasNetworkDescriptor = true
          }
@@ -4427,11 +4477,11 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
       }
       return networkDescriptorBuilder_
     }
-    public func setNetworkDescriptor(value:NetworkOperatorSettings.NetworkDescriptor!) -> NetworkOperatorSettings.Builder {
+    public func setNetworkDescriptor(_ value:NetworkOperatorSettings.NetworkDescriptor!) -> NetworkOperatorSettings.Builder {
       self.networkDescriptor = value
       return self
     }
-    public func mergeNetworkDescriptor(value:NetworkOperatorSettings.NetworkDescriptor) throws -> NetworkOperatorSettings.Builder {
+    public func mergeNetworkDescriptor(_ value:NetworkOperatorSettings.NetworkDescriptor) throws -> NetworkOperatorSettings.Builder {
       if builderResult.hasNetworkDescriptor {
         builderResult.networkDescriptor = try NetworkOperatorSettings.NetworkDescriptor.builderWithPrototype(builderResult.networkDescriptor).mergeFrom(value).buildPartial()
       } else {
@@ -4466,7 +4516,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
       let returnMe:NetworkOperatorSettings = builderResult
       return returnMe
     }
-    public func mergeFrom(other:NetworkOperatorSettings) throws -> NetworkOperatorSettings.Builder {
+    public func mergeFrom(_ other:NetworkOperatorSettings) throws -> NetworkOperatorSettings.Builder {
       if other == NetworkOperatorSettings() {
        return self
       }
@@ -4482,11 +4532,11 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> NetworkOperatorSettings.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> NetworkOperatorSettings.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkOperatorSettings.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -4502,7 +4552,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
           if let enumsoperatorSelectMode = NetworkOperatorSettings.OperatorSelectMode(rawValue:valueIntoperatorSelectMode){
                operatorSelectMode = enumsoperatorSelectMode
           } else {
-               try unknownFieldsBuilder.mergeVarintField(2, value:Int64(valueIntoperatorSelectMode))
+               try unknownFieldsBuilder.mergeVarintField(fieldNumber: 2, value:Int64(valueIntoperatorSelectMode))
           }
 
         case 26:
@@ -4510,7 +4560,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
           if hasNetworkDescriptor {
             try subBuilder.mergeFrom(networkDescriptor)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           networkDescriptor = subBuilder.buildPartial()
 
         default:
@@ -4521,7 +4571,7 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> NetworkOperatorSettings.Builder {
       let resultDecodedBuilder = NetworkOperatorSettings.Builder()
       if let jsonValueAllowDataRoaming = jsonMap["allowDataRoaming"] as? Bool {
         resultDecodedBuilder.allowDataRoaming = jsonValueAllowDataRoaming
@@ -4535,10 +4585,10 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> NetworkOperatorSettings.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> NetworkOperatorSettings.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try NetworkOperatorSettings.Builder.decodeToBuilder(jsDataCast)
     }
@@ -4547,8 +4597,8 @@ final public class NetworkOperatorSettings : GeneratedMessage, GeneratedMessageP
 }
 
 final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasApn:Bool = false
-  public private(set) var apn:String = ""
+  public fileprivate(set) var hasApn:Bool = false
+  public fileprivate(set) var apn:String = ""
 
   required public init() {
        super.init()
@@ -4556,9 +4606,9 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasApn {
-      try output.writeString(1, value:apn)
+      try output.writeString(fieldNumber: 1, value:apn)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -4570,38 +4620,38 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
 
     serialize_size = 0
     if hasApn {
-      serialize_size += apn.computeStringSize(1)
+      serialize_size += apn.computeStringSize(fieldNumber: 1)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<NetworkDataSettings> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<NetworkDataSettings> {
     var mergedArray = Array<NetworkDataSettings>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> NetworkDataSettings? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> NetworkDataSettings? {
     return try NetworkDataSettings.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> NetworkDataSettings {
+  public class func parseFromData(_ data:Data) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> NetworkDataSettings {
+  public class func parseFromInputStream(_ input:InputStream) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> NetworkDataSettings {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> NetworkDataSettings.Builder {
@@ -4610,41 +4660,41 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
   public func getBuilder() -> NetworkDataSettings.Builder {
     return classBuilder() as! NetworkDataSettings.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return NetworkDataSettings.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return NetworkDataSettings.Builder()
   }
   public func toBuilder() throws -> NetworkDataSettings.Builder {
     return try NetworkDataSettings.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:NetworkDataSettings) throws -> NetworkDataSettings.Builder {
+  public class func builderWithPrototype(_ prototype:NetworkDataSettings) throws -> NetworkDataSettings.Builder {
     return try NetworkDataSettings.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasApn {
-      jsonMap["aPN"] = apn
+      jsonMap["aPN"] = apn as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> NetworkDataSettings {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> NetworkDataSettings {
+  class public func fromJSON(_ data:Data) throws -> NetworkDataSettings {
     return try NetworkDataSettings.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasApn {
       output += "\(indent) apn: \(apn) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -4667,13 +4717,13 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
   override public func className() -> String {
       return "NetworkDataSettings"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return NetworkDataSettings.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:NetworkDataSettings = NetworkDataSettings()
+    fileprivate var builderResult:NetworkDataSettings = NetworkDataSettings()
     public func getMessage() -> NetworkDataSettings {
         return builderResult
     }
@@ -4695,7 +4745,7 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
              builderResult.apn = value
          }
     }
-    public func setApn(value:String) -> NetworkDataSettings.Builder {
+    public func setApn(_ value:String) -> NetworkDataSettings.Builder {
       self.apn = value
       return self
     }
@@ -4724,7 +4774,7 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
       let returnMe:NetworkDataSettings = builderResult
       return returnMe
     }
-    public func mergeFrom(other:NetworkDataSettings) throws -> NetworkDataSettings.Builder {
+    public func mergeFrom(_ other:NetworkDataSettings) throws -> NetworkDataSettings.Builder {
       if other == NetworkDataSettings() {
        return self
       }
@@ -4734,11 +4784,11 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> NetworkDataSettings.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> NetworkDataSettings.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> NetworkDataSettings.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -4757,17 +4807,17 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> NetworkDataSettings.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> NetworkDataSettings.Builder {
       let resultDecodedBuilder = NetworkDataSettings.Builder()
       if let jsonValueApn = jsonMap["aPN"] as? String {
         resultDecodedBuilder.apn = jsonValueApn
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> NetworkDataSettings.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> NetworkDataSettings.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try NetworkDataSettings.Builder.decodeToBuilder(jsDataCast)
     }
@@ -4776,11 +4826,11 @@ final public class NetworkDataSettings : GeneratedMessage, GeneratedMessageProto
 }
 
 final public class ServerConnectSettings : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasHost:Bool = false
-  public private(set) var host:String = ""
+  public fileprivate(set) var hasHost:Bool = false
+  public fileprivate(set) var host:String = ""
 
-  public private(set) var hasPort:Bool = false
-  public private(set) var port:UInt32 = UInt32(0)
+  public fileprivate(set) var hasPort:Bool = false
+  public fileprivate(set) var port:UInt32 = UInt32(0)
 
   required public init() {
        super.init()
@@ -4788,12 +4838,12 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasHost {
-      try output.writeString(1, value:host)
+      try output.writeString(fieldNumber: 1, value:host)
     }
     if hasPort {
-      try output.writeUInt32(2, value:port)
+      try output.writeUInt32(fieldNumber: 2, value:port)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -4805,41 +4855,41 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
 
     serialize_size = 0
     if hasHost {
-      serialize_size += host.computeStringSize(1)
+      serialize_size += host.computeStringSize(fieldNumber: 1)
     }
     if hasPort {
-      serialize_size += port.computeUInt32Size(2)
+      serialize_size += port.computeUInt32Size(fieldNumber: 2)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<ServerConnectSettings> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<ServerConnectSettings> {
     var mergedArray = Array<ServerConnectSettings>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> ServerConnectSettings? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> ServerConnectSettings? {
     return try ServerConnectSettings.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> ServerConnectSettings {
+  public class func parseFromData(_ data:Data) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> ServerConnectSettings {
+  public class func parseFromInputStream(_ input:InputStream) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> ServerConnectSettings {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> ServerConnectSettings.Builder {
@@ -4848,39 +4898,39 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
   public func getBuilder() -> ServerConnectSettings.Builder {
     return classBuilder() as! ServerConnectSettings.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return ServerConnectSettings.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return ServerConnectSettings.Builder()
   }
   public func toBuilder() throws -> ServerConnectSettings.Builder {
     return try ServerConnectSettings.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:ServerConnectSettings) throws -> ServerConnectSettings.Builder {
+  public class func builderWithPrototype(_ prototype:ServerConnectSettings) throws -> ServerConnectSettings.Builder {
     return try ServerConnectSettings.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasHost {
-      jsonMap["host"] = host
+      jsonMap["host"] = host as AnyObject?
     }
     if hasPort {
-      jsonMap["port"] = NSNumber(unsignedInt:port)
+      jsonMap["port"] = NSNumber(value: port as UInt32)
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> ServerConnectSettings {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> ServerConnectSettings {
+  class public func fromJSON(_ data:Data) throws -> ServerConnectSettings {
     return try ServerConnectSettings.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasHost {
       output += "\(indent) host: \(host) \n"
@@ -4888,7 +4938,7 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
     if hasPort {
       output += "\(indent) port: \(port) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -4914,13 +4964,13 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
   override public func className() -> String {
       return "ServerConnectSettings"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return ServerConnectSettings.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:ServerConnectSettings = ServerConnectSettings()
+    fileprivate var builderResult:ServerConnectSettings = ServerConnectSettings()
     public func getMessage() -> ServerConnectSettings {
         return builderResult
     }
@@ -4942,7 +4992,7 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
              builderResult.host = value
          }
     }
-    public func setHost(value:String) -> ServerConnectSettings.Builder {
+    public func setHost(_ value:String) -> ServerConnectSettings.Builder {
       self.host = value
       return self
     }
@@ -4965,7 +5015,7 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
              builderResult.port = value
          }
     }
-    public func setPort(value:UInt32) -> ServerConnectSettings.Builder {
+    public func setPort(_ value:UInt32) -> ServerConnectSettings.Builder {
       self.port = value
       return self
     }
@@ -4994,7 +5044,7 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
       let returnMe:ServerConnectSettings = builderResult
       return returnMe
     }
-    public func mergeFrom(other:ServerConnectSettings) throws -> ServerConnectSettings.Builder {
+    public func mergeFrom(_ other:ServerConnectSettings) throws -> ServerConnectSettings.Builder {
       if other == ServerConnectSettings() {
        return self
       }
@@ -5007,11 +5057,11 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> ServerConnectSettings.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> ServerConnectSettings.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ServerConnectSettings.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -5033,20 +5083,20 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> ServerConnectSettings.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> ServerConnectSettings.Builder {
       let resultDecodedBuilder = ServerConnectSettings.Builder()
       if let jsonValueHost = jsonMap["host"] as? String {
         resultDecodedBuilder.host = jsonValueHost
       }
       if let jsonValuePort = jsonMap["port"] as? NSNumber {
-        resultDecodedBuilder.port = jsonValuePort.unsignedIntValue
+        resultDecodedBuilder.port = jsonValuePort.uint32Value
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> ServerConnectSettings.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> ServerConnectSettings.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try ServerConnectSettings.Builder.decodeToBuilder(jsDataCast)
     }
@@ -5055,27 +5105,27 @@ final public class ServerConnectSettings : GeneratedMessage, GeneratedMessagePro
 }
 
 final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasNetworkOperatorSettings:Bool = false
-  public private(set) var networkOperatorSettings:NetworkOperatorSettings!
-  public private(set) var hasNetworkDataSettings:Bool = false
-  public private(set) var networkDataSettings:NetworkDataSettings!
-  public private(set) var hasServerConnectSettings:Bool = false
-  public private(set) var serverConnectSettings:ServerConnectSettings!
+  public fileprivate(set) var hasNetworkOperatorSettings:Bool = false
+  public fileprivate(set) var networkOperatorSettings:NetworkOperatorSettings!
+  public fileprivate(set) var hasNetworkDataSettings:Bool = false
+  public fileprivate(set) var networkDataSettings:NetworkDataSettings!
+  public fileprivate(set) var hasServerConnectSettings:Bool = false
+  public fileprivate(set) var serverConnectSettings:ServerConnectSettings!
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasNetworkOperatorSettings {
-      try output.writeMessage(1, value:networkOperatorSettings)
+      try output.writeMessage(fieldNumber: 1, value:networkOperatorSettings)
     }
     if hasNetworkDataSettings {
-      try output.writeMessage(2, value:networkDataSettings)
+      try output.writeMessage(fieldNumber: 2, value:networkDataSettings)
     }
     if hasServerConnectSettings {
-      try output.writeMessage(3, value:serverConnectSettings)
+      try output.writeMessage(fieldNumber: 3, value:serverConnectSettings)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -5087,17 +5137,17 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
 
     serialize_size = 0
     if hasNetworkOperatorSettings {
-        if let varSizenetworkOperatorSettings = networkOperatorSettings?.computeMessageSize(1) {
+        if let varSizenetworkOperatorSettings = networkOperatorSettings?.computeMessageSize(fieldNumber: 1) {
             serialize_size += varSizenetworkOperatorSettings
         }
     }
     if hasNetworkDataSettings {
-        if let varSizenetworkDataSettings = networkDataSettings?.computeMessageSize(2) {
+        if let varSizenetworkDataSettings = networkDataSettings?.computeMessageSize(fieldNumber: 2) {
             serialize_size += varSizenetworkDataSettings
         }
     }
     if hasServerConnectSettings {
-        if let varSizeserverConnectSettings = serverConnectSettings?.computeMessageSize(3) {
+        if let varSizeserverConnectSettings = serverConnectSettings?.computeMessageSize(fieldNumber: 3) {
             serialize_size += varSizeserverConnectSettings
         }
     }
@@ -5105,32 +5155,32 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<ModemConfigurationCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<ModemConfigurationCommand> {
     var mergedArray = Array<ModemConfigurationCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> ModemConfigurationCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> ModemConfigurationCommand? {
     return try ModemConfigurationCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> ModemConfigurationCommand {
+  public class func parseFromData(_ data:Data) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> ModemConfigurationCommand {
+  public class func parseFromInputStream(_ input:InputStream) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> ModemConfigurationCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> ModemConfigurationCommand.Builder {
@@ -5139,42 +5189,42 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
   public func getBuilder() -> ModemConfigurationCommand.Builder {
     return classBuilder() as! ModemConfigurationCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return ModemConfigurationCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return ModemConfigurationCommand.Builder()
   }
   public func toBuilder() throws -> ModemConfigurationCommand.Builder {
     return try ModemConfigurationCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:ModemConfigurationCommand) throws -> ModemConfigurationCommand.Builder {
+  public class func builderWithPrototype(_ prototype:ModemConfigurationCommand) throws -> ModemConfigurationCommand.Builder {
     return try ModemConfigurationCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasNetworkOperatorSettings {
-      jsonMap["networkOperatorSettings"] = try networkOperatorSettings.encode()
+      jsonMap["networkOperatorSettings"] = try networkOperatorSettings.encode() as AnyObject?
     }
     if hasNetworkDataSettings {
-      jsonMap["networkDataSettings"] = try networkDataSettings.encode()
+      jsonMap["networkDataSettings"] = try networkDataSettings.encode() as AnyObject?
     }
     if hasServerConnectSettings {
-      jsonMap["serverConnectSettings"] = try serverConnectSettings.encode()
+      jsonMap["serverConnectSettings"] = try serverConnectSettings.encode() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> ModemConfigurationCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> ModemConfigurationCommand {
+  class public func fromJSON(_ data:Data) throws -> ModemConfigurationCommand {
     return try ModemConfigurationCommand.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasNetworkOperatorSettings {
       output += "\(indent) networkOperatorSettings {\n"
@@ -5197,7 +5247,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
       }
       output += "\(indent) }\n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -5232,13 +5282,13 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
   override public func className() -> String {
       return "ModemConfigurationCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return ModemConfigurationCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:ModemConfigurationCommand = ModemConfigurationCommand()
+    fileprivate var builderResult:ModemConfigurationCommand = ModemConfigurationCommand()
     public func getMessage() -> ModemConfigurationCommand {
         return builderResult
     }
@@ -5263,7 +5313,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
              builderResult.networkOperatorSettings = value
          }
     }
-    private var networkOperatorSettingsBuilder_:NetworkOperatorSettings.Builder! {
+    fileprivate var networkOperatorSettingsBuilder_:NetworkOperatorSettings.Builder! {
          didSet {
             builderResult.hasNetworkOperatorSettings = true
          }
@@ -5278,11 +5328,11 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
       }
       return networkOperatorSettingsBuilder_
     }
-    public func setNetworkOperatorSettings(value:NetworkOperatorSettings!) -> ModemConfigurationCommand.Builder {
+    public func setNetworkOperatorSettings(_ value:NetworkOperatorSettings!) -> ModemConfigurationCommand.Builder {
       self.networkOperatorSettings = value
       return self
     }
-    public func mergeNetworkOperatorSettings(value:NetworkOperatorSettings) throws -> ModemConfigurationCommand.Builder {
+    public func mergeNetworkOperatorSettings(_ value:NetworkOperatorSettings) throws -> ModemConfigurationCommand.Builder {
       if builderResult.hasNetworkOperatorSettings {
         builderResult.networkOperatorSettings = try NetworkOperatorSettings.builderWithPrototype(builderResult.networkOperatorSettings).mergeFrom(value).buildPartial()
       } else {
@@ -5314,7 +5364,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
              builderResult.networkDataSettings = value
          }
     }
-    private var networkDataSettingsBuilder_:NetworkDataSettings.Builder! {
+    fileprivate var networkDataSettingsBuilder_:NetworkDataSettings.Builder! {
          didSet {
             builderResult.hasNetworkDataSettings = true
          }
@@ -5329,11 +5379,11 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
       }
       return networkDataSettingsBuilder_
     }
-    public func setNetworkDataSettings(value:NetworkDataSettings!) -> ModemConfigurationCommand.Builder {
+    public func setNetworkDataSettings(_ value:NetworkDataSettings!) -> ModemConfigurationCommand.Builder {
       self.networkDataSettings = value
       return self
     }
-    public func mergeNetworkDataSettings(value:NetworkDataSettings) throws -> ModemConfigurationCommand.Builder {
+    public func mergeNetworkDataSettings(_ value:NetworkDataSettings) throws -> ModemConfigurationCommand.Builder {
       if builderResult.hasNetworkDataSettings {
         builderResult.networkDataSettings = try NetworkDataSettings.builderWithPrototype(builderResult.networkDataSettings).mergeFrom(value).buildPartial()
       } else {
@@ -5365,7 +5415,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
              builderResult.serverConnectSettings = value
          }
     }
-    private var serverConnectSettingsBuilder_:ServerConnectSettings.Builder! {
+    fileprivate var serverConnectSettingsBuilder_:ServerConnectSettings.Builder! {
          didSet {
             builderResult.hasServerConnectSettings = true
          }
@@ -5380,11 +5430,11 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
       }
       return serverConnectSettingsBuilder_
     }
-    public func setServerConnectSettings(value:ServerConnectSettings!) -> ModemConfigurationCommand.Builder {
+    public func setServerConnectSettings(_ value:ServerConnectSettings!) -> ModemConfigurationCommand.Builder {
       self.serverConnectSettings = value
       return self
     }
-    public func mergeServerConnectSettings(value:ServerConnectSettings) throws -> ModemConfigurationCommand.Builder {
+    public func mergeServerConnectSettings(_ value:ServerConnectSettings) throws -> ModemConfigurationCommand.Builder {
       if builderResult.hasServerConnectSettings {
         builderResult.serverConnectSettings = try ServerConnectSettings.builderWithPrototype(builderResult.serverConnectSettings).mergeFrom(value).buildPartial()
       } else {
@@ -5419,7 +5469,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
       let returnMe:ModemConfigurationCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:ModemConfigurationCommand) throws -> ModemConfigurationCommand.Builder {
+    public func mergeFrom(_ other:ModemConfigurationCommand) throws -> ModemConfigurationCommand.Builder {
       if other == ModemConfigurationCommand() {
        return self
       }
@@ -5435,11 +5485,11 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> ModemConfigurationCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> ModemConfigurationCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> ModemConfigurationCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -5452,7 +5502,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
           if hasNetworkOperatorSettings {
             try subBuilder.mergeFrom(networkOperatorSettings)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           networkOperatorSettings = subBuilder.buildPartial()
 
         case 18:
@@ -5460,7 +5510,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
           if hasNetworkDataSettings {
             try subBuilder.mergeFrom(networkDataSettings)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           networkDataSettings = subBuilder.buildPartial()
 
         case 26:
@@ -5468,7 +5518,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
           if hasServerConnectSettings {
             try subBuilder.mergeFrom(serverConnectSettings)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           serverConnectSettings = subBuilder.buildPartial()
 
         default:
@@ -5479,7 +5529,7 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> ModemConfigurationCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> ModemConfigurationCommand.Builder {
       let resultDecodedBuilder = ModemConfigurationCommand.Builder()
       if let jsonValueNetworkOperatorSettings = jsonMap["networkOperatorSettings"] as? Dictionary<String,AnyObject> {
         resultDecodedBuilder.networkOperatorSettings = try NetworkOperatorSettings.Builder.decodeToBuilder(jsonValueNetworkOperatorSettings).build()
@@ -5495,10 +5545,10 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> ModemConfigurationCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> ModemConfigurationCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try ModemConfigurationCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -5507,8 +5557,8 @@ final public class ModemConfigurationCommand : GeneratedMessage, GeneratedMessag
 }
 
 final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasUnixTime:Bool = false
-  public private(set) var unixTime:UInt32 = UInt32(0)
+  public fileprivate(set) var hasUnixTime:Bool = false
+  public fileprivate(set) var unixTime:UInt32 = UInt32(0)
 
   required public init() {
        super.init()
@@ -5516,9 +5566,9 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasUnixTime {
-      try output.writeUInt32(1, value:unixTime)
+      try output.writeUInt32(fieldNumber: 1, value:unixTime)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -5530,38 +5580,38 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
 
     serialize_size = 0
     if hasUnixTime {
-      serialize_size += unixTime.computeUInt32Size(1)
+      serialize_size += unixTime.computeUInt32Size(fieldNumber: 1)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<RtcconfigurationCommand> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<RtcconfigurationCommand> {
     var mergedArray = Array<RtcconfigurationCommand>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> RtcconfigurationCommand? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> RtcconfigurationCommand? {
     return try RtcconfigurationCommand.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> RtcconfigurationCommand {
+  public class func parseFromData(_ data:Data) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> RtcconfigurationCommand {
+  public class func parseFromInputStream(_ input:InputStream) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> RtcconfigurationCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> RtcconfigurationCommand.Builder {
@@ -5570,41 +5620,41 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
   public func getBuilder() -> RtcconfigurationCommand.Builder {
     return classBuilder() as! RtcconfigurationCommand.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return RtcconfigurationCommand.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return RtcconfigurationCommand.Builder()
   }
   public func toBuilder() throws -> RtcconfigurationCommand.Builder {
     return try RtcconfigurationCommand.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:RtcconfigurationCommand) throws -> RtcconfigurationCommand.Builder {
+  public class func builderWithPrototype(_ prototype:RtcconfigurationCommand) throws -> RtcconfigurationCommand.Builder {
     return try RtcconfigurationCommand.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasUnixTime {
-      jsonMap["unixTime"] = NSNumber(unsignedInt:unixTime)
+      jsonMap["unixTime"] = NSNumber(value: unixTime as UInt32)
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> RtcconfigurationCommand {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> RtcconfigurationCommand {
+  class public func fromJSON(_ data:Data) throws -> RtcconfigurationCommand {
     return try RtcconfigurationCommand.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasUnixTime {
       output += "\(indent) unixTime: \(unixTime) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -5627,13 +5677,13 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
   override public func className() -> String {
       return "RtcconfigurationCommand"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return RtcconfigurationCommand.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:RtcconfigurationCommand = RtcconfigurationCommand()
+    fileprivate var builderResult:RtcconfigurationCommand = RtcconfigurationCommand()
     public func getMessage() -> RtcconfigurationCommand {
         return builderResult
     }
@@ -5655,7 +5705,7 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
              builderResult.unixTime = value
          }
     }
-    public func setUnixTime(value:UInt32) -> RtcconfigurationCommand.Builder {
+    public func setUnixTime(_ value:UInt32) -> RtcconfigurationCommand.Builder {
       self.unixTime = value
       return self
     }
@@ -5684,7 +5734,7 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
       let returnMe:RtcconfigurationCommand = builderResult
       return returnMe
     }
-    public func mergeFrom(other:RtcconfigurationCommand) throws -> RtcconfigurationCommand.Builder {
+    public func mergeFrom(_ other:RtcconfigurationCommand) throws -> RtcconfigurationCommand.Builder {
       if other == RtcconfigurationCommand() {
        return self
       }
@@ -5694,11 +5744,11 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> RtcconfigurationCommand.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> RtcconfigurationCommand.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> RtcconfigurationCommand.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -5717,17 +5767,17 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> RtcconfigurationCommand.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> RtcconfigurationCommand.Builder {
       let resultDecodedBuilder = RtcconfigurationCommand.Builder()
       if let jsonValueUnixTime = jsonMap["unixTime"] as? NSNumber {
-        resultDecodedBuilder.unixTime = jsonValueUnixTime.unsignedIntValue
+        resultDecodedBuilder.unixTime = jsonValueUnixTime.uint32Value
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> RtcconfigurationCommand.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> RtcconfigurationCommand.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try RtcconfigurationCommand.Builder.decodeToBuilder(jsDataCast)
     }
@@ -5736,13 +5786,13 @@ final public class RtcconfigurationCommand : GeneratedMessage, GeneratedMessageP
 }
 
 final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var types:ControlCommand.Types = ControlCommand.Types.Version
-  public private(set) var hasTypes:Bool = false
-  public private(set) var hasMessage_:Bool = false
-  public private(set) var message_:String = ""
+  public fileprivate(set) var types:ControlCommand.Types = ControlCommand.Types.version
+  public fileprivate(set) var hasTypes:Bool = false
+  public fileprivate(set) var hasMessage_:Bool = false
+  public fileprivate(set) var message_:String = ""
 
-  public private(set) var hasStatus:Bool = false
-  public private(set) var status:Bool = false
+  public fileprivate(set) var hasStatus:Bool = false
+  public fileprivate(set) var status:Bool = false
 
   required public init() {
        super.init()
@@ -5750,15 +5800,15 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasTypes {
-      try output.writeEnum(1, value:types.rawValue)
+      try output.writeEnum(fieldNumber: 1, value:types.rawValue)
     }
     if hasMessage_ {
-      try output.writeString(2, value:message_)
+      try output.writeString(fieldNumber: 2, value:message_)
     }
     if hasStatus {
-      try output.writeBool(3, value:status)
+      try output.writeBool(fieldNumber: 3, value:status)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -5770,44 +5820,44 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
 
     serialize_size = 0
     if (hasTypes) {
-      serialize_size += types.rawValue.computeEnumSize(1)
+      serialize_size += types.rawValue.computeEnumSize(fieldNumber: 1)
     }
     if hasMessage_ {
-      serialize_size += message_.computeStringSize(2)
+      serialize_size += message_.computeStringSize(fieldNumber: 2)
     }
     if hasStatus {
-      serialize_size += status.computeBoolSize(3)
+      serialize_size += status.computeBoolSize(fieldNumber: 3)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<CommandResponse> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<CommandResponse> {
     var mergedArray = Array<CommandResponse>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> CommandResponse? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> CommandResponse? {
     return try CommandResponse.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> CommandResponse {
+  public class func parseFromData(_ data:Data) throws -> CommandResponse {
     return try CommandResponse.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> CommandResponse {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> CommandResponse {
     return try CommandResponse.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> CommandResponse {
+  public class func parseFromInputStream(_ input:InputStream) throws -> CommandResponse {
     return try CommandResponse.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> CommandResponse {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> CommandResponse {
     return try CommandResponse.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> CommandResponse {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> CommandResponse {
     return try CommandResponse.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> CommandResponse {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> CommandResponse {
     return try CommandResponse.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> CommandResponse.Builder {
@@ -5816,42 +5866,42 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
   public func getBuilder() -> CommandResponse.Builder {
     return classBuilder() as! CommandResponse.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return CommandResponse.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return CommandResponse.Builder()
   }
   public func toBuilder() throws -> CommandResponse.Builder {
     return try CommandResponse.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:CommandResponse) throws -> CommandResponse.Builder {
+  public class func builderWithPrototype(_ prototype:CommandResponse) throws -> CommandResponse.Builder {
     return try CommandResponse.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasTypes {
-      jsonMap["type"] = types.toString()
+      jsonMap["type"] = types.toString() as AnyObject?
     }
     if hasMessage_ {
-      jsonMap["message"] = message_
+      jsonMap["message"] = message_ as AnyObject?
     }
     if hasStatus {
-      jsonMap["status"] = status
+      jsonMap["status"] = status as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> CommandResponse {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> CommandResponse {
     return try CommandResponse.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> CommandResponse {
+  class public func fromJSON(_ data:Data) throws -> CommandResponse {
     return try CommandResponse.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if (hasTypes) {
       output += "\(indent) types: \(types.description)\n"
@@ -5862,7 +5912,7 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
     if hasStatus {
       output += "\(indent) status: \(status) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -5891,13 +5941,13 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
   override public func className() -> String {
       return "CommandResponse"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return CommandResponse.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:CommandResponse = CommandResponse()
+    fileprivate var builderResult:CommandResponse = CommandResponse()
     public func getMessage() -> CommandResponse {
         return builderResult
     }
@@ -5919,13 +5969,13 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
               builderResult.types = value
           }
       }
-      public func setTypes(value:ControlCommand.Types) -> CommandResponse.Builder {
+      public func setTypes(_ value:ControlCommand.Types) -> CommandResponse.Builder {
         self.types = value
         return self
       }
       public func clearTypes() -> CommandResponse.Builder {
          builderResult.hasTypes = false
-         builderResult.types = .Version
+         builderResult.types = .version
          return self
       }
     public var hasMessage_:Bool {
@@ -5942,7 +5992,7 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
              builderResult.message_ = value
          }
     }
-    public func setMessage_(value:String) -> CommandResponse.Builder {
+    public func setMessage_(_ value:String) -> CommandResponse.Builder {
       self.message_ = value
       return self
     }
@@ -5965,7 +6015,7 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
              builderResult.status = value
          }
     }
-    public func setStatus(value:Bool) -> CommandResponse.Builder {
+    public func setStatus(_ value:Bool) -> CommandResponse.Builder {
       self.status = value
       return self
     }
@@ -5994,7 +6044,7 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
       let returnMe:CommandResponse = builderResult
       return returnMe
     }
-    public func mergeFrom(other:CommandResponse) throws -> CommandResponse.Builder {
+    public func mergeFrom(_ other:CommandResponse) throws -> CommandResponse.Builder {
       if other == CommandResponse() {
        return self
       }
@@ -6010,11 +6060,11 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> CommandResponse.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> CommandResponse.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> CommandResponse.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> CommandResponse.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -6027,7 +6077,7 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
           if let enumstypes = ControlCommand.Types(rawValue:valueInttypes){
                types = enumstypes
           } else {
-               try unknownFieldsBuilder.mergeVarintField(1, value:Int64(valueInttypes))
+               try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueInttypes))
           }
 
         case 18:
@@ -6044,7 +6094,7 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> CommandResponse.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> CommandResponse.Builder {
       let resultDecodedBuilder = CommandResponse.Builder()
       if let jsonValueTypes = jsonMap["type"] as? String {
         resultDecodedBuilder.types = try ControlCommand.Types.fromString(jsonValueTypes)
@@ -6057,10 +6107,10 @@ final public class CommandResponse : GeneratedMessage, GeneratedMessageProtocol 
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> CommandResponse.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> CommandResponse.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try CommandResponse.Builder.decodeToBuilder(jsDataCast)
     }
@@ -6074,94 +6124,94 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
     //Enum type declaration start 
 
     public enum DecodedType:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case None = 1
-      case Obd2 = 2
+      case none = 1
+      case obd2 = 2
       public func toString() -> String {
         switch self {
-        case .None: return "NONE"
-        case .Obd2: return "OBD2"
+        case .none: return "NONE"
+        case .obd2: return "OBD2"
         }
       }
-      public static func fromString(str:String) throws -> DiagnosticRequest.DecodedType {
+      public static func fromString(_ str:String) throws -> DiagnosticRequest.DecodedType {
         switch str {
-        case "NONE":  return .None
-        case "OBD2":  return .Obd2
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "NONE":  return .none
+        case "OBD2":  return .obd2
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .None: return ".None"
-              case .Obd2: return ".Obd2"
+              case .none: return ".None"
+              case .obd2: return ".Obd2"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var hasBus:Bool = false
-  public private(set) var bus:Int32 = Int32(0)
+  public fileprivate(set) var hasBus:Bool = false
+  public fileprivate(set) var bus:Int32 = Int32(0)
 
-  public private(set) var hasMessageId:Bool = false
-  public private(set) var messageId:UInt32 = UInt32(0)
+  public fileprivate(set) var hasMessageId:Bool = false
+  public fileprivate(set) var messageId:UInt32 = UInt32(0)
 
-  public private(set) var hasMode:Bool = false
-  public private(set) var mode:UInt32 = UInt32(0)
+  public fileprivate(set) var hasMode:Bool = false
+  public fileprivate(set) var mode:UInt32 = UInt32(0)
 
-  public private(set) var hasPid:Bool = false
-  public private(set) var pid:UInt32 = UInt32(0)
+  public fileprivate(set) var hasPid:Bool = false
+  public fileprivate(set) var pid:UInt32 = UInt32(0)
 
   // TODO we are capping this at 8 bytes for now - need to change when we
   // support multi-frame responses
-  public private(set) var hasPayload:Bool = false
-  public private(set) var payload:NSData = NSData()
+  public fileprivate(set) var hasPayload:Bool = false
+  public fileprivate(set) var payload:Data = Data()
 
-  public private(set) var hasMultipleResponses:Bool = false
-  public private(set) var multipleResponses:Bool = false
+  public fileprivate(set) var hasMultipleResponses:Bool = false
+  public fileprivate(set) var multipleResponses:Bool = false
 
-  public private(set) var hasFrequency:Bool = false
-  public private(set) var frequency:Double = Double(0)
+  public fileprivate(set) var hasFrequency:Bool = false
+  public fileprivate(set) var frequency:Double = Double(0)
 
-  public private(set) var hasName:Bool = false
-  public private(set) var name:String = ""
+  public fileprivate(set) var hasName:Bool = false
+  public fileprivate(set) var name:String = ""
 
-  public private(set) var decodedType:DiagnosticRequest.DecodedType = DiagnosticRequest.DecodedType.None
-  public private(set) var hasDecodedType:Bool = false
+  public fileprivate(set) var decodedType:DiagnosticRequest.DecodedType = DiagnosticRequest.DecodedType.none
+  public fileprivate(set) var hasDecodedType:Bool = false
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasBus {
-      try output.writeInt32(1, value:bus)
+      try output.writeInt32(fieldNumber: 1, value:bus)
     }
     if hasMessageId {
-      try output.writeUInt32(2, value:messageId)
+      try output.writeUInt32(fieldNumber: 2, value:messageId)
     }
     if hasMode {
-      try output.writeUInt32(3, value:mode)
+      try output.writeUInt32(fieldNumber: 3, value:mode)
     }
     if hasPid {
-      try output.writeUInt32(4, value:pid)
+      try output.writeUInt32(fieldNumber: 4, value:pid)
     }
     if hasPayload {
-      try output.writeData(5, value:payload)
+      try output.writeData(fieldNumber: 5, value:payload)
     }
     if hasMultipleResponses {
-      try output.writeBool(6, value:multipleResponses)
+      try output.writeBool(fieldNumber: 6, value:multipleResponses)
     }
     if hasFrequency {
-      try output.writeDouble(7, value:frequency)
+      try output.writeDouble(fieldNumber: 7, value:frequency)
     }
     if hasName {
-      try output.writeString(8, value:name)
+      try output.writeString(fieldNumber: 8, value:name)
     }
     if hasDecodedType {
-      try output.writeEnum(9, value:decodedType.rawValue)
+      try output.writeEnum(fieldNumber: 9, value:decodedType.rawValue)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -6173,62 +6223,62 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
 
     serialize_size = 0
     if hasBus {
-      serialize_size += bus.computeInt32Size(1)
+      serialize_size += bus.computeInt32Size(fieldNumber: 1)
     }
     if hasMessageId {
-      serialize_size += messageId.computeUInt32Size(2)
+      serialize_size += messageId.computeUInt32Size(fieldNumber: 2)
     }
     if hasMode {
-      serialize_size += mode.computeUInt32Size(3)
+      serialize_size += mode.computeUInt32Size(fieldNumber: 3)
     }
     if hasPid {
-      serialize_size += pid.computeUInt32Size(4)
+      serialize_size += pid.computeUInt32Size(fieldNumber: 4)
     }
     if hasPayload {
-      serialize_size += payload.computeDataSize(5)
+      serialize_size += payload.computeDataSize(fieldNumber: 5)
     }
     if hasMultipleResponses {
-      serialize_size += multipleResponses.computeBoolSize(6)
+      serialize_size += multipleResponses.computeBoolSize(fieldNumber: 6)
     }
     if hasFrequency {
-      serialize_size += frequency.computeDoubleSize(7)
+      serialize_size += frequency.computeDoubleSize(fieldNumber: 7)
     }
     if hasName {
-      serialize_size += name.computeStringSize(8)
+      serialize_size += name.computeStringSize(fieldNumber: 8)
     }
     if (hasDecodedType) {
-      serialize_size += decodedType.rawValue.computeEnumSize(9)
+      serialize_size += decodedType.rawValue.computeEnumSize(fieldNumber: 9)
     }
     serialize_size += unknownFields.serializedSize()
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<DiagnosticRequest> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<DiagnosticRequest> {
     var mergedArray = Array<DiagnosticRequest>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> DiagnosticRequest? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> DiagnosticRequest? {
     return try DiagnosticRequest.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> DiagnosticRequest {
+  public class func parseFromData(_ data:Data) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> DiagnosticRequest {
+  public class func parseFromInputStream(_ input:InputStream) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> DiagnosticRequest {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> DiagnosticRequest.Builder {
@@ -6237,60 +6287,60 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
   public func getBuilder() -> DiagnosticRequest.Builder {
     return classBuilder() as! DiagnosticRequest.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return DiagnosticRequest.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return DiagnosticRequest.Builder()
   }
   public func toBuilder() throws -> DiagnosticRequest.Builder {
     return try DiagnosticRequest.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:DiagnosticRequest) throws -> DiagnosticRequest.Builder {
+  public class func builderWithPrototype(_ prototype:DiagnosticRequest) throws -> DiagnosticRequest.Builder {
     return try DiagnosticRequest.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasBus {
-      jsonMap["bus"] = NSNumber(int:bus)
+      jsonMap["bus"] = NSNumber(value: bus as Int32)
     }
     if hasMessageId {
-      jsonMap["messageId"] = NSNumber(unsignedInt:messageId)
+      jsonMap["messageId"] = NSNumber(value: messageId as UInt32)
     }
     if hasMode {
-      jsonMap["mode"] = NSNumber(unsignedInt:mode)
+      jsonMap["mode"] = NSNumber(value: mode as UInt32)
     }
     if hasPid {
-      jsonMap["pid"] = NSNumber(unsignedInt:pid)
+      jsonMap["pid"] = NSNumber(value: pid as UInt32)
     }
     if hasPayload {
-      jsonMap["payload"] = payload.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+      jsonMap["payload"] = payload.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0)) as AnyObject?
     }
     if hasMultipleResponses {
-      jsonMap["multipleResponses"] = multipleResponses
+      jsonMap["multipleResponses"] = multipleResponses as AnyObject?
     }
     if hasFrequency {
-      jsonMap["frequency"] = NSNumber(double:frequency)
+      jsonMap["frequency"] = NSNumber(value: frequency as Double)
     }
     if hasName {
-      jsonMap["name"] = name
+      jsonMap["name"] = name as AnyObject?
     }
     if hasDecodedType {
-      jsonMap["decodedType"] = decodedType.toString()
+      jsonMap["decodedType"] = decodedType.toString() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticRequest {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> DiagnosticRequest {
+  class public func fromJSON(_ data:Data) throws -> DiagnosticRequest {
     return try DiagnosticRequest.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if hasBus {
       output += "\(indent) bus: \(bus) \n"
@@ -6366,13 +6416,13 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
   override public func className() -> String {
       return "DiagnosticRequest"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return DiagnosticRequest.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:DiagnosticRequest = DiagnosticRequest()
+    fileprivate var builderResult:DiagnosticRequest = DiagnosticRequest()
     public func getMessage() -> DiagnosticRequest {
         return builderResult
     }
@@ -6394,7 +6444,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.bus = value
          }
     }
-    public func setBus(value:Int32) -> DiagnosticRequest.Builder {
+    public func setBus(_ value:Int32) -> DiagnosticRequest.Builder {
       self.bus = value
       return self
     }
@@ -6417,7 +6467,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.messageId = value
          }
     }
-    public func setMessageId(value:UInt32) -> DiagnosticRequest.Builder {
+    public func setMessageId(_ value:UInt32) -> DiagnosticRequest.Builder {
       self.messageId = value
       return self
     }
@@ -6440,7 +6490,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.mode = value
          }
     }
-    public func setMode(value:UInt32) -> DiagnosticRequest.Builder {
+    public func setMode(_ value:UInt32) -> DiagnosticRequest.Builder {
       self.mode = value
       return self
     }
@@ -6463,7 +6513,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.pid = value
          }
     }
-    public func setPid(value:UInt32) -> DiagnosticRequest.Builder {
+    public func setPid(_ value:UInt32) -> DiagnosticRequest.Builder {
       self.pid = value
       return self
     }
@@ -6477,7 +6527,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
               return builderResult.hasPayload
          }
     }
-    public var payload:NSData {
+    public var payload:Data {
          get {
               return builderResult.payload
          }
@@ -6486,13 +6536,13 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.payload = value
          }
     }
-    public func setPayload(value:NSData) -> DiagnosticRequest.Builder {
+    public func setPayload(_ value:Data) -> DiagnosticRequest.Builder {
       self.payload = value
       return self
     }
     public func clearPayload() -> DiagnosticRequest.Builder{
          builderResult.hasPayload = false
-         builderResult.payload = NSData()
+         builderResult.payload = Data()
          return self
     }
     public var hasMultipleResponses:Bool {
@@ -6509,7 +6559,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.multipleResponses = value
          }
     }
-    public func setMultipleResponses(value:Bool) -> DiagnosticRequest.Builder {
+    public func setMultipleResponses(_ value:Bool) -> DiagnosticRequest.Builder {
       self.multipleResponses = value
       return self
     }
@@ -6532,7 +6582,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.frequency = value
          }
     }
-    public func setFrequency(value:Double) -> DiagnosticRequest.Builder {
+    public func setFrequency(_ value:Double) -> DiagnosticRequest.Builder {
       self.frequency = value
       return self
     }
@@ -6555,7 +6605,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
              builderResult.name = value
          }
     }
-    public func setName(value:String) -> DiagnosticRequest.Builder {
+    public func setName(_ value:String) -> DiagnosticRequest.Builder {
       self.name = value
       return self
     }
@@ -6578,13 +6628,13 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
               builderResult.decodedType = value
           }
       }
-      public func setDecodedType(value:DiagnosticRequest.DecodedType) -> DiagnosticRequest.Builder {
+      public func setDecodedType(_ value:DiagnosticRequest.DecodedType) -> DiagnosticRequest.Builder {
         self.decodedType = value
         return self
       }
       public func clearDecodedType() -> DiagnosticRequest.Builder {
          builderResult.hasDecodedType = false
-         builderResult.decodedType = .None
+         builderResult.decodedType = .none
          return self
       }
     override public var internalGetResult:GeneratedMessage {
@@ -6607,7 +6657,7 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
       let returnMe:DiagnosticRequest = builderResult
       return returnMe
     }
-    public func mergeFrom(other:DiagnosticRequest) throws -> DiagnosticRequest.Builder {
+    public func mergeFrom(_ other:DiagnosticRequest) throws -> DiagnosticRequest.Builder {
       if other == DiagnosticRequest() {
        return self
       }
@@ -6641,10 +6691,10 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> DiagnosticRequest.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> DiagnosticRequest.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticRequest.Builder {
       let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
@@ -6693,22 +6743,22 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticRequest.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticRequest.Builder {
       let resultDecodedBuilder = DiagnosticRequest.Builder()
       if let jsonValueBus = jsonMap["bus"] as? NSNumber {
-        resultDecodedBuilder.bus = jsonValueBus.intValue
+        resultDecodedBuilder.bus = Int32(jsonValueBus.intValue)
       }
       if let jsonValueMessageId = jsonMap["messageId"] as? NSNumber {
-        resultDecodedBuilder.messageId = jsonValueMessageId.unsignedIntValue
+        resultDecodedBuilder.messageId = jsonValueMessageId.uint32Value
       }
       if let jsonValueMode = jsonMap["mode"] as? NSNumber {
-        resultDecodedBuilder.mode = jsonValueMode.unsignedIntValue
+        resultDecodedBuilder.mode = jsonValueMode.uint32Value
       }
       if let jsonValuePid = jsonMap["pid"] as? NSNumber {
-        resultDecodedBuilder.pid = jsonValuePid.unsignedIntValue
+        resultDecodedBuilder.pid = jsonValuePid.uint32Value
       }
       if let jsonValuePayload = jsonMap["payload"] as? String {
-        resultDecodedBuilder.payload = NSData(base64EncodedString:jsonValuePayload, options: NSDataBase64DecodingOptions(rawValue:0))!
+        resultDecodedBuilder.payload = Data(base64EncodedString:jsonValuePayload, options: NSData.Base64DecodingOptions(rawValue:0))!
       }
       if let jsonValueMultipleResponses = jsonMap["multipleResponses"] as? Bool {
         resultDecodedBuilder.multipleResponses = jsonValueMultipleResponses
@@ -6724,10 +6774,10 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> DiagnosticRequest.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> DiagnosticRequest.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try DiagnosticRequest.Builder.decodeToBuilder(jsDataCast)
     }
@@ -6736,31 +6786,31 @@ final public class DiagnosticRequest : GeneratedMessage, GeneratedMessageProtoco
 }
 
 final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasBus:Bool = false
-  public private(set) var bus:Int32 = Int32(0)
+  public fileprivate(set) var hasBus:Bool = false
+  public fileprivate(set) var bus:Int32 = Int32(0)
 
-  public private(set) var hasMessageId:Bool = false
-  public private(set) var messageId:UInt32 = UInt32(0)
+  public fileprivate(set) var hasMessageId:Bool = false
+  public fileprivate(set) var messageId:UInt32 = UInt32(0)
 
-  public private(set) var hasMode:Bool = false
-  public private(set) var mode:UInt32 = UInt32(0)
+  public fileprivate(set) var hasMode:Bool = false
+  public fileprivate(set) var mode:UInt32 = UInt32(0)
 
-  public private(set) var hasPid:Bool = false
-  public private(set) var pid:UInt32 = UInt32(0)
+  public fileprivate(set) var hasPid:Bool = false
+  public fileprivate(set) var pid:UInt32 = UInt32(0)
 
-  public private(set) var hasSuccess:Bool = false
-  public private(set) var success:Bool = false
+  public fileprivate(set) var hasSuccess:Bool = false
+  public fileprivate(set) var success:Bool = false
 
-  public private(set) var hasNegativeResponseCode:Bool = false
-  public private(set) var negativeResponseCode:UInt32 = UInt32(0)
+  public fileprivate(set) var hasNegativeResponseCode:Bool = false
+  public fileprivate(set) var negativeResponseCode:UInt32 = UInt32(0)
 
   // TODO we are capping this at 8 bytes for now - need to change when we
   // support multi-frame responses
-  public private(set) var hasPayload:Bool = false
-  public private(set) var payload:NSData = NSData()
+  public fileprivate(set) var hasPayload:Bool = false
+  public fileprivate(set) var payload:Data = Data()
 
-  public private(set) var hasValue:Bool = false
-  public private(set) var value:Double = Double(0)
+  public fileprivate(set) var hasValue:Bool = false
+  public fileprivate(set) var value:Double = Double(0)
 
   required public init() {
        super.init()
@@ -6768,7 +6818,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasBus {
       try output.writeInt32(1, value:bus)
     }
@@ -6830,32 +6880,32 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<DiagnosticResponse> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<DiagnosticResponse> {
     var mergedArray = Array<DiagnosticResponse>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> DiagnosticResponse? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> DiagnosticResponse? {
     return try DiagnosticResponse.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> DiagnosticResponse {
+  public class func parseFromData(_ data:Data) throws -> DiagnosticResponse {
     return try DiagnosticResponse.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse {
     return try DiagnosticResponse.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> DiagnosticResponse {
+  public class func parseFromInputStream(_ input:InputStream) throws -> DiagnosticResponse {
     return try DiagnosticResponse.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse {
     return try DiagnosticResponse.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> DiagnosticResponse {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> DiagnosticResponse {
     return try DiagnosticResponse.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse {
     return try DiagnosticResponse.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> DiagnosticResponse.Builder {
@@ -6864,55 +6914,55 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
   public func getBuilder() -> DiagnosticResponse.Builder {
     return classBuilder() as! DiagnosticResponse.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return DiagnosticResponse.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return DiagnosticResponse.Builder()
   }
   public func toBuilder() throws -> DiagnosticResponse.Builder {
     return try DiagnosticResponse.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:DiagnosticResponse) throws -> DiagnosticResponse.Builder {
+  public class func builderWithPrototype(_ prototype:DiagnosticResponse) throws -> DiagnosticResponse.Builder {
     return try DiagnosticResponse.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasBus {
-      jsonMap["bus"] = NSNumber(int:bus)
+      jsonMap["bus"] = NSNumber(value: bus as Int32)
     }
     if hasMessageId {
-      jsonMap["messageId"] = NSNumber(unsignedInt:messageId)
+      jsonMap["messageId"] = NSNumber(value: messageId as UInt32)
     }
     if hasMode {
-      jsonMap["mode"] = NSNumber(unsignedInt:mode)
+      jsonMap["mode"] = NSNumber(value: mode as UInt32)
     }
     if hasPid {
-      jsonMap["pid"] = NSNumber(unsignedInt:pid)
+      jsonMap["pid"] = NSNumber(value: pid as UInt32)
     }
     if hasSuccess {
-      jsonMap["success"] = success
+      jsonMap["success"] = success as AnyObject?
     }
     if hasNegativeResponseCode {
-      jsonMap["negativeResponseCode"] = NSNumber(unsignedInt:negativeResponseCode)
+      jsonMap["negativeResponseCode"] = NSNumber(value: negativeResponseCode as UInt32)
     }
     if hasPayload {
-      jsonMap["payload"] = payload.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+      jsonMap["payload"] = payload.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0)) as AnyObject?
     }
     if hasValue {
-      jsonMap["value"] = NSNumber(double:value)
+      jsonMap["value"] = NSNumber(value: value as Double)
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticResponse {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticResponse {
     return try DiagnosticResponse.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> DiagnosticResponse {
-    return try DiagnosticResponse.Builder.fromJSONToBuilder(data).build()
+  class public func fromJSON(_ data:Data) throws -> DiagnosticResponse {
+    return try DiagnosticResponse.Builder.fromJSONToBuilder(data: data).build()
   }
   override public func getDescription(indent:String) throws -> String {
     var output = ""
@@ -6940,7 +6990,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
     if hasValue {
       output += "\(indent) value: \(value) \n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -6984,13 +7034,13 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
   override public func className() -> String {
       return "DiagnosticResponse"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return DiagnosticResponse.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:DiagnosticResponse = DiagnosticResponse()
+    fileprivate var builderResult:DiagnosticResponse = DiagnosticResponse()
     public func getMessage() -> DiagnosticResponse {
         return builderResult
     }
@@ -7012,7 +7062,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.bus = value
          }
     }
-    public func setBus(value:Int32) -> DiagnosticResponse.Builder {
+    public func setBus(_ value:Int32) -> DiagnosticResponse.Builder {
       self.bus = value
       return self
     }
@@ -7035,7 +7085,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.messageId = value
          }
     }
-    public func setMessageId(value:UInt32) -> DiagnosticResponse.Builder {
+    public func setMessageId(_ value:UInt32) -> DiagnosticResponse.Builder {
       self.messageId = value
       return self
     }
@@ -7058,7 +7108,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.mode = value
          }
     }
-    public func setMode(value:UInt32) -> DiagnosticResponse.Builder {
+    public func setMode(_ value:UInt32) -> DiagnosticResponse.Builder {
       self.mode = value
       return self
     }
@@ -7081,7 +7131,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.pid = value
          }
     }
-    public func setPid(value:UInt32) -> DiagnosticResponse.Builder {
+    public func setPid(_ value:UInt32) -> DiagnosticResponse.Builder {
       self.pid = value
       return self
     }
@@ -7104,7 +7154,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.success = value
          }
     }
-    public func setSuccess(value:Bool) -> DiagnosticResponse.Builder {
+    public func setSuccess(_ value:Bool) -> DiagnosticResponse.Builder {
       self.success = value
       return self
     }
@@ -7127,7 +7177,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.negativeResponseCode = value
          }
     }
-    public func setNegativeResponseCode(value:UInt32) -> DiagnosticResponse.Builder {
+    public func setNegativeResponseCode(_ value:UInt32) -> DiagnosticResponse.Builder {
       self.negativeResponseCode = value
       return self
     }
@@ -7141,7 +7191,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
               return builderResult.hasPayload
          }
     }
-    public var payload:NSData {
+    public var payload:Data {
          get {
               return builderResult.payload
          }
@@ -7150,13 +7200,13 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.payload = value
          }
     }
-    public func setPayload(value:NSData) -> DiagnosticResponse.Builder {
+    public func setPayload(_ value:Data) -> DiagnosticResponse.Builder {
       self.payload = value
       return self
     }
     public func clearPayload() -> DiagnosticResponse.Builder{
          builderResult.hasPayload = false
-         builderResult.payload = NSData()
+         builderResult.payload = Data()
          return self
     }
     public var hasValue:Bool {
@@ -7173,7 +7223,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
              builderResult.value = value
          }
     }
-    public func setValue(value:Double) -> DiagnosticResponse.Builder {
+    public func setValue(_ value:Double) -> DiagnosticResponse.Builder {
       self.value = value
       return self
     }
@@ -7202,7 +7252,7 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
       let returnMe:DiagnosticResponse = builderResult
       return returnMe
     }
-    public func mergeFrom(other:DiagnosticResponse) throws -> DiagnosticResponse.Builder {
+    public func mergeFrom(_ other:DiagnosticResponse) throws -> DiagnosticResponse.Builder {
       if other == DiagnosticResponse() {
        return self
       }
@@ -7233,10 +7283,10 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> DiagnosticResponse.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> DiagnosticResponse.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DiagnosticResponse.Builder {
       let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
@@ -7277,38 +7327,38 @@ final public class DiagnosticResponse : GeneratedMessage, GeneratedMessageProtoc
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticResponse.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> DiagnosticResponse.Builder {
       let resultDecodedBuilder = DiagnosticResponse.Builder()
       if let jsonValueBus = jsonMap["bus"] as? NSNumber {
-        resultDecodedBuilder.bus = jsonValueBus.intValue
+        resultDecodedBuilder.bus = Int32(jsonValueBus.intValue)
       }
       if let jsonValueMessageId = jsonMap["messageId"] as? NSNumber {
-        resultDecodedBuilder.messageId = jsonValueMessageId.unsignedIntValue
+        resultDecodedBuilder.messageId = jsonValueMessageId.uint32Value
       }
       if let jsonValueMode = jsonMap["mode"] as? NSNumber {
-        resultDecodedBuilder.mode = jsonValueMode.unsignedIntValue
+        resultDecodedBuilder.mode = jsonValueMode.uint32Value
       }
       if let jsonValuePid = jsonMap["pid"] as? NSNumber {
-        resultDecodedBuilder.pid = jsonValuePid.unsignedIntValue
+        resultDecodedBuilder.pid = jsonValuePid.uint32Value
       }
       if let jsonValueSuccess = jsonMap["success"] as? Bool {
         resultDecodedBuilder.success = jsonValueSuccess
       }
       if let jsonValueNegativeResponseCode = jsonMap["negativeResponseCode"] as? NSNumber {
-        resultDecodedBuilder.negativeResponseCode = jsonValueNegativeResponseCode.unsignedIntValue
+        resultDecodedBuilder.negativeResponseCode = jsonValueNegativeResponseCode.uint32Value
       }
       if let jsonValuePayload = jsonMap["payload"] as? String {
-        resultDecodedBuilder.payload = NSData(base64EncodedString:jsonValuePayload, options: NSDataBase64DecodingOptions(rawValue:0))!
+        resultDecodedBuilder.payload = Data(base64EncodedString:jsonValuePayload, options: NSData.Base64DecodingOptions(rawValue:0))!
       }
       if let jsonValueValue = jsonMap["value"] as? NSNumber {
         resultDecodedBuilder.value = jsonValueValue.doubleValue
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> DiagnosticResponse.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    override class public func fromJSONToBuilder(data:Data) throws -> DiagnosticResponse.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try DiagnosticResponse.Builder.decodeToBuilder(jsDataCast)
     }
@@ -7322,47 +7372,47 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
     //Enum type declaration start 
 
     public enum Types:Int32, CustomDebugStringConvertible, CustomStringConvertible {
-      case String_ = 1
-      case Num = 2
-      case Bool = 3
+      case string_ = 1
+      case num = 2
+      case bool = 3
       public func toString() -> String {
         switch self {
-        case .String_: return "STRING"
-        case .Num: return "NUM"
-        case .Bool: return "BOOL"
+        case .string_: return "STRING"
+        case .num: return "NUM"
+        case .bool: return "BOOL"
         }
       }
-      public static func fromString(str:String) throws -> DynamicField.Types {
+      public static func fromString(_ str:String) throws -> DynamicField.Types {
         switch str {
-        case "STRING":  return .String_
-        case "NUM":  return .Num
-        case "BOOL":  return .Bool
-        default: throw ProtocolBuffersError.InvalidProtocolBuffer("Conversion String to Enum has failed.")
+        case "STRING":  return .string_
+        case "NUM":  return .num
+        case "BOOL":  return .bool
+        default: throw ProtocolBuffersError.invalidProtocolBuffer("Conversion String to Enum has failed.")
         }
       }
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
-      private func getDescription() -> String { 
+      fileprivate func getDescription() -> String { 
           switch self {
-              case .String_: return ".String_"
-              case .Num: return ".Num"
-              case .Bool: return ".Bool"
+              case .string_: return ".String_"
+              case .num: return ".Num"
+              case .bool: return ".Bool"
           }
       }
     }
 
     //Enum type declaration end 
 
-  public private(set) var types:DynamicField.Types = DynamicField.Types.String_
-  public private(set) var hasTypes:Bool = false
-  public private(set) var hasStringValue:Bool = false
-  public private(set) var stringValue:String = ""
+  public fileprivate(set) var types:DynamicField.Types = DynamicField.Types.string_
+  public fileprivate(set) var hasTypes:Bool = false
+  public fileprivate(set) var hasStringValue:Bool = false
+  public fileprivate(set) var stringValue:String = ""
 
-  public private(set) var hasNumericValue:Bool = false
-  public private(set) var numericValue:Double = Double(0)
+  public fileprivate(set) var hasNumericValue:Bool = false
+  public fileprivate(set) var numericValue:Double = Double(0)
 
-  public private(set) var hasBooleanValue:Bool = false
-  public private(set) var booleanValue:Bool = false
+  public fileprivate(set) var hasBooleanValue:Bool = false
+  public fileprivate(set) var booleanValue:Bool = false
 
   required public init() {
        super.init()
@@ -7370,7 +7420,7 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasTypes {
       try output.writeEnum(1, value:types.rawValue)
     }
@@ -7408,32 +7458,32 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<DynamicField> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<DynamicField> {
     var mergedArray = Array<DynamicField>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> DynamicField? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> DynamicField? {
     return try DynamicField.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> DynamicField {
+  public class func parseFromData(_ data:Data) throws -> DynamicField {
     return try DynamicField.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> DynamicField {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> DynamicField {
     return try DynamicField.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> DynamicField {
+  public class func parseFromInputStream(_ input:InputStream) throws -> DynamicField {
     return try DynamicField.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> DynamicField {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> DynamicField {
     return try DynamicField.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> DynamicField {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> DynamicField {
     return try DynamicField.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DynamicField {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DynamicField {
     return try DynamicField.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> DynamicField.Builder {
@@ -7442,45 +7492,45 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
   public func getBuilder() -> DynamicField.Builder {
     return classBuilder() as! DynamicField.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return DynamicField.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return DynamicField.Builder()
   }
   public func toBuilder() throws -> DynamicField.Builder {
     return try DynamicField.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:DynamicField) throws -> DynamicField.Builder {
+  public class func builderWithPrototype(_ prototype:DynamicField) throws -> DynamicField.Builder {
     return try DynamicField.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasTypes {
-      jsonMap["type"] = types.toString()
+      jsonMap["type"] = types.toString() as AnyObject?
     }
     if hasStringValue {
-      jsonMap["stringValue"] = stringValue
+      jsonMap["stringValue"] = stringValue as AnyObject?
     }
     if hasNumericValue {
-      jsonMap["numericValue"] = NSNumber(double:numericValue)
+      jsonMap["numericValue"] = NSNumber(value: numericValue as Double)
     }
     if hasBooleanValue {
-      jsonMap["booleanValue"] = booleanValue
+      jsonMap["booleanValue"] = booleanValue as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> DynamicField {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> DynamicField {
     return try DynamicField.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> DynamicField {
+  class public func fromJSON(_ data:Data) throws -> DynamicField {
     return try DynamicField.Builder.fromJSONToBuilder(data).build()
   }
-  override public func getDescription(indent:String) throws -> String {
+  public func getDescription(_ indent:String) throws -> String {
     var output = ""
     if (hasTypes) {
       output += "\(indent) types: \(types.description)\n"
@@ -7526,13 +7576,13 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
   override public func className() -> String {
       return "DynamicField"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return DynamicField.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:DynamicField = DynamicField()
+    fileprivate var builderResult:DynamicField = DynamicField()
     public func getMessage() -> DynamicField {
         return builderResult
     }
@@ -7554,13 +7604,13 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
               builderResult.types = value
           }
       }
-      public func setTypes(value:DynamicField.Types) -> DynamicField.Builder {
+      public func setTypes(_ value:DynamicField.Types) -> DynamicField.Builder {
         self.types = value
         return self
       }
       public func clearTypes() -> DynamicField.Builder {
          builderResult.hasTypes = false
-         builderResult.types = .String_
+         builderResult.types = .string_
          return self
       }
     public var hasStringValue:Bool {
@@ -7577,7 +7627,7 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.stringValue = value
          }
     }
-    public func setStringValue(value:String) -> DynamicField.Builder {
+    public func setStringValue(_ value:String) -> DynamicField.Builder {
       self.stringValue = value
       return self
     }
@@ -7600,7 +7650,7 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.numericValue = value
          }
     }
-    public func setNumericValue(value:Double) -> DynamicField.Builder {
+    public func setNumericValue(_ value:Double) -> DynamicField.Builder {
       self.numericValue = value
       return self
     }
@@ -7623,7 +7673,7 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.booleanValue = value
          }
     }
-    public func setBooleanValue(value:Bool) -> DynamicField.Builder {
+    public func setBooleanValue(_ value:Bool) -> DynamicField.Builder {
       self.booleanValue = value
       return self
     }
@@ -7652,7 +7702,7 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
       let returnMe:DynamicField = builderResult
       return returnMe
     }
-    public func mergeFrom(other:DynamicField) throws -> DynamicField.Builder {
+    public func mergeFrom(_ other:DynamicField) throws -> DynamicField.Builder {
       if other == DynamicField() {
        return self
       }
@@ -7671,11 +7721,11 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> DynamicField.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> DynamicField.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DynamicField.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> DynamicField.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -7688,7 +7738,7 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
           if let enumstypes = DynamicField.Types(rawValue:valueInttypes){
                types = enumstypes
           } else {
-               try unknownFieldsBuilder.mergeVarintField(1, value:Int64(valueInttypes))
+               try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueInttypes))
           }
 
         case 18:
@@ -7708,7 +7758,7 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> DynamicField.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> DynamicField.Builder {
       let resultDecodedBuilder = DynamicField.Builder()
       if let jsonValueTypes = jsonMap["type"] as? String {
         resultDecodedBuilder.types = try DynamicField.Types.fromString(jsonValueTypes)
@@ -7724,10 +7774,10 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> DynamicField.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> DynamicField.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try DynamicField.Builder.decodeToBuilder(jsDataCast)
     }
@@ -7736,28 +7786,28 @@ final public class DynamicField : GeneratedMessage, GeneratedMessageProtocol {
 }
 
 final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
-  public private(set) var hasName:Bool = false
-  public private(set) var name:String = ""
+  public fileprivate(set) var hasName:Bool = false
+  public fileprivate(set) var name:String = ""
 
-  public private(set) var hasValue:Bool = false
-  public private(set) var value:DynamicField!
-  public private(set) var hasEvent:Bool = false
-  public private(set) var event:DynamicField!
+  public fileprivate(set) var hasValue:Bool = false
+  public fileprivate(set) var value:DynamicField!
+  public fileprivate(set) var hasEvent:Bool = false
+  public fileprivate(set) var event:DynamicField!
   required public init() {
        super.init()
   }
   override public func isInitialized() -> Bool {
    return true
   }
-  override public func writeToCodedOutputStream(output:CodedOutputStream) throws {
+  public func writeToCodedOutputStream(_ output:CodedOutputStream) throws {
     if hasName {
-      try output.writeString(1, value:name)
+      try output.writeString(fieldNumber: 1, value:name)
     }
     if hasValue {
-      try output.writeMessage(2, value:value)
+      try output.writeMessage(fieldNumber: 2, value:value)
     }
     if hasEvent {
-      try output.writeMessage(3, value:event)
+      try output.writeMessage(fieldNumber: 3, value:event)
     }
     try unknownFields.writeToCodedOutputStream(output)
   }
@@ -7769,15 +7819,15 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
 
     serialize_size = 0
     if hasName {
-      serialize_size += name.computeStringSize(1)
+      serialize_size += name.computeStringSize(fieldNumber: 1)
     }
     if hasValue {
-        if let varSizevalue = value?.computeMessageSize(2) {
+        if let varSizevalue = value?.computeMessageSize(fieldNumber: 2) {
             serialize_size += varSizevalue
         }
     }
     if hasEvent {
-        if let varSizeevent = event?.computeMessageSize(3) {
+        if let varSizeevent = event?.computeMessageSize(fieldNumber: 3) {
             serialize_size += varSizeevent
         }
     }
@@ -7785,32 +7835,32 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
     memoizedSerializedSize = serialize_size
     return serialize_size
   }
-  public class func parseArrayDelimitedFromInputStream(input:NSInputStream) throws -> Array<SimpleMessage> {
+  public class func parseArrayDelimitedFromInputStream(_ input:InputStream) throws -> Array<SimpleMessage> {
     var mergedArray = Array<SimpleMessage>()
     while let value = try parseFromDelimitedFromInputStream(input) {
       mergedArray += [value]
     }
     return mergedArray
   }
-  public class func parseFromDelimitedFromInputStream(input:NSInputStream) throws -> SimpleMessage? {
+  public class func parseFromDelimitedFromInputStream(_ input:InputStream) throws -> SimpleMessage? {
     return try SimpleMessage.Builder().mergeDelimitedFromInputStream(input)?.build()
   }
-  public class func parseFromData(data:NSData) throws -> SimpleMessage {
+  public class func parseFromData(_ data:Data) throws -> SimpleMessage {
     return try SimpleMessage.Builder().mergeFromData(data, extensionRegistry:OpenxcRoot.sharedInstance.extensionRegistry).build()
   }
-  public class func parseFromData(data:NSData, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage {
+  public class func parseFromData(_ data:Data, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage {
     return try SimpleMessage.Builder().mergeFromData(data, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromInputStream(input:NSInputStream) throws -> SimpleMessage {
+  public class func parseFromInputStream(_ input:InputStream) throws -> SimpleMessage {
     return try SimpleMessage.Builder().mergeFromInputStream(input).build()
   }
-  public class func parseFromInputStream(input:NSInputStream, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage {
+  public class func parseFromInputStream(_ input:InputStream, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage {
     return try SimpleMessage.Builder().mergeFromInputStream(input, extensionRegistry:extensionRegistry).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream) throws -> SimpleMessage {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream) throws -> SimpleMessage {
     return try SimpleMessage.Builder().mergeFromCodedInputStream(input).build()
   }
-  public class func parseFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage {
+  public class func parseFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage {
     return try SimpleMessage.Builder().mergeFromCodedInputStream(input, extensionRegistry:extensionRegistry).build()
   }
   public class func getBuilder() -> SimpleMessage.Builder {
@@ -7819,39 +7869,39 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
   public func getBuilder() -> SimpleMessage.Builder {
     return classBuilder() as! SimpleMessage.Builder
   }
-  override public class func classBuilder() -> MessageBuilder {
+  public class func classBuilder() -> MessageBuilder {
     return SimpleMessage.Builder()
   }
-  override public func classBuilder() -> MessageBuilder {
+  public func classBuilder() -> MessageBuilder {
     return SimpleMessage.Builder()
   }
   public func toBuilder() throws -> SimpleMessage.Builder {
     return try SimpleMessage.builderWithPrototype(self)
   }
-  public class func builderWithPrototype(prototype:SimpleMessage) throws -> SimpleMessage.Builder {
+  public class func builderWithPrototype(_ prototype:SimpleMessage) throws -> SimpleMessage.Builder {
     return try SimpleMessage.Builder().mergeFrom(prototype)
   }
-  override public func encode() throws -> Dictionary<String,AnyObject> {
+  public func encode() throws -> Dictionary<String,AnyObject> {
     guard isInitialized() else {
-      throw ProtocolBuffersError.InvalidProtocolBuffer("Uninitialized Message")
+      throw ProtocolBuffersError.invalidProtocolBuffer("Uninitialized Message")
     }
 
     var jsonMap:Dictionary<String,AnyObject> = Dictionary<String,AnyObject>()
     if hasName {
-      jsonMap["name"] = name
+      jsonMap["name"] = name as AnyObject?
     }
     if hasValue {
-      jsonMap["value"] = try value.encode()
+      jsonMap["value"] = try value.encode() as AnyObject?
     }
     if hasEvent {
-      jsonMap["event"] = try event.encode()
+      jsonMap["event"] = try event.encode() as AnyObject?
     }
     return jsonMap
   }
-  override class public func decode(jsonMap:Dictionary<String,AnyObject>) throws -> SimpleMessage {
+  class public func decode(_ jsonMap:Dictionary<String,AnyObject>) throws -> SimpleMessage {
     return try SimpleMessage.Builder.decodeToBuilder(jsonMap).build()
   }
-  override class public func fromJSON(data:NSData) throws -> SimpleMessage {
+  override class public func fromJSON(data:Data) throws -> SimpleMessage {
     return try SimpleMessage.Builder.fromJSONToBuilder(data).build()
   }
   override public func getDescription(indent:String) throws -> String {
@@ -7873,7 +7923,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       output += "\(indent) }\n"
     }
-    output += unknownFields.getDescription(indent)
+    output += unknownFields.getDescription(indent: indent)
     return output
   }
   override public var hashValue:Int {
@@ -7906,13 +7956,13 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
   override public func className() -> String {
       return "SimpleMessage"
   }
-  override public func classMetaType() -> GeneratedMessage.Type {
+  public func classMetaType() -> GeneratedMessage.Type {
       return SimpleMessage.self
   }
   //Meta information declaration end
 
   final public class Builder : GeneratedMessageBuilder {
-    private var builderResult:SimpleMessage = SimpleMessage()
+    fileprivate var builderResult:SimpleMessage = SimpleMessage()
     public func getMessage() -> SimpleMessage {
         return builderResult
     }
@@ -7934,7 +7984,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.name = value
          }
     }
-    public func setName(value:String) -> SimpleMessage.Builder {
+    public func setName(_ value:String) -> SimpleMessage.Builder {
       self.name = value
       return self
     }
@@ -7960,7 +8010,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.value = value
          }
     }
-    private var valueBuilder_:DynamicField.Builder! {
+    fileprivate var valueBuilder_:DynamicField.Builder! {
          didSet {
             builderResult.hasValue = true
          }
@@ -7975,11 +8025,11 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return valueBuilder_
     }
-    public func setValue(value:DynamicField!) -> SimpleMessage.Builder {
+    public func setValue(_ value:DynamicField!) -> SimpleMessage.Builder {
       self.value = value
       return self
     }
-    public func mergeValue(value:DynamicField) throws -> SimpleMessage.Builder {
+    public func mergeValue(_ value:DynamicField) throws -> SimpleMessage.Builder {
       if builderResult.hasValue {
         builderResult.value = try DynamicField.builderWithPrototype(builderResult.value).mergeFrom(value).buildPartial()
       } else {
@@ -8011,7 +8061,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
              builderResult.event = value
          }
     }
-    private var eventBuilder_:DynamicField.Builder! {
+    fileprivate var eventBuilder_:DynamicField.Builder! {
          didSet {
             builderResult.hasEvent = true
          }
@@ -8026,11 +8076,11 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return eventBuilder_
     }
-    public func setEvent(value:DynamicField!) -> SimpleMessage.Builder {
+    public func setEvent(_ value:DynamicField!) -> SimpleMessage.Builder {
       self.event = value
       return self
     }
-    public func mergeEvent(value:DynamicField) throws -> SimpleMessage.Builder {
+    public func mergeEvent(_ value:DynamicField) throws -> SimpleMessage.Builder {
       if builderResult.hasEvent {
         builderResult.event = try DynamicField.builderWithPrototype(builderResult.event).mergeFrom(value).buildPartial()
       } else {
@@ -8065,7 +8115,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
       let returnMe:SimpleMessage = builderResult
       return returnMe
     }
-    public func mergeFrom(other:SimpleMessage) throws -> SimpleMessage.Builder {
+    public func mergeFrom(_ other:SimpleMessage) throws -> SimpleMessage.Builder {
       if other == SimpleMessage() {
        return self
       }
@@ -8081,11 +8131,11 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
       try mergeUnknownFields(other.unknownFields)
       return self
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream) throws -> SimpleMessage.Builder {
+    public func mergeFromCodedInputStream(_ input:CodedInputStream) throws -> SimpleMessage.Builder {
          return try mergeFromCodedInputStream(input, extensionRegistry:ExtensionRegistry())
     }
-    override public func mergeFromCodedInputStream(input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage.Builder {
-      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(self.unknownFields)
+    public func mergeFromCodedInputStream(_ input:CodedInputStream, extensionRegistry:ExtensionRegistry) throws -> SimpleMessage.Builder {
+      let unknownFieldsBuilder:UnknownFieldSet.Builder = try UnknownFieldSet.builderWithUnknownFields(copyFrom: self.unknownFields)
       while (true) {
         let protobufTag = try input.readTag()
         switch protobufTag {
@@ -8101,7 +8151,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
           if hasValue {
             try subBuilder.mergeFrom(value)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           value = subBuilder.buildPartial()
 
         case 26:
@@ -8109,7 +8159,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
           if hasEvent {
             try subBuilder.mergeFrom(event)
           }
-          try input.readMessage(subBuilder, extensionRegistry:extensionRegistry)
+          try input.readMessage(builder: subBuilder, extensionRegistry:extensionRegistry)
           event = subBuilder.buildPartial()
 
         default:
@@ -8120,7 +8170,7 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
         }
       }
     }
-    override class public func decodeToBuilder(jsonMap:Dictionary<String,AnyObject>) throws -> SimpleMessage.Builder {
+    class public func decodeToBuilder(_ jsonMap:Dictionary<String,AnyObject>) throws -> SimpleMessage.Builder {
       let resultDecodedBuilder = SimpleMessage.Builder()
       if let jsonValueName = jsonMap["name"] as? String {
         resultDecodedBuilder.name = jsonValueName
@@ -8135,10 +8185,10 @@ final public class SimpleMessage : GeneratedMessage, GeneratedMessageProtocol {
       }
       return resultDecodedBuilder
     }
-    override class public func fromJSONToBuilder(data:NSData) throws -> SimpleMessage.Builder {
-      let jsonData = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+    class public func fromJSONToBuilder(_ data:Data) throws -> SimpleMessage.Builder {
+      let jsonData = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions(rawValue: 0))
       guard let jsDataCast = jsonData as? Dictionary<String,AnyObject> else {
-        throw ProtocolBuffersError.InvalidProtocolBuffer("Invalid JSON data")
+        throw ProtocolBuffersError.invalidProtocolBuffer("Invalid JSON data")
       }
       return try SimpleMessage.Builder.decodeToBuilder(jsDataCast)
     }

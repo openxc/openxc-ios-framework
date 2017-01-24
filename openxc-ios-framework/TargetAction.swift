@@ -21,7 +21,7 @@ import Foundation
 
 
 protocol TargetAction {
-  func performAction(rsp:NSDictionary)
+  func performAction(_ rsp:NSDictionary)
   func returnKey() -> NSString
 }
 
@@ -30,7 +30,7 @@ struct TargetActionWrapper<T: AnyObject> : TargetAction {
   weak var target: T?
   let action: (T) -> (NSDictionary) -> ()
   
-  func performAction(rsp:NSDictionary) -> () {
+  func performAction(_ rsp:NSDictionary) -> () {
     if let t = target {
       action(t)(rsp)
     }

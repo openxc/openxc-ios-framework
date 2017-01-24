@@ -12,44 +12,43 @@
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
 		3AAF15BC1D9242DF0094E9D9 /* Openxc.proto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AAF15BB1D9242DF0094E9D9 /* Openxc.proto.swift */; };
-		E708CCBF1DE439FE00D0AD14 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A57C2B71D9D6DC900A074EE /* ProtocolBuffers.framework */; };
+		E77269F41E30B1E3001267D3 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
 		E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */; };
 		E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */; };
-		E7C63D501DDC9C3500EE9790 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A57C2B71D9D6DC900A074EE /* ProtocolBuffers.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3A57C2B61D9D6DC900A074EE /* PBXContainerItemProxy */ = {
+		E77269EA1E30B1DE001267D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */;
+			containerPortal = E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3F85569919C71BCF003802F2;
 			remoteInfo = ProtocolBuffers;
 		};
-		3A57C2B81D9D6DC900A074EE /* PBXContainerItemProxy */ = {
+		E77269EC1E30B1DE001267D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */;
+			containerPortal = E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3F8556A419C71BCF003802F2;
 			remoteInfo = UnitTesting;
 		};
-		3A57C2BA1D9D6DC900A074EE /* PBXContainerItemProxy */ = {
+		E77269EE1E30B1DE001267D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */;
+			containerPortal = E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3F41061C1A1A667700742090;
 			remoteInfo = "ProtocolBuffers(OSX)";
 		};
-		3A57C2BC1D9D6DC900A074EE /* PBXContainerItemProxy */ = {
+		E77269F01E30B1DE001267D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */;
+			containerPortal = E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3F4106261A1A667800742090;
 			remoteInfo = "UnitTesting(OSX)";
 		};
-		3A57C2BE1D9D6DC900A074EE /* PBXContainerItemProxy */ = {
+		E77269F21E30B1DE001267D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */;
+			containerPortal = E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 3F31A1A91BA199C000F477C1;
 			remoteInfo = "ProtocolBuffers(watchOS)";
@@ -70,8 +69,8 @@
 		3A1017111D5941D8006C5E93 /* VehicleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleManager.swift; sourceTree = "<group>"; };
 		3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenXCClasses.swift; sourceTree = "<group>"; };
 		3A1017331D5BA223006C5E93 /* TargetAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetAction.swift; sourceTree = "<group>"; };
-		3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ProtocolBuffers.xcodeproj; path = protobuf/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj; sourceTree = "<group>"; };
 		3AAF15BB1D9242DF0094E9D9 /* Openxc.proto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Openxc.proto.swift; sourceTree = "<group>"; };
+		E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ProtocolBuffers.xcodeproj; path = "protobuf-swift/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj"; sourceTree = "<group>"; };
 		E7C63D391DDC56BB00EE9790 /* openXCiOSFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = openXCiOSFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openXCiOSFrameworkTests.swift; sourceTree = "<group>"; };
 		E7C63D3D1DDC56BB00EE9790 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -82,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E708CCBF1DE439FE00D0AD14 /* ProtocolBuffers.framework in Frameworks */,
+				E77269F41E30B1E3001267D3 /* ProtocolBuffers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,7 +89,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7C63D501DDC9C3500EE9790 /* ProtocolBuffers.framework in Frameworks */,
 				E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,10 +99,11 @@
 		3A1016FC1D5941C7006C5E93 = {
 			isa = PBXGroup;
 			children = (
-				3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */,
+				E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */,
 				3A1017081D5941C8006C5E93 /* openxc-ios-framework */,
 				E7C63D3A1DDC56BB00EE9790 /* openXCiOSFrameworkTests */,
 				3A1017071D5941C8006C5E93 /* Products */,
+				E77269CF1E30B1BF001267D3 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -130,14 +129,21 @@
 			path = "openxc-ios-framework";
 			sourceTree = "<group>";
 		};
-		3A57C2AF1D9D6DC900A074EE /* Products */ = {
+		E77269CF1E30B1BF001267D3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3A57C2B71D9D6DC900A074EE /* ProtocolBuffers.framework */,
-				3A57C2B91D9D6DC900A074EE /* ProtocolBuffersTests.xctest */,
-				3A57C2BB1D9D6DC900A074EE /* ProtocolBuffers.framework */,
-				3A57C2BD1D9D6DC900A074EE /* UnitTesting(OSX).xctest */,
-				3A57C2BF1D9D6DC900A074EE /* ProtocolBuffers.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E77269E31E30B1DE001267D3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */,
+				E77269ED1E30B1DE001267D3 /* ProtocolBuffersTests.xctest */,
+				E77269EF1E30B1DE001267D3 /* ProtocolBuffers.framework */,
+				E77269F11E30B1DE001267D3 /* UnitTesting(OSX).xctest */,
+				E77269F31E30B1DE001267D3 /* ProtocolBuffers.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -213,9 +219,11 @@
 				TargetAttributes = {
 					3A1017051D5941C8006C5E93 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0820;
 					};
 					E7C63D381DDC56BB00EE9790 = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -231,8 +239,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 3A57C2AF1D9D6DC900A074EE /* Products */;
-					ProjectRef = 3A57C2AE1D9D6DC900A074EE /* ProtocolBuffers.xcodeproj */;
+					ProductGroup = E77269E31E30B1DE001267D3 /* Products */;
+					ProjectRef = E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -244,39 +252,39 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		3A57C2B71D9D6DC900A074EE /* ProtocolBuffers.framework */ = {
+		E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = ProtocolBuffers.framework;
-			remoteRef = 3A57C2B61D9D6DC900A074EE /* PBXContainerItemProxy */;
+			remoteRef = E77269EA1E30B1DE001267D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3A57C2B91D9D6DC900A074EE /* ProtocolBuffersTests.xctest */ = {
+		E77269ED1E30B1DE001267D3 /* ProtocolBuffersTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = ProtocolBuffersTests.xctest;
-			remoteRef = 3A57C2B81D9D6DC900A074EE /* PBXContainerItemProxy */;
+			remoteRef = E77269EC1E30B1DE001267D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3A57C2BB1D9D6DC900A074EE /* ProtocolBuffers.framework */ = {
+		E77269EF1E30B1DE001267D3 /* ProtocolBuffers.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = ProtocolBuffers.framework;
-			remoteRef = 3A57C2BA1D9D6DC900A074EE /* PBXContainerItemProxy */;
+			remoteRef = E77269EE1E30B1DE001267D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3A57C2BD1D9D6DC900A074EE /* UnitTesting(OSX).xctest */ = {
+		E77269F11E30B1DE001267D3 /* UnitTesting(OSX).xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = "UnitTesting(OSX).xctest";
-			remoteRef = 3A57C2BC1D9D6DC900A074EE /* PBXContainerItemProxy */;
+			remoteRef = E77269F01E30B1DE001267D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		3A57C2BF1D9D6DC900A074EE /* ProtocolBuffers.framework */ = {
+		E77269F31E30B1DE001267D3 /* ProtocolBuffers.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = ProtocolBuffers.framework;
-			remoteRef = 3A57C2BE1D9D6DC900A074EE /* PBXContainerItemProxy */;
+			remoteRef = E77269F21E30B1DE001267D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -442,6 +450,7 @@
 				PRODUCT_NAME = openXCiOSFramework;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -464,6 +473,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.buglabs.openxc-ios-framework";
 				PRODUCT_NAME = openXCiOSFramework;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -474,6 +484,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ford.openXCiOSFrameworkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Debug;
@@ -485,6 +496,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ford.openXCiOSFrameworkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Release;
