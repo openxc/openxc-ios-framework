@@ -10,6 +10,7 @@
 import Foundation
 import CoreBluetooth
 import ProtocolBuffers
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -1024,7 +1025,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       } else {
         sendBytes = cmdToSend.subdata(with: rangedata)
         let leftdata = NSMakeRange(20,cmdToSend.length-20)
-        cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata)) as Data as Data
+        cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata)) as! NSMutableData
       }
       // write the byte chunk to the VI
       openXCPeripheral.writeValue(sendBytes, for: openXCWriteChar, type: CBCharacteristicWriteType.withResponse)
@@ -1264,7 +1265,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         if (!decoded) {
           // should never get here!
           if let act = managerCallback {
-            act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+            act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
           }
         }
 
@@ -1603,7 +1604,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           } else {
             // should never get here!
             if let act = managerCallback {
-              act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+              act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
             }
           }
           
@@ -1611,7 +1612,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         } else {
           // what the heck is it??
           if let act = managerCallback {
-            act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+            act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
           }
        
         }
@@ -1672,7 +1673,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         // the json decode failed for some reason, usually data lost in connection
         vmlog("bad json")
         if let act = managerCallback {
-          act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as Dictionary)
+          act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
         }
       }
       
@@ -1719,14 +1720,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       catch {
         // couldn't write to the trace output file
         if let act = managerCallback {
-          act.performAction(["status":VehicleManagerStatusMessage.trace_SINK_WRITE_ERROR.rawValue] as Dictionary)
+          act.performAction(["status":VehicleManagerStatusMessage.trace_SINK_WRITE_ERROR.rawValue] as NSMutableDictionary)
         }
       }
       
     } else {
       // couldn't find trace output file
       if let act = managerCallback {
-        act.performAction(["status":VehicleManagerStatusMessage.trace_SINK_WRITE_ERROR.rawValue] as Dictionary)
+        act.performAction(["status":VehicleManagerStatusMessage.trace_SINK_WRITE_ERROR.rawValue] as NSMutableDictionary)
       }
     }
     
@@ -1759,7 +1760,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         traceFilesourceTimer.invalidate()
         // notify the client app if the callback is enabled
         if let act = managerCallback {
-          act.performAction(["status":VehicleManagerStatusMessage.trace_SOURCE_END.rawValue] as Dictionary)
+          act.performAction(["status":VehicleManagerStatusMessage.trace_SOURCE_END.rawValue] as NSMutableDictionary)
         }
       }
       
