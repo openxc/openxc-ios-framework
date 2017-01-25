@@ -11,6 +11,7 @@ import Foundation
 import CoreBluetooth
 import ProtocolBuffers
 
+
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -1067,7 +1068,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         var msg : VehicleMessage
         do {
-          msg = try VehicleMessage.parseFromData(data_chunk as Data)
+            msg = try VehicleMessage.parseFrom(data: data_chunk as Data)
           print(msg)
         } catch {
           print("protobuf parse error")
