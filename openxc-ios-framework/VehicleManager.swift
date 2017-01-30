@@ -1866,7 +1866,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // Core Bluetooth has disconnected from BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
     vmlog("in centralManager:didDisconnectPeripheral:")
-    vmlog(error)
+    vmlog(error!)
     
     // just reconnect automatically to the same device for now
     if peripheral == openXCPeripheral {
@@ -1996,7 +1996,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // don't need to save or use it in this case
   open func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
     vmlog("in peripheral:didDiscoverDescriptorsForCharacteristic")
-    vmlog(characteristic.descriptors)
+    vmlog(characteristic.descriptors as Any)
   }
   
   
