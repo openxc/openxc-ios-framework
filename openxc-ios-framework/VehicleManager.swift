@@ -718,58 +718,58 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if !jsonMode {
       // in protobuf mode, build the command message
       let cbuild = ControlCommand.Builder()
-      if cmd.command == .version {cbuild.setType(.version)}
-      if cmd.command == .device_id {cbuild.setType(.deviceId)}
+      if cmd.command == .version {_ = cbuild.setType(.version)}
+      if cmd.command == .device_id {_ = cbuild.setType(.deviceId)}
       if cmd.command == .passthrough {
         let cbuild2 = PassthroughModeControlCommand.Builder()
-        cbuild2.setBus(Int32(cmd.bus))
-        cbuild2.setEnabled(cmd.enabled)
-        cbuild.setPassthroughModeRequest(cbuild2.buildPartial())
-        cbuild.setType(.passthrough)
+        _ = cbuild2.setBus(Int32(cmd.bus))
+        _ = cbuild2.setEnabled(cmd.enabled)
+        _ = cbuild.setPassthroughModeRequest(cbuild2.buildPartial())
+        _ = cbuild.setType(.passthrough)
       }
       if cmd.command == .af_bypass {
         let cbuild2 = AcceptanceFilterBypassCommand.Builder()
-        cbuild2.setBus(Int32(cmd.bus))
-        cbuild2.setBypass(cmd.bypass)
-        cbuild.setAcceptanceFilterBypassCommand(cbuild2.buildPartial())
-        cbuild.setType(.acceptanceFilterBypass)
+        _ = cbuild2.setBus(Int32(cmd.bus))
+        _ = cbuild2.setBypass(cmd.bypass)
+        _ = cbuild.setAcceptanceFilterBypassCommand(cbuild2.buildPartial())
+        _ = cbuild.setType(.acceptanceFilterBypass)
       }
       if cmd.command == .payload_format {
         let cbuild2 = PayloadFormatCommand.Builder()
-        if cmd.format == "json" {cbuild2.setFormat(.json)}
-        if cmd.format == "protobuf" {cbuild2.setFormat(.protobuf)}
-        cbuild.setPayloadFormatCommand(cbuild2.buildPartial())
-        cbuild.setType(.payloadFormat)
+        if cmd.format == "json" {_ = cbuild2.setFormat(.json)}
+        if cmd.format == "protobuf" {_ = cbuild2.setFormat(.protobuf)}
+        _ = cbuild.setPayloadFormatCommand(cbuild2.buildPartial())
+        _ = cbuild.setType(.payloadFormat)
       }
       if cmd.command == .predefined_odb2 {
         let cbuild2 = PredefinedObd2RequestsCommand.Builder()
-        cbuild2.setEnabled(cmd.enabled)
-        cbuild.setPredefinedObd2RequestsCommand(cbuild2.buildPartial())
-        cbuild.setType(.predefinedObd2Requests)
+        _ = cbuild2.setEnabled(cmd.enabled)
+        _ = cbuild.setPredefinedObd2RequestsCommand(cbuild2.buildPartial())
+        _ = cbuild.setType(.predefinedObd2Requests)
       }
       if cmd.command == .modem_configuration {
-        cbuild.setType(.modemConfiguration)
+        _ = cbuild.setType(.modemConfiguration)
         let cbuild2 = ModemConfigurationCommand.Builder()
         let srv = ServerConnectSettings.Builder()
-        srv.setHost(cmd.server_host as String)
-        srv.setPort(UInt32(cmd.server_port))
-        cbuild2.setServerConnectSettings(srv.buildPartial())
-        cbuild.setModemConfigurationCommand(cbuild2.buildPartial())
+        _ = srv.setHost(cmd.server_host as String)
+        _ = srv.setPort(UInt32(cmd.server_port))
+        _ = cbuild2.setServerConnectSettings(srv.buildPartial())
+        _ = cbuild.setModemConfigurationCommand(cbuild2.buildPartial())
       }
       if cmd.command == .rtc_configuration {
         let cbuild2 = RtcconfigurationCommand.Builder()
-        cbuild2.setUnixTime(UInt32(cmd.unix_time))
-        cbuild.setRtcConfigurationCommand(cbuild2.buildPartial())
-        cbuild.setType(.rtcConfiguration)
+        _ = cbuild2.setUnixTime(UInt32(cmd.unix_time))
+        _ = cbuild.setRtcConfigurationCommand(cbuild2.buildPartial())
+        _ = cbuild.setType(.rtcConfiguration)
       }
-      if cmd.command == .sd_mount_status {cbuild.setType(.sdMountStatus)}
+      if cmd.command == .sd_mount_status {_ = cbuild.setType(.sdMountStatus)}
 
       let mbuild = VehicleMessage.Builder()
-      mbuild.setType(.controlCommand)
+      _ = mbuild.setType(.controlCommand)
 
       do {
         let cmsg = try cbuild.build()
-        mbuild.setControlCommand(cmsg)
+        _ = mbuild.setControlCommand(cmsg)
         let mmsg = try mbuild.build()
         print (mmsg)
         
@@ -845,29 +845,29 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if !jsonMode {
       // in protobuf mode, build diag message
       let cbuild = ControlCommand.Builder()
-      cbuild.setType(.diagnostic)
+      _ = cbuild.setType(.diagnostic)
       let c2build = DiagnosticControlCommand.Builder()
-      c2build.setAction(.add)
+      _ = c2build.setAction(.add)
       let dbuild = DiagnosticRequest.Builder()
-      dbuild.setBus(Int32(cmd.bus))
-      dbuild.setMessageId(UInt32(cmd.message_id))
-      dbuild.setMode(UInt32(cmd.mode))
+      _ = dbuild.setBus(Int32(cmd.bus))
+      _ = dbuild.setMessageId(UInt32(cmd.message_id))
+      _ = dbuild.setMode(UInt32(cmd.mode))
       if cmd.pid != nil {
-        dbuild.setPid(UInt32(cmd.pid!))
+        _ = dbuild.setPid(UInt32(cmd.pid!))
       }
       if cmd.frequency>0 {
-        dbuild.setFrequency(Double(cmd.frequency))
+       _ =  dbuild.setFrequency(Double(cmd.frequency))
       }
       let mbuild = VehicleMessage.Builder()
-      mbuild.setType(.diagnostic)
+      _ = mbuild.setType(.diagnostic)
       
       do {
         let dmsg = try dbuild.build()
-        c2build.setRequest(dmsg)
+        _ = c2build.setRequest(dmsg)
         let c2msg = try c2build.build()
-        cbuild.setDiagnosticRequest(c2msg)
+        _ = cbuild.setDiagnosticRequest(c2msg)
         let cmsg = try cbuild.build()
-        mbuild.setControlCommand(cmsg)
+        _ = mbuild.setControlCommand(cmsg)
         let mmsg = try mbuild.build()
         print (mmsg)
         
@@ -924,8 +924,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if !jsonMode {
       // in protobuf mode, build the CAN message
       let cbuild = CanMessage.Builder()
-      cbuild.setBus(Int32(cmd.bus))
-      cbuild.setId(UInt32(cmd.id))
+      _ = cbuild.setBus(Int32(cmd.bus))
+      _ = cbuild.setId(UInt32(cmd.id))
       let data = NSMutableData()
       var str : NSString = cmd.data
       while str.length>0 {
@@ -934,14 +934,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         data.append(&num, length:1)
         str = str.substring(from: 2) as NSString
       }
-      cbuild.setData(data as Data)
+      _ = cbuild.setData(data as Data)
 
       let mbuild = VehicleMessage.Builder()
-      mbuild.setType(.can)
+      _ = mbuild.setType(.can)
       
       do {
         let cmsg = try cbuild.build()
-        mbuild.setCanMessage(cmsg)
+        _ = mbuild.setCanMessage(cmsg)
         let mmsg = try mbuild.build()
         print (mmsg)
         

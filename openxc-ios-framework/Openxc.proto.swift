@@ -4,6 +4,7 @@
 import Foundation
 import ProtocolBuffers
 
+// FIXME: Change all setter methods, they return object
 
 public func == (lhs: VehicleMessage, rhs: VehicleMessage) -> Bool {
   if (lhs === rhs) {
