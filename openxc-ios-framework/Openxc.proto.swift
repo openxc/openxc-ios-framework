@@ -271,6 +271,18 @@ final public class VehicleMessage : GeneratedMessage {
       case controlCommand = 4
       case commandResponse = 5
 
+        //vkanishk
+        public func toString() -> String {
+            switch self {
+            case .can: return "CAN"
+            case .simple: return "SIMPLE"
+            case .diagnostic: return "DIAGNOSTIC"
+            case .controlCommand: return "CONTROL_COMMAND"
+            case .commandResponse: return "COMMAND_RESPONSE"
+            }
+        }
+        //vkanishk
+        
       public var debugDescription:String { return getDescription() }
       public var description:String { return getDescription() }
       private func getDescription() -> String { 
@@ -285,8 +297,9 @@ final public class VehicleMessage : GeneratedMessage {
     }
 
     //Enum type declaration end 
-
-  public fileprivate(set) var type:VehicleMessage.`Type` = VehicleMessage.`Type`.can
+    public fileprivate(set) var type:VehicleMessage.`Type` = .can
+    //  public fileprivate(set) var type:VehicleMessage.`Type` = VehicleMessage.`Type`.can
+    
   public fileprivate(set) var hasType:Bool = false
   public fileprivate(set) var canMessage:CanMessage!
   public fileprivate(set) var hasCanMessage:Bool = false
@@ -1282,7 +1295,7 @@ final public class ControlCommand : GeneratedMessage {
 
     //Enum type declaration end 
 
-  public fileprivate(set) var type:ControlCommand.`Type` = ControlCommand.`Type`.version
+  public fileprivate(set) var type:ControlCommand.`Type` = .version
   public fileprivate(set) var hasType:Bool = false
   public fileprivate(set) var diagnosticRequest:DiagnosticControlCommand!
   public fileprivate(set) var hasDiagnosticRequest:Bool = false
@@ -4584,7 +4597,7 @@ final public class RtcconfigurationCommand : GeneratedMessage {
 }
 
 final public class CommandResponse : GeneratedMessage {
-  public fileprivate(set) var type:ControlCommand.`Type` = ControlCommand.`Type`.version
+  public fileprivate(set) var type:ControlCommand.`Type` = .version
   public fileprivate(set) var hasType:Bool = false
   public fileprivate(set) var message:String = ""
 
@@ -5887,7 +5900,7 @@ final public class DynamicField : GeneratedMessage {
 
     //Enum type declaration end 
 
-  public fileprivate(set) var type:DynamicField.`Type` = DynamicField.`Type`.string
+  public fileprivate(set) var type:DynamicField.`Type` = .string
   public fileprivate(set) var hasType:Bool = false
   public fileprivate(set) var stringValue:String = ""
 

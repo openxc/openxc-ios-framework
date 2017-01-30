@@ -718,37 +718,37 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if !jsonMode {
       // in protobuf mode, build the command message
       let cbuild = ControlCommand.Builder()
-      if cmd.command == .version {cbuild.setTypes(.version)}
-      if cmd.command == .device_id {cbuild.setTypes(.deviceId)}
+      if cmd.command == .version {cbuild.setType(.version)}
+      if cmd.command == .device_id {cbuild.setType(.deviceId)}
       if cmd.command == .passthrough {
         let cbuild2 = PassthroughModeControlCommand.Builder()
         cbuild2.setBus(Int32(cmd.bus))
         cbuild2.setEnabled(cmd.enabled)
         cbuild.setPassthroughModeRequest(cbuild2.buildPartial())
-        cbuild.setTypes(.passthrough)
+        cbuild.setType(.passthrough)
       }
       if cmd.command == .af_bypass {
         let cbuild2 = AcceptanceFilterBypassCommand.Builder()
         cbuild2.setBus(Int32(cmd.bus))
         cbuild2.setBypass(cmd.bypass)
         cbuild.setAcceptanceFilterBypassCommand(cbuild2.buildPartial())
-        cbuild.setTypes(.acceptanceFilterBypass)
+        cbuild.setType(.acceptanceFilterBypass)
       }
       if cmd.command == .payload_format {
         let cbuild2 = PayloadFormatCommand.Builder()
         if cmd.format == "json" {cbuild2.setFormat(.json)}
         if cmd.format == "protobuf" {cbuild2.setFormat(.protobuf)}
         cbuild.setPayloadFormatCommand(cbuild2.buildPartial())
-        cbuild.setTypes(.payloadFormat)
+        cbuild.setType(.payloadFormat)
       }
       if cmd.command == .predefined_odb2 {
         let cbuild2 = PredefinedObd2RequestsCommand.Builder()
         cbuild2.setEnabled(cmd.enabled)
         cbuild.setPredefinedObd2RequestsCommand(cbuild2.buildPartial())
-        cbuild.setTypes(.predefinedObd2Requests)
+        cbuild.setType(.predefinedObd2Requests)
       }
       if cmd.command == .modem_configuration {
-        cbuild.setTypes(.modemConfiguration)
+        cbuild.setType(.modemConfiguration)
         let cbuild2 = ModemConfigurationCommand.Builder()
         let srv = ServerConnectSettings.Builder()
         srv.setHost(cmd.server_host as String)
@@ -760,12 +760,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         let cbuild2 = RtcconfigurationCommand.Builder()
         cbuild2.setUnixTime(UInt32(cmd.unix_time))
         cbuild.setRtcConfigurationCommand(cbuild2.buildPartial())
-        cbuild.setTypes(.rtcConfiguration)
+        cbuild.setType(.rtcConfiguration)
       }
-      if cmd.command == .sd_mount_status {cbuild.setTypes(.sdMountStatus)}
+      if cmd.command == .sd_mount_status {cbuild.setType(.sdMountStatus)}
 
       let mbuild = VehicleMessage.Builder()
-      mbuild.setTypes(.controlCommand)
+      mbuild.setType(.controlCommand)
 
       do {
         let cmsg = try cbuild.build()
@@ -845,7 +845,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if !jsonMode {
       // in protobuf mode, build diag message
       let cbuild = ControlCommand.Builder()
-      cbuild.setTypes(.diagnostic)
+      cbuild.setType(.diagnostic)
       let c2build = DiagnosticControlCommand.Builder()
       c2build.setAction(.add)
       let dbuild = DiagnosticRequest.Builder()
@@ -859,7 +859,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         dbuild.setFrequency(Double(cmd.frequency))
       }
       let mbuild = VehicleMessage.Builder()
-      mbuild.setTypes(.diagnostic)
+      mbuild.setType(.diagnostic)
       
       do {
         let dmsg = try dbuild.build()
@@ -937,7 +937,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       cbuild.setData(data as Data)
 
       let mbuild = VehicleMessage.Builder()
-      mbuild.setTypes(.can)
+      mbuild.setType(.can)
       
       do {
         let cmsg = try cbuild.build()
@@ -1083,7 +1083,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // measurement messages (normal and evented)
         ///////////////////////////////////////////
-        if msg.types == .simple {
+        if msg.type == .simple {
           decoded = true
           let name = msg.simpleMessage.name
           
@@ -1125,17 +1125,18 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // Command Response messages
         /////////////////////////////
-        if msg.types == .commandResponse {
+        if msg.type == .commandResponse {
           decoded = true
           
-          let name = msg.commandResponse.types.toString()
+//          let name = msg.commandResponse.type.toString()
+            let name = msg.commandResponse.type.description
           
           
           // build command response message
           let rsp : VehicleCommandResponse = VehicleCommandResponse()
           rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
           rsp.command_response = name.lowercased() as NSString
-          rsp.message = msg.commandResponse.message_ as NSString
+          rsp.message = msg.commandResponse.message as NSString
           rsp.status = msg.commandResponse.status
           
           // First see if the default command callback is defined. If it is
@@ -1162,7 +1163,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // Diagnostic messages
         /////////////////////////////
-        if msg.types == .diagnostic {
+        if msg.type == .diagnostic {
           decoded = true
           
           // build diag response message
@@ -1224,7 +1225,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // CAN messages
         /////////////////////////////
-        if msg.types == .can {
+        if msg.type == .can {
           decoded = true
           
           
