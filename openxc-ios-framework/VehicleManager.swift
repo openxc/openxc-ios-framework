@@ -1814,7 +1814,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           if foundOpenXCPeripherals[advName] == nil {
             vmlog("FOUND:")
             vmlog(peripheral.identifier.uuidString)
-            vmlog(advertisementData["kCBAdvDataLocalName"])
+            vmlog(advertisementData["kCBAdvDataLocalName"] as Any)
             
             foundOpenXCPeripherals[advName] = peripheral
             
