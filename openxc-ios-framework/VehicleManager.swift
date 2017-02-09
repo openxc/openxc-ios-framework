@@ -250,8 +250,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     connectionState = .scanning
     messageCount = 0
     openXCPeripheral=nil
-    centralManager = CBCentralManager(delegate: self, queue: cbqueue, options:nil)
-
+   // centralManager = CBCentralManager(delegate: self, queue: cbqueue, options:nil)
+    centralManager = CBCentralManager(delegate: self, queue: cbqueue, options: nil)
   }
   
   
@@ -1014,7 +1014,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
     // take the message to send from the head of the tx buffer queue
-    var cmdToSend : NSMutableData = BLETxDataBuffer[0] as! NSMutableData
+    var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
     
     // we can only send 20B at a time in BLE
     let rangedata = NSMakeRange(0, 20)
@@ -1026,7 +1026,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       } else {
         sendBytes = cmdToSend.subdata(with: rangedata)
         let leftdata = NSMakeRange(20,cmdToSend.length-20)
-        cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata)) as! NSMutableData
+        cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata))
       }
       // write the byte chunk to the VI
       openXCPeripheral.writeValue(sendBytes, for: openXCWriteChar, type: CBCharacteristicWriteType.withResponse)
@@ -1858,10 +1858,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }
   
   
-  open func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
+/*  open func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
     vmlog("in centralManager:willRestoreState")
   }
-  
+ */
   
   // Core Bluetooth has disconnected from BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
