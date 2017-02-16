@@ -877,7 +877,6 @@ final public class VehicleMessage : GeneratedMessage {
           if let enumstype = VehicleMessage.Types.init(rawValue: valueInttype) {
                type = enumstype
           } else {
-          //Change  _ = try unknownFieldsBuilder.mergeVarintField(number: 1, value: Int64(valueInttype))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value: Int64(valueInttype))
             
           }
@@ -1245,7 +1244,6 @@ final public class CanMessage : GeneratedMessage {
           if let enumsframeFormat = CanMessage.FrameFormat(rawValue:valueIntframeFormat){
                frameFormat = enumsframeFormat
           } else {
-// change              _ = try unknownFieldsBuilder.mergeVarintField(number: 4, value:Int64(valueIntframeFormat))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 4, value:Int64(valueIntframeFormat))
           }
 
@@ -1987,7 +1985,6 @@ final public class ControlCommand : GeneratedMessage {
           if let enumstype = ControlCommand.Types.init(rawValue: valueInttype){
                type = enumstype
           } else {
-//    change            _ = try unknownFieldsBuilder.mergeVarintField(number: 1, value:Int64(valueInttype))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueInttype))
           }
 
@@ -2319,7 +2316,6 @@ final public class DiagnosticControlCommand : GeneratedMessage {
           if let enumsaction = DiagnosticControlCommand.Action(rawValue:valueIntaction){
                action = enumsaction
           } else {
-//  change             _ = try unknownFieldsBuilder.mergeVarintField(number: 2, value:Int64(valueIntaction))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 2, value:Int64(valueIntaction))
           }
 
@@ -2935,7 +2931,6 @@ final public class PayloadFormatCommand : GeneratedMessage {
           if let enumsformat = PayloadFormatCommand.PayloadFormat(rawValue:valueIntformat){
                format = enumsformat
           } else {
-//  change             _ = try unknownFieldsBuilder.mergeVarintField(number: 1, value:Int64(valueIntformat))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueIntformat))
           }
 
@@ -3343,7 +3338,6 @@ final public class NetworkOperatorSettings : GeneratedMessage {
               if let enumsnetworkType = NetworkOperatorSettings.NetworkDescriptor.NetworkType(rawValue:valueIntnetworkType){
                    networkType = enumsnetworkType
               } else {
-// change                  _ = try unknownFieldsBuilder.mergeVarintField(number: 2, value:Int64(valueIntnetworkType))
                 _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 2, value:Int64(valueIntnetworkType))
               }
 
@@ -3662,7 +3656,6 @@ final public class NetworkOperatorSettings : GeneratedMessage {
           if let enumsoperatorSelectMode = NetworkOperatorSettings.OperatorSelectMode(rawValue:valueIntoperatorSelectMode){
                operatorSelectMode = enumsoperatorSelectMode
           } else {
-// change              _ = try unknownFieldsBuilder.mergeVarintField(number: 2, value:Int64(valueIntoperatorSelectMode))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 2, value:Int64(valueIntoperatorSelectMode))
           }
 
@@ -4844,7 +4837,6 @@ final public class CommandResponse : GeneratedMessage {
           if let enumstype = ControlCommand.Types.init(rawValue: valueInttype){
                type = enumstype
           } else {
-//  change             _ = try unknownFieldsBuilder.mergeVarintField(number: 1, value:Int64(valueInttype))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueInttype))
           }
 
@@ -5396,7 +5388,6 @@ final public class DiagnosticRequest : GeneratedMessage {
           if let enumsdecodedType = DiagnosticRequest.DecodedType(rawValue:valueIntdecodedType){
                decodedType = enumsdecodedType
           } else {
-//  change             _ = try unknownFieldsBuilder.mergeVarintField(number: 9, value:Int64(valueIntdecodedType))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 9, value:Int64(valueIntdecodedType))
           }
 
@@ -6190,7 +6181,6 @@ final public class DynamicField : GeneratedMessage {
           if let enumstype = DynamicField.Types.init(rawValue: valueInttype){
                type = enumstype
           } else {
-// change              _ = try unknownFieldsBuilder.mergeVarintField(number: 1, value:Int64(valueInttype))
             _ = try unknownFieldsBuilder.mergeVarintField(fieldNumber: 1, value:Int64(valueInttype))
           }
 
