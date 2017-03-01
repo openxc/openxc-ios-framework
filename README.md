@@ -8,6 +8,10 @@ OpenXC iOS framework for use with the C5 BLE device. See also the [openxc-ios-ap
 * XCode - upto 7.3.1
 * Swift - Swift2
 
+## Using the Framework
+The framework can be picked directlt from the releases
+* Simulator build - openXCiOSFramework.framework.simulator.zip, ProtocolBuffers.framework.simulator.zip
+* Device build - openXCiOSFramework.framework.device.zip, ProtocolBuffers.framework.device.zip
 
 ## Building from XCode
 
@@ -31,6 +35,8 @@ To install XCode command line tools, follow these steps for XCode7:
 
 * Launch XCode
 * Go to Preferences - Locations - Command Line Tools - Install
+
+TBA - Commands to be added
 
 
 ## Releasing the App and Library
