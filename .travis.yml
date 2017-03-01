@@ -4,3 +4,5 @@ xcode_project: openxc-ios-framework.xcodeproj
 xcode_scheme: openxc-ios-framework
 xcode_sdk: iphonesimulator10.2
 
+script:
+xcodebuild -project openxc-ios-framework.xcodeproj -scheme openxc-ios-framework -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.2' clean build test
