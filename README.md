@@ -9,7 +9,7 @@ OpenXC iOS framework for use with the C5 BLE device. See also the [openxc-ios-ap
 * Swift - Swift2
 
 ## Using the Framework
-The framework can be picked directlt from the releases
+The framework can be picked directly from the releases
 * Simulator build - openXCiOSFramework.framework.simulator.zip, ProtocolBuffers.framework.simulator.zip
 * Device build - openXCiOSFramework.framework.device.zip, ProtocolBuffers.framework.device.zip
 

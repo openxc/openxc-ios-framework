@@ -19,13 +19,13 @@ public struct OpenXCConstants {
 
 
 public enum VehicleMessageType: NSString {
-  case MeasurementResponse
-  case CommandRequest
-  case CommandResponse
-  case DiagnosticRequest
-  case DiagnosticResponse
-  case CanResponse
-  case CanRequest
+  case measurementResponse
+  case commandRequest
+  case commandResponse
+  case diagnosticRequest
+  case diagnosticResponse
+  case canResponse
+  case canRequest
 }
 
 public enum VehicleCommandType: NSString {
@@ -41,29 +41,29 @@ public enum VehicleCommandType: NSString {
 }
 
 
-public class VehicleBaseMessage {
+open class VehicleBaseMessage {
   public init() {
     
   }
-  public var timestamp: NSInteger = 0
-  public var type: VehicleMessageType = .MeasurementResponse
+  open var timestamp: NSInteger = 0
+  open var type: VehicleMessageType = .measurementResponse
   func traceOutput() -> NSString {
     return "{}"
   }
 }
 
 
-public class VehicleMeasurementResponse : VehicleBaseMessage {
+open class VehicleMeasurementResponse : VehicleBaseMessage {
   override init() {
     value = NSNull()
     event = NSNull()
     super.init()
-    type = .MeasurementResponse
+    type = .measurementResponse
   }
-  public var name : NSString = ""
-  public var value : AnyObject
-  public var isEvented : Bool = false
-  public var event : AnyObject
+  open var name : NSString = ""
+  open var value : AnyObject
+  open var isEvented : Bool = false
+  open var event : AnyObject
   override func traceOutput() -> NSString {
     var out : String = ""
     if value is String {
@@ -73,20 +73,20 @@ public class VehicleMeasurementResponse : VehicleBaseMessage {
     }
     if isEvented {
       if event is String {
-        out.appendContentsOf(",\"event\":\"\(event)\"")
+        out.append(",\"event\":\"\(event)\"")
       } else {
-        out.appendContentsOf(",\"event\":\(event)")
+        out.append(",\"event\":\(event)")
       }
     }
-    out.appendContentsOf("}")
-    return out
+    out.append("}")
+    return out as NSString
   }
-  public func valueIsBool() -> Bool {
+  open func valueIsBool() -> Bool {
     if value is NSNumber {
       let nv = value as! NSNumber
-      if nv.isEqualToValue(NSNumber(bool: true)) {
+      if nv.isEqual(to: NSNumber(value: true as Bool)) {
         return true
-      } else if nv.isEqualToValue(NSNumber(bool:false)) {
+      } else if nv.isEqual(to: NSNumber(value: false as Bool)) {
         return true
       }
     }
@@ -95,90 +95,90 @@ public class VehicleMeasurementResponse : VehicleBaseMessage {
 }
 
 
-public class VehicleCommandRequest : VehicleBaseMessage {
+open class VehicleCommandRequest : VehicleBaseMessage {
   public override init() {
     super.init()
-    type = .CommandResponse
+    type = .commandResponse
   }
-  public var command : VehicleCommandType = .version
-  public var bus : NSInteger = 0
-  public var enabled : Bool = false
-  public var bypass : Bool = false
-  public var format : NSString = ""
-  public var server_host : NSString = ""
-  public var server_port : NSInteger = 0
-  public var unix_time : NSInteger = 0
+  open var command : VehicleCommandType = .version
+  open var bus : NSInteger = 0
+  open var enabled : Bool = false
+  open var bypass : Bool = false
+  open var format : NSString = ""
+  open var server_host : NSString = ""
+  open var server_port : NSInteger = 0
+  open var unix_time : NSInteger = 0
 }
 
-public class VehicleCommandResponse : VehicleBaseMessage {
+open class VehicleCommandResponse : VehicleBaseMessage {
   public override init() {
     super.init()
-    type = .CommandResponse
+    type = .commandResponse
   }
-  public var command_response : NSString = ""
-  public var message : NSString = ""
-  public var status : Bool = false
+  open var command_response : NSString = ""
+  open var message : NSString = ""
+  open var status : Bool = false
   override func traceOutput() -> NSString {
-    return "{\"timestamp\":\(timestamp),\"command_response\":\"\(command_response)\",\"message\":\"\(message)\",\"status\":\(status)}"
+    return "{\"timestamp\":\(timestamp),\"command_response\":\"\(command_response)\",\"message\":\"\(message)\",\"status\":\(status)}" as NSString
   }
 }
 
 
 
-public class VehicleDiagnosticRequest : VehicleBaseMessage {
+open class VehicleDiagnosticRequest : VehicleBaseMessage {
   public override init() {
     super.init()
-    type = .DiagnosticRequest
+    type = .diagnosticRequest
   }
-  public var bus : NSInteger = 0
-  public var message_id : NSInteger = 0
-  public var mode : NSInteger = 0
-  public var pid : NSInteger?
-  public var payload : NSString = ""
-  public var name : NSString = ""
-  public var multiple_responses : Bool = false
-  public var frequency : NSInteger = 0
-  public var decoded_type : NSString = ""
+  open var bus : NSInteger = 0
+  open var message_id : NSInteger = 0
+  open var mode : NSInteger = 0
+  open var pid : NSInteger?
+  open var payload : NSString = ""
+  open var name : NSString = ""
+  open var multiple_responses : Bool = false
+  open var frequency : NSInteger = 0
+  open var decoded_type : NSString = ""
 }
 
 
 
-public class VehicleDiagnosticResponse : VehicleBaseMessage {
+open class VehicleDiagnosticResponse : VehicleBaseMessage {
   public override init() {
     super.init()
-    type = .DiagnosticResponse
+    type = .diagnosticResponse
   }
-  public var bus : NSInteger = 0
-  public var message_id : NSInteger = 0
-  public var mode : NSInteger = 0
-  public var pid : NSInteger?
-  public var success : Bool = false
-  public var negative_response_code : NSInteger = 0
-  public var payload : NSString = ""
-  public var value : NSInteger?
+  open var bus : NSInteger = 0
+  open var message_id : NSInteger = 0
+  open var mode : NSInteger = 0
+  open var pid : NSInteger?
+  open var success : Bool = false
+  open var negative_response_code : NSInteger = 0
+  open var payload : NSString = ""
+  open var value : NSInteger?
 }
 
 
-public class VehicleCanResponse : VehicleBaseMessage {
+open class VehicleCanResponse : VehicleBaseMessage {
   public override init() {
     super.init()
-    type = .CanResponse
+    type = .canResponse
   }
-  public var bus : NSInteger = 0
-  public var id : NSInteger = 0
-  public var data : NSString = ""
-  public var format : NSString = "standard"
+  open var bus : NSInteger = 0
+  open var id : NSInteger = 0
+  open var data : NSString = ""
+  open var format : NSString = "standard"
 }
 
-public class VehicleCanRequest : VehicleBaseMessage {
+open class VehicleCanRequest : VehicleBaseMessage {
   public override init() {
     super.init()
-    type = .CanRequest
+    type = .canRequest
   }
-  public var bus : NSInteger = 0
-  public var id : NSInteger = 0
-  public var data : NSString = ""
-  public var format : NSString = ""
+  open var bus : NSInteger = 0
+  open var id : NSInteger = 0
+  open var data : NSString = ""
+  open var format : NSString = ""
 }
 
 
