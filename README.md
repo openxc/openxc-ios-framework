@@ -11,6 +11,7 @@ OpenXC iOS framework for use with the C5 BLE device. See also the [openxc-ios-ap
 Note: TravisCI build run will work only till XCode8.1-iOS10.1 (https://github.com/travis-ci/travis-ci/issues/7031) but the framework supports XCode 8.2 and iOS10.2
 
 
+
 ## Using the Framework
 The framework can be picked directly from the releases
 * Simulator build - openXCiOSFramework.framework.simulator.zip, ProtocolBuffers.framework.simulator.zip
