@@ -49,7 +49,6 @@ To install XCode command line tools, follow these steps for XCode7:
 * Travis CI will take care of the rest.
 
 
-
 ## Contributing
 
 Please see our [Contribution Documents] (https://github.com/openxc/openxc-ios-framework/blob/master/CONTRIBUTING.mkd)
