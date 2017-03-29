@@ -134,8 +134,7 @@ open class VehicleDiagnosticRequest : VehicleBaseMessage {
   open var message_id : NSInteger = 0
   open var mode : NSInteger = 0
   open var pid : NSInteger?
-//  open var payload : NSString = ""
-  open var payload : [UInt8] = []
+  open var payload : NSString = ""
   open var name : NSString = ""
   open var multiple_responses : Bool = false
   open var frequency : NSInteger = 0
@@ -155,8 +154,7 @@ open class VehicleDiagnosticResponse : VehicleBaseMessage {
   open var pid : NSInteger?
   open var success : Bool = false
   open var negative_response_code : NSInteger = 0
-//  open var payload : NSString = ""
-    open var payload : [UInt8] = []
+  open var payload : NSString = ""
   open var value : NSInteger?
 }
 

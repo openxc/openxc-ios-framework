@@ -907,11 +907,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
    
     print("payload : \(cmd.payload)")
 
-//    if !cmd.payload.isEqual(to: "") {
-    if cmd.payload.isEmpty == false {
+    if !cmd.payload.isEqual(to: "") {
         cmdjson.append(",\"payload\":\(cmd.payload)")
         //cmdjson.append(",\"format\":json")
-        
     }
     
     cmdjson.append("}}\0")
@@ -1038,10 +1036,22 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // loop through and send 20B at a time, make sure to handle <20B in the last send.
     while cmdToSend.length > 0 {
       if (cmdToSend.length<=20) {
+        vmlog("cmdToSend if length < 20:",cmdToSend)
         sendBytes = cmdToSend as Data
+        vmlog("sendBytes if length < 20:",sendBytes)
+        
+        let try2Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+        vmlog("try2Str....:",try2Str!)
+
+        
         cmdToSend = NSMutableData()
       } else {
         sendBytes = cmdToSend.subdata(with: rangedata)
+        vmlog("20B chunks....:",sendBytes)
+       
+        let try1Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+        vmlog("try1Str....:",try1Str!)
+
         let leftdata = NSMakeRange(20,cmdToSend.length-20)
         cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata))
       }
@@ -1516,15 +1526,22 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             if let pidX = json["pid"] as? NSInteger {
               pid = pidX
             }
-//            var payload : NSString = ""
-//            if let payloadX = json["payload"] as? NSString {
-//              payload = payloadX
-//              print("payload : \(payload)")
             
-            var payload : [UInt8] = []
-            if let payloadX = json["payload"] as? [UInt8] {
-                payload = payloadX
-                print("payload : \(payload)")
+            var payload : NSString = ""
+            if let payloadX = json["payload"] as? NSString {
+              payload = payloadX
+              print("payload : \(payload)")
+//
+//            var payload : Data?
+//            if let payloadX = json["payload"] as? NSString {
+//                
+//                payload = payloadX.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)
+//                print("payload : \(payload)")
+
+//            var payload : [UInt8] = []
+//            if let payloadX = json["payload"] as? String {
+//                payload = Array(payloadX.utf8)
+//                print("payload : \(payload)")
                 
             }
             var value : NSInteger?
