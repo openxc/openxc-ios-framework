@@ -908,8 +908,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     print("payload : \(cmd.payload)")
 
     if !cmd.payload.isEqual(to: "") {
-        cmdjson.append(",\"payload\":\(cmd.payload)")
-        //cmdjson.append(",\"format\":json")
+        
+        let payloadStr = String(cmd.payload)
+        cmdjson.append(",\"payload\":")
+        
+        let char = "\""
+        
+        cmdjson.append(char)
+        cmdjson.append(payloadStr)
+        cmdjson.append(char)
     }
     
     cmdjson.append("}}\0")
