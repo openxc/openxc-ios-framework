@@ -720,6 +720,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       let cbuild = ControlCommand.Builder()
       if cmd.command == .version {_ = cbuild.setType(.version)}
       if cmd.command == .device_id {_ = cbuild.setType(.deviceId)}
+      if cmd.command == .platform {_ = cbuild.setType(.platform)}
       if cmd.command == .passthrough {
         let cbuild2 = PassthroughModeControlCommand.Builder()
         _ = cbuild2.setBus(Int32(cmd.bus))
@@ -797,7 +798,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // we're in json mode
     var cmdstr = ""
     // decode the command type and build the command depending on the command
-    if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status {
+    if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
       // build the command json
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
     }
@@ -823,10 +824,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     else if cmd.command == .rtc_configuration {
       // build the command json
+        let timeInterval = Date().timeIntervalSince1970
+        cmd.unix_time = NSInteger(timeInterval);
+        print("timestamp is..",cmd.unix_time)
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
     } else {
       // unknown command!
       return
+        
     }
     
     // append to tx buffer

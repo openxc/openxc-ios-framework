@@ -31,6 +31,7 @@ public enum VehicleMessageType: NSString {
 public enum VehicleCommandType: NSString {
   case version
   case device_id
+  case platform
   case passthrough
   case af_bypass
   case payload_format
