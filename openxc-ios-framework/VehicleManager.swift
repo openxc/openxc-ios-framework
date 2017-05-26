@@ -4,7 +4,7 @@
 //
 //  Created by Tim Buick on 2016-06-16.
 //  Copyright (c) 2016 Ford Motor Company Licensed under the BSD license.
-//  Version 0.9.2
+//  Vrsion 0.9.2
 //
 
 import Foundation
@@ -582,7 +582,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     BLETxCommandToken.append(key)
     
     // common diag send method
-    sendDiagCommon(cmd)
+    vmlog("diag cmd..", cmd)
+   sendDiagCommon(cmd)
     
   }
   
@@ -901,14 +902,29 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // build the command json
     let cmdjson : NSMutableString = ""
     cmdjson.append("{\"command\":\"diagnostic_request\",\"action\":\"add\",\"request\":{\"bus\":\(cmd.bus),\"id\":\(cmd.message_id),\"mode\":\(cmd.mode)")
+    
     if cmd.pid != nil {
       cmdjson.append(",\"pid\":\(cmd.pid!)")
     }
     if cmd.frequency > 0 {
       cmdjson.append(",\"frequency\":\(cmd.frequency)")
     }
-    cmdjson.append("}}\0")
+   
+    print("payload : \(cmd.payload)")
+
+    if !cmd.payload.isEqual(to: "") {
+        
+        let payloadStr = String(cmd.payload)
+        cmdjson.append(",\"payload\":")
+        
+        let char = "\""
+        
+        cmdjson.append(char)
+        cmdjson.append(payloadStr)
+        cmdjson.append(char)
+    }
     
+    cmdjson.append("}}\0")
     
     vmlog("sending diag cmd:",cmdjson)
     // append to tx buffer
@@ -1020,16 +1036,32 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     // take the message to send from the head of the tx buffer queue
     var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
+    vmlog("cmdToSend:",cmdToSend)
+    let datastring = NSString(data: (cmdToSend as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+    vmlog("datastring:",datastring!)
+
     
     // we can only send 20B at a time in BLE
     let rangedata = NSMakeRange(0, 20)
     // loop through and send 20B at a time, make sure to handle <20B in the last send.
     while cmdToSend.length > 0 {
       if (cmdToSend.length<=20) {
+        vmlog("cmdToSend if length < 20:",cmdToSend)
         sendBytes = cmdToSend as Data
+        vmlog("sendBytes if length < 20:",sendBytes)
+        
+        let try2Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+        vmlog("try2Str....:",try2Str!)
+
+        
         cmdToSend = NSMutableData()
       } else {
         sendBytes = cmdToSend.subdata(with: rangedata)
+        vmlog("20B chunks....:",sendBytes)
+       
+        let try1Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+        vmlog("try1Str....:",try1Str!)
+
         let leftdata = NSMakeRange(20,cmdToSend.length-20)
         cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata))
       }
@@ -1503,9 +1535,23 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             if let pidX = json["pid"] as? NSInteger {
               pid = pidX
             }
+            
             var payload : NSString = ""
             if let payloadX = json["payload"] as? NSString {
               payload = payloadX
+              print("payload : \(payload)")
+//
+//            var payload : Data?
+//            if let payloadX = json["payload"] as? NSString {
+//                
+//                payload = payloadX.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)
+//                print("payload : \(payload)")
+
+//            var payload : [UInt8] = []
+//            if let payloadX = json["payload"] as? String {
+//                payload = Array(payloadX.utf8)
+//                print("payload : \(payload)")
+                
             }
             var value : NSInteger?
             if let valueX = json["value"] as? NSInteger {
