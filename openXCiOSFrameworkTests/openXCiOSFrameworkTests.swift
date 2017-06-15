@@ -3,7 +3,7 @@
 //  openXCiOSFrameworkTests
 //
 //  Created by Kanishka, Vedi (V.) on 16/11/16.
-//  Copyright © 2016 Bug Labs. All rights reserved.
+//  Copyright (c) 2016 Ford Motor Company Licensed under the BSD license.
 //
 
 import XCTest
