@@ -1,5 +1,13 @@
 # OpenXC iOS Library Changelog
 
+## v1.2.0
+
+Command Support
+
+## v1.1.0
+
+Swift3-iOS10 integration with existing framework
+
 ## v1.0.0
 
 * Initial release
