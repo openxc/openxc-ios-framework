@@ -11,7 +11,7 @@
 		3A1017121D5941D8006C5E93 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017111D5941D8006C5E93 /* VehicleManager.swift */; };
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
-		E738E7411E4B0402004265CE /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
+		E78AE71F1E7947A500D9B597 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
 		E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */; };
 		E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */; };
 		E7FAF9FB1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */; };
@@ -96,7 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E738E7411E4B0402004265CE /* ProtocolBuffers.framework in Frameworks */,
+				E78AE71F1E7947A500D9B597 /* ProtocolBuffers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,10 +276,10 @@
 			remoteRef = E77269EA1E30B1DE001267D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		E77269ED1E30B1DE001267D3 /* ProtocolBuffersTests.xctest */ = {
+		E77269ED1E30B1DE001267D3 /* UnitTesting.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = ProtocolBuffersTests.xctest;
+			path = UnitTesting.xctest;
 			remoteRef = E77269EC1E30B1DE001267D3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -302,6 +302,20 @@
 			fileType = wrapper.framework;
 			path = ProtocolBuffers.framework;
 			remoteRef = E77269F21E30B1DE001267D3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E78AE71B1E79479D00D9B597 /* ProtocolBuffers.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ProtocolBuffers.framework;
+			remoteRef = E78AE71A1E79479D00D9B597 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E78AE71D1E79479D00D9B597 /* UnitTesting(tvOS).xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "UnitTesting(tvOS).xctest";
+			remoteRef = E78AE71C1E79479D00D9B597 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -471,7 +485,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
-				PRODUCT_BUNDLE_IDENTIFIER = "net.buglabs.openxc-ios-framework";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.ford.openxc-ios-framework";
 				PRODUCT_NAME = openXCiOSFramework;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -498,7 +512,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
-				PRODUCT_BUNDLE_IDENTIFIER = "net.buglabs.openxc-ios-framework";
+				PRODUCT_BUNDLE_IDENTIFIER = "net.ford.openxc-ios-framework";
 				PRODUCT_NAME = openXCiOSFramework;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;

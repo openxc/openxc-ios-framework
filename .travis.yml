@@ -5,7 +5,7 @@ xcode_scheme: openxc-ios-framework
 xcode_sdk: iphonesimulator10.1
 
 branches:
-- next
+- master
 
 script:
 - xcodebuild clean build test -project openxc-ios-framework.xcodeproj -scheme openxc-ios-framework -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.1'  ONLY_ACTIVE_ARCH=NO

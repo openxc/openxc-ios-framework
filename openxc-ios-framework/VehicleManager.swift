@@ -1040,7 +1040,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     let datastring = NSString(data: (cmdToSend as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
     vmlog("datastring:",datastring!)
 
-    
     // we can only send 20B at a time in BLE
     let rangedata = NSMakeRange(0, 20)
     // loop through and send 20B at a time, make sure to handle <20B in the last send.
@@ -1211,7 +1210,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           rsp.mode = Int(msg.diagnosticResponse.mode)
           if msg.diagnosticResponse.hasPid {rsp.pid = Int(msg.diagnosticResponse.pid)}
           rsp.success = msg.diagnosticResponse.success
-          if msg.diagnosticResponse.hasPayload {rsp.payload = String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString}
+       //   if msg.diagnosticResponse.hasPayload {rsp.payload = String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString}
+       //   if msg.diagnosticResponse.hasPayload {rsp.payload = (String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString) as String}
           if msg.diagnosticResponse.hasValue {rsp.value = Int(msg.diagnosticResponse.value)}
           
           // build the key that identifies this diagnostic response
