@@ -1519,55 +1519,58 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         // both diagnostic response and CAN response messages have an "id" key
         else if let id = json["id"] as? NSInteger {
           
-          // only diagnostic response messages have "success"
-          if let success = json["success"] as? Bool {
-            
-            // extract other keys from message
-            var bus : NSInteger = 0
-            if let busX = json["bus"] as? NSInteger {
-              bus = busX
-            }
-            var mode : NSInteger = 0
-            if let modeX = json["mode"] as? NSInteger {
-              mode = modeX
-            }
-            var pid : NSInteger?
-            if let pidX = json["pid"] as? NSInteger {
-              pid = pidX
-            }
-            
-            var payload : NSString = ""
-            if let payloadX = json["payload"] as? NSString {
-              payload = payloadX
-              print("payload : \(payload)")
-//
-//            var payload : Data?
-//            if let payloadX = json["payload"] as? NSString {
-//                
-//                payload = payloadX.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)
-//                print("payload : \(payload)")
-
-//            var payload : [UInt8] = []
-//            if let payloadX = json["payload"] as? String {
-//                payload = Array(payloadX.utf8)
-//                print("payload : \(payload)")
+            // only diagnostic response messages have "success"
+            if let success = json["success"] as? Bool {
                 
-            }
-            var value : NSInteger?
-            if let valueX = json["value"] as? NSInteger {
-              value = valueX
-            }
-            
-            // build diag response message
-            let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
-            rsp.timestamp = timestamp
-            rsp.bus = bus
-            rsp.message_id = id
-            rsp.mode = mode
-            rsp.pid = pid
-            rsp.success = success
-            rsp.payload = payload
-            rsp.value = value
+                // extract other keys from message
+                var bus : NSInteger = 0
+                if let busX = json["bus"] as? NSInteger {
+                    bus = busX
+                }
+                var mode : NSInteger = 0
+                if let modeX = json["mode"] as? NSInteger {
+                    mode = modeX
+                }
+                var pid : NSInteger?
+                if let pidX = json["pid"] as? NSInteger {
+                    pid = pidX
+                }
+                
+                
+                var payload : NSString = ""
+                
+                if let payloadX = json["payload"] as? String {
+                    
+                    payload = payloadX as NSString
+                    print("payload in response, framework \(payload)")
+                    
+                }
+                var value : NSInteger?
+                if let valueX = json["value"] as? NSInteger {
+                    value = valueX
+                }
+                
+                
+                // build diag response message
+                let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
+                rsp.timestamp = timestamp
+                rsp.bus = bus
+                rsp.message_id = id
+                rsp.mode = mode
+                rsp.pid = pid
+                rsp.success = success
+                rsp.payload = payload
+                rsp.value = value
+                
+                if(!success){
+                    //success false, parse negative response code. For DID commands.
+                    if let nrcX = json["negative_response_code"] as? NSInteger{
+                        rsp.negative_response_code = nrcX
+                    }
+                    
+                    
+                }
+
             
             // build the key that identifies this diagnostic response
             // bus-id-mode-[X or pid]
