@@ -485,7 +485,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }
   
   
-  
+/*
   // send a command message with a callback for when the command response is received
   open func sendCommand<T: AnyObject>(_ cmd:VehicleCommandRequest, target: T, action: @escaping (T) -> (NSDictionary) -> ()) -> String {
     vmlog("in sendCommand:target")
@@ -506,7 +506,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     return key
     
   }
-  
+ */
+    
+  /*
   // send a command message with no callback specified
   open func sendCommand(_ cmd:VehicleCommandRequest) {
     vmlog("in sendCommand")
@@ -526,8 +528,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     sendCommandCommon(cmd)
     
   }
-  
-  
+
+  */
+    
+   /*
   // add a default callback for any measurement messages not include in specified callbacks
   open func setCommandDefaultTarget<T: AnyObject>(_ target: T, action: @escaping (T) -> (NSDictionary) -> ()) {
     defaultCommandCallback = TargetActionWrapper(key:"", target: target, action: action)
@@ -537,12 +541,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func clearCommandDefaultTarget() {
     defaultCommandCallback = nil
   }
-  
+  */
   
 
-  
-  
-  
+
   
   
   // send a diagnostic message with a callback for when the diag command response is received
@@ -1005,13 +1007,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // want it to actually do anything, for example a command request where we don't
   // want a callback for the command response. The command response is still received
   // but the callback registered comes here, and does nothing.
-  fileprivate func CallbackNull(_ o:AnyObject) {
+//  fileprivate func CallbackNull(_ o:AnyObject) {
+    open func CallbackNull(_ o:AnyObject) {
     vmlog("in CallbackNull")
   }
   
   
   // common function called whenever any messages need to be sent over BLE
-  fileprivate func BLESendFunction() {
+//  fileprivate func BLESendFunction() {
+    open func BLESendFunction() {
     
     
     var sendBytes: Data
