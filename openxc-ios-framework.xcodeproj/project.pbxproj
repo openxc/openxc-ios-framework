@@ -11,7 +11,7 @@
 		3A1017121D5941D8006C5E93 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017111D5941D8006C5E93 /* VehicleManager.swift */; };
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
-		E78AE71F1E7947A500D9B597 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
+		E73ADBC31F52A3E7002D66E4 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
 		E7AA8AE81F03A9A00076A288 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AE71F03A9A00076A288 /* Command.swift */; };
 		E7AA8AF11F03AA300076A288 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF01F03AA300076A288 /* Measurement.swift */; };
 		E7AA8AF31F03AA620076A288 /* Diagnostic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF21F03AA620076A288 /* Diagnostic.swift */; };
@@ -108,7 +108,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E78AE71F1E7947A500D9B597 /* ProtocolBuffers.framework in Frameworks */,
+				E73ADBC31F52A3E7002D66E4 /* ProtocolBuffers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -120,7 +120,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   fileprivate var RxDataBuffer: NSMutableData! = NSMutableData()
   
   // data buffer for storing vehicle messages to send to BTLE
-  fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+  internal var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
   // BTLE transmit token increment variable
@@ -181,7 +181,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   
-  
+    open var cmdObj: Command?
   
   
   
@@ -804,6 +804,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
       // build the command json
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
+        print("cmdStr...",cmdstr)
+
     }
     else if cmd.command == .passthrough {
       // build the command json
@@ -833,10 +835,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
     } else {
       // unknown command!
+        print("unknown command")
+
       return
         
     }
     
+    print("cmdStr...",cmdstr)
+
     // append to tx buffer
     BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
     
@@ -1024,6 +1030,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // We need to do this because this function can be called as BLE notifications are
     // received because we may have queued up some messages to send.
     if BLETxDataBuffer.count == 0 {
+        print("returing with tx buffer empty!")
       return
     }
     

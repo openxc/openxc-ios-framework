@@ -81,6 +81,9 @@ open class Command: NSObject {
     fileprivate var defaultCommandCallback : TargetAction?
     
 
+    public override init() {
+        super.init()
+    }
     
     // private debug log function gated by the debug setting
     fileprivate func vmlog(_ strings:Any...) {
@@ -235,9 +238,12 @@ open class Command: NSObject {
         // we're in json mode
         var cmdstr = ""
         // decode the command type and build the command depending on the command
+        print("cmd command...",cmd.command)
+        
         if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
             // build the command json
             cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
+            print("cmdStr..",cmdstr)
         }
         else if cmd.command == .passthrough {
             // build the command json
@@ -274,8 +280,13 @@ open class Command: NSObject {
         // append to tx buffer
         BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
         
+        print("BLETxDataBuffer.count...",BLETxDataBuffer.count)
+        print("BLETxDataBuffer...",BLETxDataBuffer)
+        
+        self.vm.BLETxDataBuffer = BLETxDataBuffer
+        
         // trigger a BLE data send
-        vm.BLESendFunction()
+        self.vm.BLESendFunction()
         //BLESendFunction()
         
     }
