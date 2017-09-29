@@ -10,8 +10,8 @@
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E3D71EAE-7C05-41B4-B99D-DBB726DC265D",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "957824D7369BDB37B86AE392AA1AD5A40A3C8AC9" : "openxc-ios-framework\/",
-    "0666B8749607A9097FA47BC516240266C4E79D1D" : "openxc-ios-framework\/protobuf-swift\/",
+    "957824D7369BDB37B86AE392AA1AD5A40A3C8AC9" : "OpenXCframework_iOS_Swift3\/",
+    "0666B8749607A9097FA47BC516240266C4E79D1D" : "OpenXCframework_iOS_Swift3\/protobuf-swift\/",
     "23BF58AA42EA6376FB260588450F8BE1C15ACC66" : "openxc-ios-app-demo\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "openxc-ios-framework",
