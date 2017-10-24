@@ -1371,7 +1371,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // every message will have a timestamp
         
-        //Ranjan:Added NSNumber in timestamp to parse as it is in number format then convert nsnumber to integer as per requirment.
+        //Ranjan:  Added NSNumber in timestamp to parse as it is in number format then convert nsnumber to integer as per requirment.
         var timestamp : NSInteger = 0
         var timestamp1 : NSNumber = 0
         if json["timestamp"] != nil {
