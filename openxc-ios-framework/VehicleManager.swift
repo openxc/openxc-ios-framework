@@ -181,7 +181,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   
-    open var cmdObj: Command?
+   // open var cmdObj: Command?
   
   
   
@@ -313,7 +313,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func enableTraceFileSink(_ filename:NSString) -> Bool {
     
     // check that file sharing is enabled in the bundle
-    if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
+    if let fs : Bool = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
       if fs == true {
         vmlog("file sharing ok!")
       } else {
@@ -387,7 +387,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
     // check for file sharing in the bundle
-    if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
+    if let fs : Bool = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
       if fs == true {
         vmlog("file sharing ok!")
       } else {
@@ -484,8 +484,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     defaultMeasurementCallback = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
   }
   
-  
-/*
+  /*
+
   // send a command message with a callback for when the command response is received
   open func sendCommand<T: AnyObject>(_ cmd:VehicleCommandRequest, target: T, action: @escaping (T) -> (NSDictionary) -> ()) -> String {
     vmlog("in sendCommand:target")
@@ -506,9 +506,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     return key
     
   }
- */
+ 
     
-  /*
+
   // send a command message with no callback specified
   open func sendCommand(_ cmd:VehicleCommandRequest) {
     vmlog("in sendCommand")
@@ -529,9 +529,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
   }
 
-  */
+ */
     
-   /*
+
   // add a default callback for any measurement messages not include in specified callbacks
   open func setCommandDefaultTarget<T: AnyObject>(_ target: T, action: @escaping (T) -> (NSDictionary) -> ()) {
     defaultCommandCallback = TargetActionWrapper(key:"", target: target, action: action)
@@ -541,7 +541,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func clearCommandDefaultTarget() {
     defaultCommandCallback = nil
   }
-  */
+  
   
 
 
@@ -713,7 +713,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   ////////////////
   // private functions
   
-  
+  /*
   // common function for sending a VehicleCommandRequest
   fileprivate func sendCommandCommon(_ cmd:VehicleCommandRequest) {
     vmlog("in sendCommandCommon")
@@ -850,7 +850,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     BLESendFunction()
     
   }
-  
+  */
   
   // common function for sending a VehicleDiagnosticRequest
   fileprivate func sendDiagCommon(_ cmd:VehicleDiagnosticRequest) {
@@ -1238,13 +1238,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           // TODO: debug printouts, maybe remove
           if rsp.value != nil {
             if rsp.pid != nil {
-              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(rsp.pid) success:\(rsp.success) value:\(rsp.value)")
+                vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(String(describing: rsp.pid)) success:\(rsp.success) value:\(String(describing: rsp.value))")
             } else {
-              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(rsp.value)")
+                vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(String(describing: rsp.value))")
             }
           } else {
             if rsp.pid != nil {
-              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(rsp.pid) success:\(rsp.success) payload:\(rsp.payload)")
+                vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(String(describing: rsp.pid)) success:\(rsp.success) payload:\(rsp.payload)")
             } else {
               vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(rsp.payload)")
             }
@@ -1382,8 +1382,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // every message will have a timestamp
         var timestamp : NSInteger = 0
+        var timestamp1 : NSNumber = 0
         if json["timestamp"] != nil {
-          timestamp = json["timestamp"] as! NSInteger
+            timestamp1 = json["timestamp"]  as! NSNumber
+            timestamp = NSInteger(timestamp1.int64Value)
         }
 
 
@@ -1593,13 +1595,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             // TODO: debug printouts, maybe remove
             if value != nil {
               if pid != nil {
-                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) value:\(value)")
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(String(describing: pid)) success:\(success) value:\(String(describing: value))")
               } else {
-                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(value)")
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(String(describing: value))")
               }
             } else {
               if pid != nil {
-                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) payload:\(payload)")
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(String(describing: pid)) success:\(success) payload:\(payload)")
               } else {
                 vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(payload)")
               }

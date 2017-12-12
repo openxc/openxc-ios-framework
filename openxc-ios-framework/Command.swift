@@ -54,6 +54,19 @@ open class VehicleCommandResponse : VehicleBaseMessage {
 
 open class Command: NSObject {
 
+    
+    // MARK: Singleton Init
+    
+    // This signleton init allows mutiple controllers to access the same instantiation
+    // of the VehicleManager. There is only a single instantiation of the VehicleManager
+    // for the entire client app
+    static open let sharedInstance: Command = {
+        let instance = Command()
+        return instance
+    }()
+    fileprivate override init() {
+    }
+    
     // config variable determining whether trace input is used instead of BTLE data
     fileprivate var traceFilesourceEnabled: Bool = false
 
@@ -79,12 +92,9 @@ open class Command: NSObject {
 
     // 'default' command callback. If this is defined, it takes priority over any other callback
     fileprivate var defaultCommandCallback : TargetAction?
-    
+    // optional variable holding callback for VehicleManager status updates
+    fileprivate var managerCallback: TargetAction?
 
-    public override init() {
-        super.init()
-    }
-    
     // private debug log function gated by the debug setting
     fileprivate func vmlog(_ strings:Any...) {
         if managerDebug {
@@ -140,7 +150,13 @@ open class Command: NSObject {
         sendCommandCommon(cmd)
         
     }
-
+    
+    // MARK: Class Functions
+    
+    // set the callback for VM status updates
+    open func setManagerCallbackTarget<T: AnyObject>(_ target: T, action: @escaping (T) -> (NSDictionary) -> ()) {
+        managerCallback = TargetActionWrapper(key:"", target: target, action: action)
+    }
     // add a default callback for any measurement messages not include in specified callbacks
     open func setCommandDefaultTarget<T: AnyObject>(_ target: T, action: @escaping (T) -> (NSDictionary) -> ()) {
         defaultCommandCallback = TargetActionWrapper(key:"", target: target, action: action)
