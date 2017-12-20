@@ -11,7 +11,13 @@
 		3A1017121D5941D8006C5E93 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017111D5941D8006C5E93 /* VehicleManager.swift */; };
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
-		E78AE71F1E7947A500D9B597 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
+		E73ADBC31F52A3E7002D66E4 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
+		E7AA8AE81F03A9A00076A288 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AE71F03A9A00076A288 /* Command.swift */; };
+		E7AA8AF11F03AA300076A288 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF01F03AA300076A288 /* Measurement.swift */; };
+		E7AA8AF31F03AA620076A288 /* Diagnostic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF21F03AA620076A288 /* Diagnostic.swift */; };
+		E7AA8AF51F03AA890076A288 /* CAN.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF41F03AA890076A288 /* CAN.swift */; };
+		E7AA8AF71F03AAA20076A288 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF61F03AAA20076A288 /* Message.swift */; };
+		E7AA8AFB1F03B0790076A288 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AFA1F03B0790076A288 /* Utilities.swift */; };
 		E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */; };
 		E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */; };
 		E7FAF9FB1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */; };
@@ -85,6 +91,12 @@
 		3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenXCClasses.swift; sourceTree = "<group>"; };
 		3A1017331D5BA223006C5E93 /* TargetAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetAction.swift; sourceTree = "<group>"; };
 		E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ProtocolBuffers.xcodeproj; path = "protobuf-swift/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj"; sourceTree = "<group>"; };
+		E7AA8AE71F03A9A00076A288 /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
+		E7AA8AF01F03AA300076A288 /* Measurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Measurement.swift; sourceTree = "<group>"; };
+		E7AA8AF21F03AA620076A288 /* Diagnostic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diagnostic.swift; sourceTree = "<group>"; };
+		E7AA8AF41F03AA890076A288 /* CAN.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAN.swift; sourceTree = "<group>"; };
+		E7AA8AF61F03AAA20076A288 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		E7AA8AFA1F03B0790076A288 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		E7C63D391DDC56BB00EE9790 /* openXCiOSFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = openXCiOSFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openXCiOSFrameworkTests.swift; sourceTree = "<group>"; };
 		E7C63D3D1DDC56BB00EE9790 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -96,7 +108,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E78AE71F1E7947A500D9B597 /* ProtocolBuffers.framework in Frameworks */,
+				E73ADBC31F52A3E7002D66E4 /* ProtocolBuffers.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +152,12 @@
 				3A10170B1D5941C8006C5E93 /* Info.plist */,
 				3A1017331D5BA223006C5E93 /* TargetAction.swift */,
 				E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */,
+				E7AA8AE71F03A9A00076A288 /* Command.swift */,
+				E7AA8AF01F03AA300076A288 /* Measurement.swift */,
+				E7AA8AF21F03AA620076A288 /* Diagnostic.swift */,
+				E7AA8AF41F03AA890076A288 /* CAN.swift */,
+				E7AA8AF61F03AAA20076A288 /* Message.swift */,
+				E7AA8AFA1F03B0790076A288 /* Utilities.swift */,
 			);
 			path = "openxc-ios-framework";
 			sourceTree = "<group>";
@@ -231,7 +249,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Ford Motor Company";
 				TargetAttributes = {
 					3A1017051D5941C8006C5E93 = {
@@ -344,7 +362,13 @@
 			files = (
 				E7FAF9FB1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */,
 				3A1017121D5941D8006C5E93 /* VehicleManager.swift in Sources */,
+				E7AA8AF31F03AA620076A288 /* Diagnostic.swift in Sources */,
+				E7AA8AF71F03AAA20076A288 /* Message.swift in Sources */,
+				E7AA8AF11F03AA300076A288 /* Measurement.swift in Sources */,
 				3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */,
+				E7AA8AE81F03A9A00076A288 /* Command.swift in Sources */,
+				E7AA8AF51F03AA890076A288 /* CAN.swift in Sources */,
+				E7AA8AFB1F03B0790076A288 /* Utilities.swift in Sources */,
 				3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,14 +402,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -430,14 +460,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
