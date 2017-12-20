@@ -1381,11 +1381,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         let json = try JSONSerialization.jsonObject(with: data_chunk as Data, options: .mutableContainers) as! [String:AnyObject]
         
         // every message will have a timestamp
+        
+        //Ranjan:Added NSNumber in timestamp to parse as it is in number format then convert nsnumber to integer as per requirment.
         var timestamp : NSInteger = 0
         var timestamp1 : NSNumber = 0
         if json["timestamp"] != nil {
+
             timestamp1 = json["timestamp"]  as! NSNumber
             timestamp = NSInteger(timestamp1.int64Value)
+
         }
 
 
