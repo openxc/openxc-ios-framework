@@ -1109,9 +1109,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           return
         }
         
-        let data_left : NSMutableData = NSMutableData()
-        data_left.append(RxDataBuffer.subdata(with: NSMakeRange(packetlen+1, RxDataBuffer.length-packetlen-1)))
-        RxDataBuffer = data_left
+        RxDataBuffer.replaceBytes(in: NSMakeRange(0, packetlen), withBytes: nil, length: 0)
         
         var decoded = false
         
