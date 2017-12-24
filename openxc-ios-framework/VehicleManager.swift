@@ -796,46 +796,44 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
     // we're in json mode
-    var cmdstr = ""
+    var cmdObj: [String: Any] = [
+      "command": cmd.command.rawValue
+    ]
+    
     // decode the command type and build the command depending on the command
-    if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status {
-      // build the command json
-      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
-    }
-    else if cmd.command == .passthrough {
-      // build the command json
-      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"bus\":\(cmd.bus),\"enabled\":\(cmd.enabled)}\0"
-    }
-    else if cmd.command == .af_bypass {
-      // build the command json
-      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"bus\":\(cmd.bus),\"bypass\":\(cmd.bypass)}\0"
-    }
-    else if cmd.command == .payload_format {
-      // build the command json
-      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"format\":\"\(cmd.format)\"}\0"
-    }
-    else if cmd.command == .predefined_odb2 {
-      // build the command json
-      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"enabled\":\(cmd.enabled)}\0"
-    }
-    else if cmd.command == .modem_configuration {
-      // build the command json
-      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"server\":{\"host\":\"\(cmd.server_host)\",\"port\":\(cmd.server_port)}}\0"
-    }
-    else if cmd.command == .rtc_configuration {
-      // build the command json
-      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
-    } else {
-      // unknown command!
-      return
+    switch cmd.command {
+    case .passthrough:
+      cmdObj["bus"] = cmd.bus
+      cmdObj["enabled"] = cmd.enabled
+    case .af_bypass:
+      cmdObj["bus"] = cmd.bus
+      cmdObj["bypass"] = cmd.bypass
+    case .payload_format:
+      cmdObj["format"] = cmd.format
+    case .predefined_odb2:
+      cmdObj["enabled"] = cmd.enabled
+    case .modem_configuration:
+      cmdObj["server"] = [
+        "host": cmd.server_host,
+        "port": cmd.server_port
+      ]
+    case .rtc_configuration:
+      cmdObj["unix_time"] = cmd.unix_time
+    case .version, .device_id, .sd_mount_status:
+      // no additional args
+      break
     }
     
-    // append to tx buffer
-    BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
-    
-    // trigger a BLE data send
-    BLESendFunction()
-    
+    do {
+      let data = try JSONSerialization.data(withJSONObject: cmdObj, options: [])
+      // append to tx buffer
+      BLETxDataBuffer.add(data)
+      
+      // trigger a BLE data send
+      BLESendFunction()
+    } catch {
+      vmlog("Error serializing command to JSON", error)
+    }
   }
   
   
@@ -895,39 +893,39 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
 
     
     // build the command json
-    let cmdjson : NSMutableString = ""
-    cmdjson.append("{\"command\":\"diagnostic_request\",\"action\":\"add\",\"request\":{\"bus\":\(cmd.bus),\"id\":\(cmd.message_id),\"mode\":\(cmd.mode)")
-    
-    if cmd.pid != nil {
-      cmdjson.append(",\"pid\":\(cmd.pid!)")
+    var reqObject: [String: Any] = [
+        "bus": cmd.bus,
+        "id": cmd.message_id,
+        "mode": cmd.mode
+    ]
+    if let pid = cmd.pid {
+      reqObject["pid"] = pid
     }
     if cmd.frequency > 0 {
-      cmdjson.append(",\"frequency\":\(cmd.frequency)")
+      reqObject["frequency"] = cmd.frequency
     }
-   
-    print("payload : \(cmd.payload)")
-
-    if !cmd.payload.isEqual(to: "") {
-        
-        let payloadStr = String(cmd.payload)
-        cmdjson.append(",\"payload\":")
-        
-        let char = "\""
-        
-        cmdjson.append(char)
-        cmdjson.append(payloadStr)
-        cmdjson.append(char)
+    if cmd.payload.length > 0 {
+      reqObject["payload"] = cmd.payload
     }
+    let cmdObject: [String: Any] = [
+      "command": "diagnostic_request",
+      "action": "add",
+      "request": reqObject
+    ]
     
-    cmdjson.append("}}\0")
-    
-    vmlog("sending diag cmd:",cmdjson)
-    // append to tx buffer
-    BLETxDataBuffer.add(cmdjson.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)!)
-    
-    // trigger a BLE data send
-    BLESendFunction()
-    
+    do {
+      let cmdData = try JSONSerialization.data(withJSONObject: cmdObject, options: [])
+      
+      // Forming the json string is expensive – avoid it unless debugging
+      if managerDebug, let jsonstring = String(data: cmdData, encoding: String.Encoding.utf8) {
+        vmlog("sending diag cmd:",jsonstring)
+      }
+      
+      BLETxDataBuffer.add(cmdData)
+      BLESendFunction()
+    } catch {
+      vmlog("failed to write cmd to json with error", error)
+    }
   }
   
   
@@ -986,13 +984,19 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     
     // build the command json
-    let cmd = "{\"bus\":\(cmd.bus),\"id\":\(cmd.id),\"data\":\"\(cmd.data)\"}"
-    // append to tx buffer
-    BLETxDataBuffer.add(cmd.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
+    let cmdObject: [String: Any] = [
+      "bus": cmd.bus,
+      "id": cmd.id,
+      "data": cmd.data
+    ]
     
-    // trigger a BLE data send
-    BLESendFunction()
-    
+    do {
+      let cmdData = try JSONSerialization.data(withJSONObject: cmdObject, options: [])
+      BLETxDataBuffer.add(cmdData)
+      BLESendFunction()
+    } catch {
+      vmlog("Failed to serialize can command with error ", error)
+    }
   }
   
   
