@@ -1332,21 +1332,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     // data parsing variables
     let data_chunk : NSMutableData = NSMutableData()
-    let data_left : NSMutableData = NSMutableData()
     
     // here we check to see if the separator exists, and therefore that we
     // have a complete message ready to be extracted
     if foundRange.location != NSNotFound {
       // extract the entire message from the rx data buffer
       data_chunk.append(RxDataBuffer.subdata(with: NSMakeRange(0,foundRange.location)))
-      // if there is leftover data in the buffer, make sure to keep it otherwise
-      // the parsing will not work for the next message that is partially complete now
-      if RxDataBuffer.length-1 > foundRange.location {
-        data_left.append(RxDataBuffer.subdata(with: NSMakeRange(foundRange.location+1,RxDataBuffer.length-foundRange.location-1)))
-        RxDataBuffer = data_left
-      } else {
-        RxDataBuffer = NSMutableData()
-      }
+      // Remove all data that we processed from our buffer
+      RxDataBuffer.replaceBytes(in: NSMakeRange(0, foundRange.location), withBytes: nil, length: 0)
       // TODO: remove this, just for debug
       let str = String(data: data_chunk as Data,encoding: String.Encoding.utf8)
       if str != nil {
