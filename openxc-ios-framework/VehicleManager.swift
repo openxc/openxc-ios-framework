@@ -313,8 +313,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func enableTraceFileSink(_ filename:NSString) -> Bool {
     
     // check that file sharing is enabled in the bundle
-    if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
-      if fs == true {
+    if let fs = Bundle.main.object(forInfoDictionaryKey: "UIFileSharingEnabled") as? Bool {
+      if fs {
         vmlog("file sharing ok!")
       } else {
         vmlog("file sharing false!")
@@ -387,8 +387,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
     // check for file sharing in the bundle
-    if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
-      if fs == true {
+    if let fs = Bundle.main.object(forInfoDictionaryKey: "UIFileSharingEnabled") as? Bool {
+      if fs {
         vmlog("file sharing ok!")
       } else {
         vmlog("file sharing false!")
