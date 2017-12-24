@@ -120,7 +120,9 @@
 				3A1017071D5941C8006C5E93 /* Products */,
 				E77269CF1E30B1BF001267D3 /* Frameworks */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		3A1017071D5941C8006C5E93 /* Products */ = {
 			isa = PBXGroup;
