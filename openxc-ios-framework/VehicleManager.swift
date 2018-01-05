@@ -36,9 +36,6 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
-
-
-
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
@@ -50,6 +47,7 @@ public enum VehicleManagerStatusMessage: Int {
   case trace_SOURCE_END=6         // configured trace input end of file reached
   case trace_SINK_WRITE_ERROR=7   // error in writing message to trace file
   case ble_RX_DATA_PARSE_ERROR=8  // error in parsing data received from VI
+ 
 }
 // This enum is outside of the main class for ease of use in the client app. It allows
 // for referencing the enum without the class hierarchy in front of it. Ie. the enums
@@ -70,13 +68,8 @@ public enum VehicleManagerConnectionState: Int {
 // can be accessed directly as .C5DETECTED for example
 
 
-
-
-
 open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
-  
-  
-  
+
   // MARK: Singleton Init
   
   // This signleton init allows mutiple controllers to access the same instantiation
@@ -88,9 +81,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }()
   fileprivate override init() {
   }
-  
-  
-  
+
   // MARK: Class Vars
   // -----------------
   
@@ -117,7 +108,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   fileprivate var managerCallback: TargetAction?
   
   // data buffer for receiving raw BTLE data
-  fileprivate var RxDataBuffer: NSMutableData! = NSMutableData()
+  public var RxDataBuffer: NSMutableData! = NSMutableData()
   
   // data buffer for storing vehicle messages to send to BTLE
   fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
@@ -178,11 +169,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open var connectionState: VehicleManagerConnectionState! = .notConnected
   // public variable holding number of messages received since last Connection established
   open var messageCount: Int = 0
+  //Connected to network simulator
+  open var isNetworkConnected: Bool = false
+ //Iphone device blutooth is on/fff status
+    open var isDeviceBluetoothIsOn :Bool = false
   
-  
-  
-  
-  
+  var callbackHandler: ((Bool) -> ())?  = nil
   
   
   
@@ -234,8 +226,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   // initialize the VM and scan for nearby VIs
-  open func scan() {
-    
+  open func scan(completionHandler: @escaping (_ success: Bool) -> ()) {
+    self.callbackHandler = completionHandler
     // if the VM is already connected, don't do anything
     if connectionState != .notConnected {
       vmlog("VehicleManager already scanning or connected! Sorry!")
@@ -267,6 +259,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // if the found VI list is empty, just return
     if foundOpenXCPeripherals.count == 0 {
       vmlog("VehicleManager has not found any VIs!")
+        
       return
     }
     
@@ -1082,7 +1075,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // separated by different things, for example messages are separated by \0
   // when coming via BLE, and separated by 0xa when coming via a trace file
   // RXDataParser returns the timestamp of the parsed message out of convenience.
-  fileprivate func RxDataParser(_ separator:UInt8) {
+    
+    //fileprivate to open
+  open func RxDataParser(_ separator:UInt8) {
     
     
     ////////////////
@@ -1825,24 +1820,19 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
   }
-  
-  
-  
-  
-  
-  
-  
-  
+
   // MARK: Core Bluetooth Manager
-  
-  
   // watch for changes to the BLE state
   open func centralManagerDidUpdateState(_ central: CBCentralManager) {
     vmlog("in centralManagerDidUpdateState:")
     if central.state == .poweredOff {
+        
+        self.callbackHandler!(false)
       vmlog(" PoweredOff")
     } else if central.state == .poweredOn {
       vmlog(" PoweredOn")
+       self.callbackHandler!(true)
+       
     } else {
       vmlog(" Other")
     }
@@ -1850,10 +1840,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if central.state == .poweredOn && connectionState == .scanning {
       centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
-    
-    
+
   }
-  
   
   // Core Bluetooth has discovered a BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -2074,7 +2062,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
     vmlog("in peripheral:didDiscoverIncludedServicesForService")
   }
-  
   
   // Core Bluetooth has written a value to a characteristic
   open func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
