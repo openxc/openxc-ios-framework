@@ -111,7 +111,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   public var RxDataBuffer: NSMutableData! = NSMutableData()
   
   // data buffer for storing vehicle messages to send to BTLE
-  fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+    //Ranjan changed fileprivate to public due to travis fail
+  public var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
   // BTLE transmit token increment variable
@@ -998,13 +999,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // want it to actually do anything, for example a command request where we don't
   // want a callback for the command response. The command response is still received
   // but the callback registered comes here, and does nothing.
-  fileprivate func CallbackNull(_ o:AnyObject) {
+  //Ranjan changed fileprivate to public due to travis build fail
+  public func CallbackNull(_ o:AnyObject) {
     vmlog("in CallbackNull")
   }
   
   
   // common function called whenever any messages need to be sent over BLE
-  fileprivate func BLESendFunction() {
+  //ranjan changed fileprivate to public due to travis fail
+  public func BLESendFunction() {
     
     
     var sendBytes: Data
