@@ -36,9 +36,6 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
-
-
-
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
@@ -50,6 +47,7 @@ public enum VehicleManagerStatusMessage: Int {
   case trace_SOURCE_END=6         // configured trace input end of file reached
   case trace_SINK_WRITE_ERROR=7   // error in writing message to trace file
   case ble_RX_DATA_PARSE_ERROR=8  // error in parsing data received from VI
+ 
 }
 // This enum is outside of the main class for ease of use in the client app. It allows
 // for referencing the enum without the class hierarchy in front of it. Ie. the enums
@@ -70,13 +68,8 @@ public enum VehicleManagerConnectionState: Int {
 // can be accessed directly as .C5DETECTED for example
 
 
-
-
-
 open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
-  
-  
-  
+
   // MARK: Singleton Init
   
   // This signleton init allows mutiple controllers to access the same instantiation
@@ -88,9 +81,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }()
   fileprivate override init() {
   }
-  
-  
-  
+
   // MARK: Class Vars
   // -----------------
   
@@ -117,10 +108,11 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   fileprivate var managerCallback: TargetAction?
   
   // data buffer for receiving raw BTLE data
-  fileprivate var RxDataBuffer: NSMutableData! = NSMutableData()
+  public var RxDataBuffer: NSMutableData! = NSMutableData()
   
   // data buffer for storing vehicle messages to send to BTLE
-  internal var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+    //Ranjan changed fileprivate to public due to travis fail
+  public var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
   // BTLE transmit token increment variable
@@ -178,11 +170,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open var connectionState: VehicleManagerConnectionState! = .notConnected
   // public variable holding number of messages received since last Connection established
   open var messageCount: Int = 0
+  //Connected to network simulator
+  open var isNetworkConnected: Bool = false
+ //Iphone device blutooth is on/fff status
+    open var isDeviceBluetoothIsOn :Bool = false
   
-  
-  
-   // open var cmdObj: Command?
-  
+  var callbackHandler: ((Bool) -> ())?  = nil
   
   
   
@@ -234,8 +227,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   // initialize the VM and scan for nearby VIs
-  open func scan() {
-    
+  open func scan(completionHandler: @escaping (_ success: Bool) -> ()) {
+    self.callbackHandler = completionHandler
     // if the VM is already connected, don't do anything
     if connectionState != .notConnected {
       vmlog("VehicleManager already scanning or connected! Sorry!")
@@ -267,6 +260,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // if the found VI list is empty, just return
     if foundOpenXCPeripherals.count == 0 {
       vmlog("VehicleManager has not found any VIs!")
+        
       return
     }
     
@@ -313,7 +307,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func enableTraceFileSink(_ filename:NSString) -> Bool {
     
     // check that file sharing is enabled in the bundle
-    if let fs : Bool = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
+    if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
       if fs == true {
         vmlog("file sharing ok!")
       } else {
@@ -387,7 +381,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
     // check for file sharing in the bundle
-    if let fs : Bool = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
+    if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
       if fs == true {
         vmlog("file sharing ok!")
       } else {
@@ -484,8 +478,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     defaultMeasurementCallback = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
   }
   
-  /*
-
+  
+  
   // send a command message with a callback for when the command response is received
   open func sendCommand<T: AnyObject>(_ cmd:VehicleCommandRequest, target: T, action: @escaping (T) -> (NSDictionary) -> ()) -> String {
     vmlog("in sendCommand:target")
@@ -506,9 +500,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     return key
     
   }
- 
-    
-
+  
   // send a command message with no callback specified
   open func sendCommand(_ cmd:VehicleCommandRequest) {
     vmlog("in sendCommand")
@@ -528,10 +520,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     sendCommandCommon(cmd)
     
   }
-
- */
-    
-
+  
+  
   // add a default callback for any measurement messages not include in specified callbacks
   open func setCommandDefaultTarget<T: AnyObject>(_ target: T, action: @escaping (T) -> (NSDictionary) -> ()) {
     defaultCommandCallback = TargetActionWrapper(key:"", target: target, action: action)
@@ -544,7 +534,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
 
-
+  
+  
+  
   
   
   // send a diagnostic message with a callback for when the diag command response is received
@@ -713,7 +705,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   ////////////////
   // private functions
   
-  /*
+  
   // common function for sending a VehicleCommandRequest
   fileprivate func sendCommandCommon(_ cmd:VehicleCommandRequest) {
     vmlog("in sendCommandCommon")
@@ -804,8 +796,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
       // build the command json
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
-        print("cmdStr...",cmdstr)
-
     }
     else if cmd.command == .passthrough {
       // build the command json
@@ -835,14 +825,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
     } else {
       // unknown command!
-        print("unknown command")
-
       return
         
     }
     
-    print("cmdStr...",cmdstr)
-
     // append to tx buffer
     BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
     
@@ -850,7 +836,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     BLESendFunction()
     
   }
-  */
+  
   
   // common function for sending a VehicleDiagnosticRequest
   fileprivate func sendDiagCommon(_ cmd:VehicleDiagnosticRequest) {
@@ -1013,15 +999,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // want it to actually do anything, for example a command request where we don't
   // want a callback for the command response. The command response is still received
   // but the callback registered comes here, and does nothing.
-//  fileprivate func CallbackNull(_ o:AnyObject) {
-    open func CallbackNull(_ o:AnyObject) {
+  //Ranjan changed fileprivate to public due to travis build fail
+  public func CallbackNull(_ o:AnyObject) {
     vmlog("in CallbackNull")
   }
   
   
   // common function called whenever any messages need to be sent over BLE
-//  fileprivate func BLESendFunction() {
-    open func BLESendFunction() {
+  //ranjan changed fileprivate to public due to travis fail
+  public func BLESendFunction() {
     
     
     var sendBytes: Data
@@ -1030,7 +1016,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // We need to do this because this function can be called as BLE notifications are
     // received because we may have queued up some messages to send.
     if BLETxDataBuffer.count == 0 {
-        print("returing with tx buffer empty!")
       return
     }
     
@@ -1093,7 +1078,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // separated by different things, for example messages are separated by \0
   // when coming via BLE, and separated by 0xa when coming via a trace file
   // RXDataParser returns the timestamp of the parsed message out of convenience.
-  fileprivate func RxDataParser(_ separator:UInt8) {
+    
+    //fileprivate to open
+  open func RxDataParser(_ separator:UInt8) {
     
     
     ////////////////
@@ -1238,13 +1225,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           // TODO: debug printouts, maybe remove
           if rsp.value != nil {
             if rsp.pid != nil {
-                vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(String(describing: rsp.pid)) success:\(rsp.success) value:\(String(describing: rsp.value))")
+              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(rsp.pid) success:\(rsp.success) value:\(rsp.value)")
             } else {
-                vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(String(describing: rsp.value))")
+              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(rsp.value)")
             }
           } else {
             if rsp.pid != nil {
-                vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(String(describing: rsp.pid)) success:\(rsp.success) payload:\(rsp.payload)")
+              vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) pid:\(rsp.pid) success:\(rsp.success) payload:\(rsp.payload)")
             } else {
               vmlog("diag rsp msg:\(rsp.bus) id:\(rsp.message_id) mode:\(rsp.mode) success:\(rsp.success) value:\(rsp.payload)")
             }
@@ -1382,14 +1369,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // every message will have a timestamp
         
-        //Ranjan:Added NSNumber in timestamp to parse as it is in number format then convert nsnumber to integer as per requirment.
+        //Ranjan:  Added NSNumber in timestamp to parse as it is in number format then convert nsnumber to integer as per requirment.
         var timestamp : NSInteger = 0
         var timestamp1 : NSNumber = 0
         if json["timestamp"] != nil {
-
-            timestamp1 = json["timestamp"]  as! NSNumber
+           timestamp1 = json["timestamp"]  as! NSNumber
             timestamp = NSInteger(timestamp1.int64Value)
-
+           // NSLog("%d",timestamp)
         }
 
 
@@ -1599,13 +1585,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             // TODO: debug printouts, maybe remove
             if value != nil {
               if pid != nil {
-                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(String(describing: pid)) success:\(success) value:\(String(describing: value))")
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) value:\(value)")
               } else {
-                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(String(describing: value))")
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(value)")
               }
             } else {
               if pid != nil {
-                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(String(describing: pid)) success:\(success) payload:\(payload)")
+                vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) payload:\(payload)")
               } else {
                 vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(payload)")
               }
@@ -1837,24 +1823,19 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
   }
-  
-  
-  
-  
-  
-  
-  
-  
+
   // MARK: Core Bluetooth Manager
-  
-  
   // watch for changes to the BLE state
   open func centralManagerDidUpdateState(_ central: CBCentralManager) {
     vmlog("in centralManagerDidUpdateState:")
     if central.state == .poweredOff {
+        
+        self.callbackHandler!(false)
       vmlog(" PoweredOff")
     } else if central.state == .poweredOn {
       vmlog(" PoweredOn")
+       self.callbackHandler!(true)
+       
     } else {
       vmlog(" Other")
     }
@@ -1862,10 +1843,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if central.state == .poweredOn && connectionState == .scanning {
       centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
-    
-    
+
   }
-  
   
   // Core Bluetooth has discovered a BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -2086,7 +2065,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
     vmlog("in peripheral:didDiscoverIncludedServicesForService")
   }
-  
   
   // Core Bluetooth has written a value to a characteristic
   open func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
