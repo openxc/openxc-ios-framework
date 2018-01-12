@@ -173,12 +173,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   //Connected to network simulator
   open var isNetworkConnected: Bool = false
  //Iphone device blutooth is on/fff status
+
   open var isDeviceBluetoothIsOn :Bool = false
   
   var callbackHandler: ((Bool) -> ())?  = nil
   
     //Connected to Ble simulator
     open var isBleConnected: Bool = false
+
   
   
   
