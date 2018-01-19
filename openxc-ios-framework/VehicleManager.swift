@@ -173,10 +173,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   //Connected to network simulator
   open var isNetworkConnected: Bool = false
  //Iphone device blutooth is on/fff status
-    open var isDeviceBluetoothIsOn :Bool = false
+
+  open var isDeviceBluetoothIsOn :Bool = false
   
   var callbackHandler: ((Bool) -> ())?  = nil
   
+    //Connected to Ble simulator
+    open var isBleConnected: Bool = false
+
   
   
   
@@ -1029,7 +1033,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if BLETxWriteCount != 0 {
       return
     }
-    
+    if(isBleConnected){
     // take the message to send from the head of the tx buffer queue
     var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
     vmlog("cmdToSend:",cmdToSend)
@@ -1064,6 +1068,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       openXCPeripheral.writeValue(sendBytes, for: openXCWriteChar, type: CBCharacteristicWriteType.withResponse)
       // increment the tx write semaphore
       BLETxWriteCount += 1
+    }
     }
 
     // remove the message from the tx buffer queue once all parts of it have been sent
@@ -1880,13 +1885,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     // update the connection state
     connectionState = .connected
-    
     // auto discover the services for this peripheral
     peripheral.discoverServices(nil)
     
     // notify client if the callback is enabled
     if let act = managerCallback {
       act.performAction(["status":VehicleManagerStatusMessage.c5CONNECTED.rawValue] as NSDictionary)
+        isBleConnected = true
+        
     }
   }
   
