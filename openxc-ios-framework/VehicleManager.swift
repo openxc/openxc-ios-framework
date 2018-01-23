@@ -36,9 +36,6 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
-
-
-
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
@@ -50,6 +47,7 @@ public enum VehicleManagerStatusMessage: Int {
   case trace_SOURCE_END=6         // configured trace input end of file reached
   case trace_SINK_WRITE_ERROR=7   // error in writing message to trace file
   case ble_RX_DATA_PARSE_ERROR=8  // error in parsing data received from VI
+ 
 }
 // This enum is outside of the main class for ease of use in the client app. It allows
 // for referencing the enum without the class hierarchy in front of it. Ie. the enums
@@ -70,13 +68,8 @@ public enum VehicleManagerConnectionState: Int {
 // can be accessed directly as .C5DETECTED for example
 
 
-
-
-
 open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
-  
-  
-  
+
   // MARK: Singleton Init
   
   // This signleton init allows mutiple controllers to access the same instantiation
@@ -88,9 +81,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }()
   fileprivate override init() {
   }
-  
-  
-  
+
   // MARK: Class Vars
   // -----------------
   
@@ -117,10 +108,11 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   fileprivate var managerCallback: TargetAction?
   
   // data buffer for receiving raw BTLE data
-  fileprivate var RxDataBuffer: NSMutableData! = NSMutableData()
+  public var RxDataBuffer: NSMutableData! = NSMutableData()
   
   // data buffer for storing vehicle messages to send to BTLE
-  fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+    //Ranjan changed fileprivate to public due to travis fail
+  public var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
   // BTLE transmit token increment variable
@@ -178,12 +170,17 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open var connectionState: VehicleManagerConnectionState! = .notConnected
   // public variable holding number of messages received since last Connection established
   open var messageCount: Int = 0
+  //Connected to network simulator
+  open var isNetworkConnected: Bool = false
+ //Iphone device blutooth is on/fff status
+
+  open var isDeviceBluetoothIsOn :Bool = false
   
+  var callbackHandler: ((Bool) -> ())?  = nil
   
-  
-  
-  
-  
+    //Connected to Ble simulator
+    open var isBleConnected: Bool = false
+
   
   
   
@@ -234,8 +231,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   // initialize the VM and scan for nearby VIs
-  open func scan() {
-    
+  open func scan(completionHandler: @escaping (_ success: Bool) -> ()) {
+    self.callbackHandler = completionHandler
     // if the VM is already connected, don't do anything
     if connectionState != .notConnected {
       vmlog("VehicleManager already scanning or connected! Sorry!")
@@ -264,9 +261,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       return
     }
     
+
     // if the name is given, look it up. Otherwise use any peripheral
     openXCPeripheral = (name != nil ? foundOpenXCPeripherals[name!] : foundOpenXCPeripherals.first?.1)
-    
+
     if openXCPeripheral == nil {
       vmlog("VehicleManager has not found this peripheral!")
       return
@@ -695,6 +693,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       let cbuild = ControlCommand.Builder()
       if cmd.command == .version {_ = cbuild.setType(.version)}
       if cmd.command == .device_id {_ = cbuild.setType(.deviceId)}
+      if cmd.command == .platform {_ = cbuild.setType(.platform)}
       if cmd.command == .passthrough {
         let cbuild2 = PassthroughModeControlCommand.Builder()
         _ = cbuild2.setBus(Int32(cmd.bus))
@@ -772,7 +771,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // we're in json mode
     var cmdstr = ""
     // decode the command type and build the command depending on the command
-    if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status {
+    if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
       // build the command json
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
     }
@@ -798,10 +797,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     else if cmd.command == .rtc_configuration {
       // build the command json
+        let timeInterval = Date().timeIntervalSince1970
+        cmd.unix_time = NSInteger(timeInterval);
+        print("timestamp is..",cmd.unix_time)
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
     } else {
       // unknown command!
       return
+        
     }
     
     // append to tx buffer
@@ -974,13 +977,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // want it to actually do anything, for example a command request where we don't
   // want a callback for the command response. The command response is still received
   // but the callback registered comes here, and does nothing.
-  fileprivate func CallbackNull(_ o:AnyObject) {
+  //Ranjan changed fileprivate to public due to travis build fail
+  public func CallbackNull(_ o:AnyObject) {
     vmlog("in CallbackNull")
   }
   
   
   // common function called whenever any messages need to be sent over BLE
-  fileprivate func BLESendFunction() {
+  //ranjan changed fileprivate to public due to travis fail
+  public func BLESendFunction() {
     
     
     var sendBytes: Data
@@ -1002,16 +1007,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if BLETxWriteCount != 0 {
       return
     }
-    
+    if(isBleConnected){
     // take the message to send from the head of the tx buffer queue
     var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
-    
     vmlog("cmdToSend:",cmdToSend)
     let datastring = NSString(data: (cmdToSend as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
     vmlog("datastring:",datastring!)
 
-
-    
     // we can only send 20B at a time in BLE
     let rangedata = NSMakeRange(0, 20)
     // loop through and send 20B at a time, make sure to handle <20B in the last send.
@@ -1041,6 +1043,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       // increment the tx write semaphore
       BLETxWriteCount += 1
     }
+    }
 
     // remove the message from the tx buffer queue once all parts of it have been sent
     BLETxDataBuffer.removeObject(at: 0)
@@ -1054,7 +1057,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // separated by different things, for example messages are separated by \0
   // when coming via BLE, and separated by 0xa when coming via a trace file
   // RXDataParser returns the timestamp of the parsed message out of convenience.
-  fileprivate func RxDataParser(_ separator:UInt8) {
+    
+    //fileprivate to open
+  open func RxDataParser(_ separator:UInt8) {
     
     
     ////////////////
@@ -1342,9 +1347,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         let json = try JSONSerialization.jsonObject(with: data_chunk as Data, options: .mutableContainers) as! [String:AnyObject]
         
         // every message will have a timestamp
+        
+        //Ranjan:  Added NSNumber in timestamp to parse as it is in number format then convert nsnumber to integer as per requirment.
         var timestamp : NSInteger = 0
+        var timestamp1 : NSNumber = 0
         if json["timestamp"] != nil {
-          timestamp = json["timestamp"] as! NSInteger
+           timestamp1 = json["timestamp"]  as! NSNumber
+            timestamp = NSInteger(timestamp1.int64Value)
+           // NSLog("%d",timestamp)
         }
 
 
@@ -1792,24 +1802,19 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
   }
-  
-  
-  
-  
-  
-  
-  
-  
+
   // MARK: Core Bluetooth Manager
-  
-  
   // watch for changes to the BLE state
   open func centralManagerDidUpdateState(_ central: CBCentralManager) {
     vmlog("in centralManagerDidUpdateState:")
     if central.state == .poweredOff {
+        
+        self.callbackHandler!(false)
       vmlog(" PoweredOff")
     } else if central.state == .poweredOn {
       vmlog(" PoweredOn")
+       self.callbackHandler!(true)
+       
     } else {
       vmlog(" Other")
     }
@@ -1817,10 +1822,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if central.state == .poweredOn && connectionState == .scanning {
       centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
-    
-    
+
   }
-  
   
   // Core Bluetooth has discovered a BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -1865,13 +1868,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     // update the connection state
     connectionState = .connected
-    
     // auto discover the services for this peripheral
     peripheral.discoverServices(nil)
     
     // notify client if the callback is enabled
     if let act = managerCallback {
       act.performAction(["status":VehicleManagerStatusMessage.c5CONNECTED.rawValue] as NSDictionary)
+        isBleConnected = true
+        
     }
   }
   
@@ -2041,7 +2045,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func peripheral(_ peripheral: CBPeripheral, didDiscoverIncludedServicesFor service: CBService, error: Error?) {
     vmlog("in peripheral:didDiscoverIncludedServicesForService")
   }
-  
   
   // Core Bluetooth has written a value to a characteristic
   open func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
