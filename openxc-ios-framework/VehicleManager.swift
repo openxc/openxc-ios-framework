@@ -133,7 +133,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // default callback action for measurement messages not registered above
   fileprivate var defaultMeasurementCallback : TargetAction?
   // dictionary holding last received measurement message for each measurement type
-  fileprivate var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
+  fileprivate var latestVehicleMeasurements = [NSString:VehicleMeasurementResponse]()
   
   // dictionary for holding registered diagnostic message callbacks
   // pairing bus-id-mode(-pid) String with callback action
@@ -454,11 +454,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   // return the latest message received for a given measurement string name
-  open func getLatest(_ key:NSString) -> VehicleMeasurementResponse {
-    if let entry = latestVehicleMeasurements[key] {
-      return entry as! VehicleMeasurementResponse
-    }
-    return VehicleMeasurementResponse()
+  open func getLatest(_ key:NSString) -> VehicleMeasurementResponse? {
+    return latestVehicleMeasurements[key]
   }
   
   
@@ -1124,12 +1121,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         ///////////////////////////////////////////
         if msg.type == .simple {
           decoded = true
-          let name = msg.simpleMessage.name
+          let name = msg.simpleMessage.name as NSString
           
           // build measurement message
           let rsp : VehicleMeasurementResponse = VehicleMeasurementResponse()
           rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
-          rsp.name = msg.simpleMessage.name as NSString
+          rsp.name = name
           if msg.simpleMessage.value.hasStringValue {rsp.value = msg.simpleMessage.value.stringValue as AnyObject}
           if msg.simpleMessage.value.hasBooleanValue {rsp.value = msg.simpleMessage.value.booleanValue as AnyObject}
           if msg.simpleMessage.value.hasNumericValue {rsp.value = msg.simpleMessage.value.numericValue as AnyObject}
@@ -1141,13 +1138,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           }
           
           // capture this message into the dictionary of latest messages
-          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
+          latestVehicleMeasurements[name] = rsp
           
           // look for a specific callback for this measurement name
           var found=false
           for key in measurementCallbacks.keys {
             let act = measurementCallbacks[key]
-            if act!.returnKey() as String == name {
+            if act!.returnKey() == name {
               found=true
               act!.performAction(["vehiclemessage":rsp] as NSDictionary)
             }
@@ -1423,7 +1420,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           rsp.event = event
           
           // capture this message into the dictionary of latest messages
-          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
+          latestVehicleMeasurements[name] = rsp
           
           // look for a specific callback for this measurement name
           var found=false
@@ -1458,7 +1455,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           rsp.name = name
           
           // capture this message into the dictionary of latest messages
-          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
+          latestVehicleMeasurements[name] = rsp
           
           // look for a specific callback for this measurement name
           var found=false
@@ -1931,7 +1928,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       }
 
       // clear any saved context
-      latestVehicleMeasurements = NSMutableDictionary()
+      latestVehicleMeasurements.removeAll()
       
       // update the connection state
       connectionState = .connectionInProgress
