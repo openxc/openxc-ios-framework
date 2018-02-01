@@ -1097,21 +1097,20 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       if RxDataBuffer.length > packetlen+1 {
         vmlog("found \(packetlen)B protobuf frame")
 
-        let data_chunk : NSMutableData = NSMutableData()
-        data_chunk.append(RxDataBuffer.subdata(with: NSMakeRange(1,packetlen)))
+        let data_chunk = RxDataBuffer.subdata(with: NSMakeRange(1,packetlen))
 
         vmlog(data_chunk)
         
         var msg : VehicleMessage
         do {
-            msg = try VehicleMessage.parseFrom(data: data_chunk as Data)
+            msg = try VehicleMessage.parseFrom(data: data_chunk)
           print(msg)
         } catch {
           print("protobuf parse error")
           return
         }
         
-        RxDataBuffer.replaceBytes(in: NSMakeRange(0, packetlen), withBytes: nil, length: 0)
+        RxDataBuffer.replaceBytes(in: NSMakeRange(0, packetlen+1), withBytes: nil, length: 0)
         
         var decoded = false
         
