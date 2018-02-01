@@ -815,7 +815,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       ]
     case .rtc_configuration:
       cmdObj["unix_time"] = cmd.unix_time
-    case .version, .device_id, .sd_mount_status:
+    case .version, .device_id, .sd_mount_status, .platform:
       // no additional args
       break
 
