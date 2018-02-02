@@ -12,30 +12,6 @@ import CoreBluetooth
 import ProtocolBuffers
 
 
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
@@ -351,11 +327,11 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // are read from the file in ms
   // If the speed is not specified, the framework will use the timestamp
   // values found in the trace file to determine when to send the next message
-  open func enableTraceFileSource(_ filename:NSString, speed:NSInteger?=nil) -> Bool {
+  open func enableTraceFileSource(_ filename:NSString, speedOrNil:NSInteger?=nil) -> Bool {
     
     // only allow a reasonable range of values for speed, not too fast or slow
-    if speed != nil {
-      if speed < 50 || speed > 1000 {return false}
+    if let speed = speedOrNil, speed < 50 || speed > 1000 {
+      return false
     }
     
     // check for file sharing in the bundle
@@ -395,8 +371,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // create a timer to handle reading from the trace input filehandle
         // if speed parameter exists
-        if speed != nil {
-          let spdf:Double = Double(speed!) / 1000.0
+        if let speed = speedOrNil {
+          let spdf:Double = Double(speed) / 1000.0
           traceFilesourceTimer = Timer.scheduledTimer(timeInterval: spdf, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
         } else {
           // if it doesn't exist, we're tracking the time held in the
