@@ -53,7 +53,7 @@ open class VehicleCommandResponse : VehicleBaseMessage {
 
 
 open class Command: NSObject {
-
+    
     
     // MARK: Singleton Init
     
@@ -69,32 +69,32 @@ open class Command: NSObject {
     
     // config variable determining whether trace input is used instead of BTLE data
     fileprivate var traceFilesourceEnabled: Bool = false
-
+    
     // BTLE transmit token increment variable
     fileprivate var BLETxSendToken: Int = 0
-
+    
     // ordered list for storing callbacks for in progress vehicle commands
     fileprivate var BLETxCommandCallback = [TargetAction]()
-
+    
     // mirrored ordered list for storing command token for in progress vehicle commands
     fileprivate var BLETxCommandToken = [String]()
-
+    
     // config for protobuf vs json BLE mode, defaults to JSON
     fileprivate var jsonMode : Bool = true
-
+    
     // config for outputting debug messages to console
     fileprivate var managerDebug : Bool = false
-
+    
     // data buffer for storing vehicle messages to send to BTLE
     fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
     
     var vm = VehicleManager.sharedInstance
-
+    var bm = BluetoothManager.sharedInstance
     // 'default' command callback. If this is defined, it takes priority over any other callback
     fileprivate var defaultCommandCallback : TargetAction?
     // optional variable holding callback for VehicleManager status updates
     fileprivate var managerCallback: TargetAction?
-
+    
     // private debug log function gated by the debug setting
     fileprivate func vmlog(_ strings:Any...) {
         if managerDebug {
@@ -109,7 +109,7 @@ open class Command: NSObject {
             print("")
         }
     }
-
+    
     
     open func sendCommand<T: AnyObject>(_ cmd:VehicleCommandRequest, target: T, action: @escaping (T) -> (NSDictionary) -> ()) -> String {
         vmlog("in sendCommand:target")
@@ -128,7 +128,7 @@ open class Command: NSObject {
         sendCommandCommon(cmd)
         
         return key
-
+        
     }
     
     // send a command message with no callback specified
@@ -242,7 +242,7 @@ open class Command: NSObject {
                 BLETxDataBuffer.add(cdata2)
                 
                 // trigger a BLE data send
-                vm.BLESendFunction()
+                bm.BLESendFunction()
                 
             } catch {
                 print("cmd msg build failed")
@@ -302,7 +302,7 @@ open class Command: NSObject {
         self.vm.BLETxDataBuffer = BLETxDataBuffer
         
         // trigger a BLE data send
-        self.vm.BLESendFunction()
+        bm.BLESendFunction()
         //BLESendFunction()
         
     }

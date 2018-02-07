@@ -12,6 +12,8 @@
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
 		7D1274962003637F0094AB64 /* NetworkData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1274952003637F0094AB64 /* NetworkData.swift */; };
+		7DFDCACB201F16E0007CDDBD /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFDCACA201F16E0007CDDBD /* BluetoothManager.swift */; };
+		7DFDCAD4201F1728007CDDBD /* TraceFileData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFDCAD3201F1728007CDDBD /* TraceFileData.swift */; };
 		E73ADBC31F52A3E7002D66E4 /* ProtocolBuffers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E77269EB1E30B1DE001267D3 /* ProtocolBuffers.framework */; };
 		E7AA8AE81F03A9A00076A288 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AE71F03A9A00076A288 /* Command.swift */; };
 		E7AA8AF11F03AA300076A288 /* Measurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF01F03AA300076A288 /* Measurement.swift */; };
@@ -92,6 +94,8 @@
 		3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenXCClasses.swift; sourceTree = "<group>"; };
 		3A1017331D5BA223006C5E93 /* TargetAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetAction.swift; sourceTree = "<group>"; };
 		7D1274952003637F0094AB64 /* NetworkData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkData.swift; sourceTree = "<group>"; };
+		7DFDCACA201F16E0007CDDBD /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		7DFDCAD3201F1728007CDDBD /* TraceFileData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceFileData.swift; sourceTree = "<group>"; };
 		E77269E21E30B1DE001267D3 /* ProtocolBuffers.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ProtocolBuffers.xcodeproj; path = "protobuf-swift/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj"; sourceTree = "<group>"; };
 		E7AA8AE71F03A9A00076A288 /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 		E7AA8AF01F03AA300076A288 /* Measurement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Measurement.swift; sourceTree = "<group>"; };
@@ -151,7 +155,6 @@
 				3A1017091D5941C8006C5E93 /* openxc-ios-framework.h */,
 				3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */,
 				3A1017111D5941D8006C5E93 /* VehicleManager.swift */,
-				3A10170B1D5941C8006C5E93 /* Info.plist */,
 				3A1017331D5BA223006C5E93 /* TargetAction.swift */,
 				E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */,
 				E7AA8AE71F03A9A00076A288 /* Command.swift */,
@@ -161,6 +164,9 @@
 				E7AA8AF61F03AAA20076A288 /* Message.swift */,
 				E7AA8AFA1F03B0790076A288 /* Utilities.swift */,
 				7D1274952003637F0094AB64 /* NetworkData.swift */,
+				7DFDCACA201F16E0007CDDBD /* BluetoothManager.swift */,
+				7DFDCAD3201F1728007CDDBD /* TraceFileData.swift */,
+				3A10170B1D5941C8006C5E93 /* Info.plist */,
 			);
 			path = "openxc-ios-framework";
 			sourceTree = "<group>";
@@ -365,6 +371,7 @@
 			files = (
 				E7FAF9FB1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */,
 				3A1017121D5941D8006C5E93 /* VehicleManager.swift in Sources */,
+				7DFDCAD4201F1728007CDDBD /* TraceFileData.swift in Sources */,
 				E7AA8AF31F03AA620076A288 /* Diagnostic.swift in Sources */,
 				E7AA8AF71F03AAA20076A288 /* Message.swift in Sources */,
 				E7AA8AF11F03AA300076A288 /* Measurement.swift in Sources */,
@@ -373,6 +380,7 @@
 				E7AA8AE81F03A9A00076A288 /* Command.swift in Sources */,
 				E7AA8AF51F03AA890076A288 /* CAN.swift in Sources */,
 				E7AA8AFB1F03B0790076A288 /* Utilities.swift in Sources */,
+				7DFDCACB201F16E0007CDDBD /* BluetoothManager.swift in Sources */,
 				3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
