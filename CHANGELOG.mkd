@@ -1,5 +1,9 @@
 # OpenXC iOS Library Changelog
 
+## v2.0
+
+* iOS11 support, WiFi, Bug Fixes and code improvements
+
 ## v1.2.0
 
 * Command Support
