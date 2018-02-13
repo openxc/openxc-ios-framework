@@ -138,7 +138,9 @@
 				3A1017071D5941C8006C5E93 /* Products */,
 				E77269CF1E30B1BF001267D3 /* Frameworks */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		3A1017071D5941C8006C5E93 /* Products */ = {
 			isa = PBXGroup;
@@ -165,6 +167,7 @@
 				E7AA8AFA1F03B0790076A288 /* Utilities.swift */,
 				7D1274952003637F0094AB64 /* NetworkData.swift */,
 				3A10170B1D5941C8006C5E93 /* Info.plist */,
+
 			);
 			path = "openxc-ios-framework";
 			sourceTree = "<group>";
@@ -538,7 +541,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -564,7 +567,7 @@
 				PRODUCT_NAME = openXCiOSFramework;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
