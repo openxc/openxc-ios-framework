@@ -11,8 +11,11 @@ import XCTest
 
 class VehicleManagerTest: XCTestCase {
     
-    
+    var traceFileSinkPath : NSString = "1.json"
+    var traceFileSourcePath : NSString = "2.json"
+    var versionId : NSString = "Version"
     var scanValueIs : Bool = false
+    var sucessValueIs : Bool = true
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -23,68 +26,62 @@ class VehicleManagerTest: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+  
     //Vehicle manager Trace file sink test method
     func testEnableTraceFileSink(){
-        let value = VehicleManager.sharedInstance.enableTraceFileSink("user/path/.Aiims.txt")
-        XCTAssert(value)
+        let value = VehicleManager.sharedInstance.enableTraceFileSink( self.traceFileSinkPath)
+        if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool{
+        XCTAssert(!value)
+        }else{
+            XCTAssert(value)
+        }
     }
     //Vehicle manager trace filr source  test method
     func testEnableTraceFileSource(){
-        let value = VehicleManager.sharedInstance.enableTraceFileSource("user/path/.Aiims.txt", speed: 60)
-        XCTAssert(value)
+        let value = VehicleManager.sharedInstance.enableTraceFileSource( self.traceFileSourcePath, speed:60)
+        if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool{
+        XCTAssert(!value )
+        }else{
+            XCTAssert(value )
+        }
     }
     //Vehicle manager Measurement  test method
     func testgetLatestMeasurement(){
-        let value = VehicleManager.sharedInstance.getLatest("Version")
-        XCTAssertNil(value)
+        let value = VehicleManager.sharedInstance.getLatest(self.versionId)
+        XCTAssert(value.isEvented == false)
     }
-    //Vehicle manager Command Request test method
-    func testSendCommand(){
-        
-        // let value = VehicleManager.sharedInstance.sendCommand(<#T##cmd: VehicleCommandRequest##VehicleCommandRequest#>, target: <#T##T#>, action: <#T##(T) -> (NSDictionary) -> ()#>)
-        //XCTAssert(value == "")
-    }
-    //Vehicle manager Diagnostic Request test method
-    func testSendDiagReq(){
-        //let value = VehicleManager.sharedInstance.sendDiagReq(<#T##cmd: VehicleDiagnosticRequest##VehicleDiagnosticRequest#>, target: <#T##T#>, cmdaction: <#T##(T) -> (NSDictionary) -> ()#>)
-         //XCTAssert(value == "")
-    }
-    
-    func  testManagerCallBack () {
-        //VehicleManager.sharedInstance.setManagerCallbackTarget(<#T##target: T##T#>, action: <#T##(T) -> (NSDictionary) -> ()#>)
-       // VehicleManager.managerCallback
-       // XCTAssert()
-    }
-    
-    func testsetManagerDebug (){
-        //VehicleManager.sharedInstance.setManagerDebug(true)
-       // XCTAssert(VehicleManager.sharedInstance.managerDebug)
-    }
+ 
     
     func  testAutoConnect() {
         VehicleManager.sharedInstance.setAutoconnect(true)
         XCTAssert(VehicleManager.sharedInstance.autoConnectPeripheral)
     }
     
-    func testdiscoveredVI(){
-       // let value =VehicleManager.sharedInstance.discoveredVI()
-       // XCTAssert(value == "")
-    }
-    func testScanVi{
-        VehicleManager.sharedInstance.scan { (success) in
-            scanValueIs = success
-        }
-        XCTAssert(scanValueIs)
-    }
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
+//    func testScanVi{
+//        VehicleManager.sharedInstance.scan { (success) in
+//            if(!success){
+//            self.scanValueIs = sucessValueIs
+//            }else{
+//                self.scanValueIs = success
+//            }
+//        }
+//        XCTAssert(scanValueIs)
+//    }
+    //    func testdiscoveredVI(){
+    //        let value =VehicleManager.sharedInstance.discoveredVI()
+    //
+    //        XCTAssert(value == "OPENXC-VI-6C9B")
+    //    }
+
+    //Vehicle manager Command Request test method
+//    func testSendCommand(){
+//
+//     let value = VehicleManager.sharedInstance.sendCommand(<#T##cmd: VehicleCommandRequest##VehicleCommandRequest#>, target: <#T##T#>, action: <#T##(T) -> (NSDictionary) -> ()#>)
+//    XCTAssert(value == "")
+//     }
+    //Vehicle manager Diagnostic Request test method
+//    func testSendDiagReq(){
+//    let value = VehicleManager.sharedInstance.sendDiagReq(<#T##cmd: VehicleDiagnosticRequest##VehicleDiagnosticRequest#>, target: <#T##T#>, cmdaction: <#T##(T) -> (NSDictionary) -> ()#>)
+//    XCTAssert(value == "")
+//     }
 }

@@ -22,11 +22,8 @@ class NetworkDataTest: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+    /*
+    //Test the Socket network connection
     func testSocketConnection() {
         NetworkData.sharedInstance.connect(ip:"0.0.0.0", portvalue: 50001, completionHandler: { (success) in
             
@@ -34,13 +31,6 @@ class NetworkDataTest: XCTestCase {
         })
         
         XCTAssert(valueIs)
-    }
-    
-    func testPerformanceExample() {
-         //This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+    }*/
     
 }

@@ -75,7 +75,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // This signleton init allows mutiple controllers to access the same instantiation
   // of the VehicleManager. There is only a single instantiation of the VehicleManager
   // for the entire client app
-  static open let sharedInstance: VehicleManager = {
+  static public let sharedInstance: VehicleManager = {
     let instance = VehicleManager()
     return instance
   }()
@@ -96,7 +96,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   fileprivate var foundOpenXCPeripherals: [String:CBPeripheral] = [String:CBPeripheral]()
   
   // config for auto connecting to first discovered VI
-   open var autoConnectPeripheral : Bool = true
+   public var autoConnectPeripheral : Bool = true
    //fileprivate var autoConnectPeripheral : Bool = true
   // config for outputting debug messages to console
     fileprivate var managerDebug : Bool = false
@@ -167,17 +167,17 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   fileprivate var traceFilesourceTimeTracking: Bool = false
   
   // public variable holding VehicleManager connection state enum
-  open var connectionState: VehicleManagerConnectionState! = .notConnected
+  public var connectionState: VehicleManagerConnectionState! = .notConnected
   // public variable holding number of messages received since last Connection established
-  open var messageCount: Int = 0
+  public var messageCount: Int = 0
   //Connected to network simulator
-  open var isNetworkConnected: Bool = false
+  public var isNetworkConnected: Bool = false
   //Iphone device blutooth is on/fff status
-  open var isDeviceBluetoothIsOn :Bool = false
+  public var isDeviceBluetoothIsOn :Bool = false
   //Call back Handeler
   var callbackHandler: ((Bool) -> ())?  = nil
   //Connected to Ble simulator
-  open var isBleConnected: Bool = false
+  public var isBleConnected: Bool = false
 
   
   
@@ -223,6 +223,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   // return array of discovered peripherals
   open func discoveredVI() -> [String] {
+    
     return Array(foundOpenXCPeripherals.keys)
   }
   
