@@ -87,7 +87,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   public var RxDataBuffer: NSMutableData! = NSMutableData()
   
   // data buffer for storing vehicle messages to send to BTLE
-    //Ranjan changed fileprivate to public due to travis fail
+  //Ranjan changed fileprivate to public due to travis fail
   public var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
@@ -101,7 +101,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // 'default' command callback. If this is defined, it takes priority over any other callback
   // defined above
   fileprivate var defaultCommandCallback : TargetAction?
-
+  
   
   // dictionary for holding registered measurement message callbacks
   // pairing measurement String with callback action
@@ -109,7 +109,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // default callback action for measurement messages not registered above
   fileprivate var defaultMeasurementCallback : TargetAction?
   // dictionary holding last received measurement message for each measurement type
-  fileprivate var latestVehicleMeasurements = [NSString:VehicleMeasurementResponse]()
+  fileprivate var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   
   // dictionary for holding registered diagnostic message callbacks
   // pairing bus-id-mode(-pid) String with callback action
@@ -148,15 +148,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open var messageCount: Int = 0
   //Connected to network simulator
   open var isNetworkConnected: Bool = false
- //Iphone device blutooth is on/fff status
-
+  //Iphone device blutooth is on/fff status
+  
   open var isDeviceBluetoothIsOn :Bool = false
   
   var callbackHandler: ((Bool) -> ())?  = nil
   
-    //Connected to Ble simulator
-    open var isBleConnected: Bool = false
-
+  //Connected to Ble simulator
+  open var isBleConnected: Bool = false
+  
   
   
   
@@ -186,7 +186,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       print("")
     }
   }
-
+  
   
   // change the auto connect config for the VM
   open func setAutoconnect(_ on:Bool) {
@@ -214,22 +214,22 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       vmlog("VehicleManager already scanning or connected! Sorry!")
       return
     }
-
+    
     // run the core bluetooth framework on a separate thread from main thread
     let cbqueue: DispatchQueue = DispatchQueue(label: "CBQ", attributes: [])
-
+    
     // initialize the BLE manager process
     vmlog("VehicleManager scan started")
     connectionState = .scanning
     messageCount = 0
     openXCPeripheral=nil
-   // centralManager = CBCentralManager(delegate: self, queue: cbqueue, options:nil)
+    // centralManager = CBCentralManager(delegate: self, queue: cbqueue, options:nil)
     centralManager = CBCentralManager(delegate: self, queue: cbqueue, options: nil)
   }
   
   
-  // connect the VM to a specific VI, or first if no name provided
-  open func connect(_ name: String? = nil) {
+  // connect the VM to the first VI found
+  open func connect() {
     
     // if the VM is not scanning, don't do anything
     if connectionState != .scanning {
@@ -237,16 +237,42 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       return
     }
     
-
-    // if the name is given, look it up. Otherwise use any peripheral
-    openXCPeripheral = (name != nil ? foundOpenXCPeripherals[name!] : foundOpenXCPeripherals.first?.1)
-
-    if openXCPeripheral == nil {
+    // if the found VI list is empty, just return
+    if foundOpenXCPeripherals.count == 0 {
+      vmlog("VehicleManager has not found any VIs!")
+      
+      return
+    }
+    
+    // for this method, just connect to first one found
+    openXCPeripheral = foundOpenXCPeripherals.first?.1
+    openXCPeripheral.delegate = self
+    
+    // start the connection process
+    vmlog("VehicleManager connect started")
+    centralManager.connect(openXCPeripheral, options:nil)
+    connectionState = .connectionInProgress
+    
+  }
+  
+  
+  // connect the VM to a specific VI
+  open func connect(_ name:String) {
+    
+    // if the VM is not scanning, don't do anything
+    if connectionState != .scanning {
+      vmlog("VehicleManager be scanning before a connect can occur!")
+      return
+    }
+    
+    // if the found VI list is empty, just return
+    if foundOpenXCPeripherals[name] == nil {
       vmlog("VehicleManager has not found this peripheral!")
       return
     }
     
     // for this method, just connect to first one found
+    openXCPeripheral = foundOpenXCPeripherals[name]
     openXCPeripheral.delegate = self
     
     // start the connection process
@@ -404,8 +430,11 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   // return the latest message received for a given measurement string name
-  open func getLatest(_ key:NSString) -> VehicleMeasurementResponse? {
-    return latestVehicleMeasurements[key]
+  open func getLatest(_ key:NSString) -> VehicleMeasurementResponse {
+    if let entry = latestVehicleMeasurements[key] {
+      return entry as! VehicleMeasurementResponse
+    }
+    return VehicleMeasurementResponse()
   }
   
   
@@ -459,7 +488,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // if we have a trace input file, ignore this request!
     if (traceFilesourceEnabled) {return}
     
-    // we still need to keep a spot for the callback in the ordered list, so 
+    // we still need to keep a spot for the callback in the ordered list, so
     // nothing gets out of sync. Assign the callback to the null callback method.
     BLETxSendToken += 1
     let key : String = String(BLETxSendToken)
@@ -484,7 +513,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }
   
   
-
+  
   
   
   
@@ -528,7 +557,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     // common diag send method
     vmlog("diag cmd..", cmd)
-   sendDiagCommon(cmd)
+    sendDiagCommon(cmd)
     
   }
   
@@ -637,7 +666,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   
-  // send a can message   
+  // send a can message
   open func sendCanReq(_ cmd:VehicleCanRequest) {
     vmlog("in sendCanReq")
     
@@ -660,7 +689,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // common function for sending a VehicleCommandRequest
   fileprivate func sendCommandCommon(_ cmd:VehicleCommandRequest) {
     vmlog("in sendCommandCommon")
-
+    
     if !jsonMode {
       // in protobuf mode, build the command message
       let cbuild = ControlCommand.Builder()
@@ -710,10 +739,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         _ = cbuild.setType(.rtcConfiguration)
       }
       if cmd.command == .sd_mount_status {_ = cbuild.setType(.sdMountStatus)}
-
+      
       let mbuild = VehicleMessage.Builder()
       _ = mbuild.setType(.controlCommand)
-
+      
       do {
         let cmsg = try cbuild.build()
         _ = mbuild.setControlCommand(cmsg)
@@ -733,7 +762,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         
         // trigger a BLE data send
         BLESendFunction()
-
+        
       } catch {
         print("cmd msg build failed")
       }
@@ -742,52 +771,57 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
     // we're in json mode
-    var cmdObj: [String: Any] = [
-      "command": cmd.command.rawValue
-    ]
-    
+    var cmdstr = ""
     // decode the command type and build the command depending on the command
-    switch cmd.command {
-    case .passthrough:
-      cmdObj["bus"] = cmd.bus
-      cmdObj["enabled"] = cmd.enabled
-    case .af_bypass:
-      cmdObj["bus"] = cmd.bus
-      cmdObj["bypass"] = cmd.bypass
-    case .payload_format:
-      cmdObj["format"] = cmd.format
-    case .predefined_odb2:
-      cmdObj["enabled"] = cmd.enabled
-    case .modem_configuration:
-      cmdObj["server"] = [
-        "host": cmd.server_host,
-        "port": cmd.server_port
-      ]
-    case .rtc_configuration:
-      cmdObj["unix_time"] = cmd.unix_time
-    case .version, .device_id, .sd_mount_status, .platform:
-      // no additional args
-      break
-
+    if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
+    }
+    else if cmd.command == .passthrough {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"bus\":\(cmd.bus),\"enabled\":\(cmd.enabled)}\0"
+    }
+    else if cmd.command == .af_bypass {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"bus\":\(cmd.bus),\"bypass\":\(cmd.bypass)}\0"
+    }
+    else if cmd.command == .payload_format {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"format\":\"\(cmd.format)\"}\0"
+    }
+    else if cmd.command == .predefined_odb2 {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"enabled\":\(cmd.enabled)}\0"
+    }
+    else if cmd.command == .modem_configuration {
+      // build the command json
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"server\":{\"host\":\"\(cmd.server_host)\",\"port\":\(cmd.server_port)}}\0"
+    }
+    else if cmd.command == .rtc_configuration {
+      // build the command json
+      let timeInterval = Date().timeIntervalSince1970
+      cmd.unix_time = NSInteger(timeInterval);
+      print("timestamp is..",cmd.unix_time)
+      cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
+    } else {
+      // unknown command!
+      return
+      
     }
     
-    do {
-      let data = try JSONSerialization.data(withJSONObject: cmdObj, options: [])
-      // append to tx buffer
-      BLETxDataBuffer.add(data)
-      
-      // trigger a BLE data send
-      BLESendFunction()
-    } catch {
-      vmlog("Error serializing command to JSON", error)
-    }
+    // append to tx buffer
+    BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
+    
+    // trigger a BLE data send
+    BLESendFunction()
+    
   }
   
   
   // common function for sending a VehicleDiagnosticRequest
   fileprivate func sendDiagCommon(_ cmd:VehicleDiagnosticRequest) {
     vmlog("in sendDiagCommon")
- 
+    
     if !jsonMode {
       // in protobuf mode, build diag message
       let cbuild = ControlCommand.Builder()
@@ -802,7 +836,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         _ = dbuild.setPid(UInt32(cmd.pid!))
       }
       if cmd.frequency>0 {
-       _ =  dbuild.setFrequency(Double(cmd.frequency))
+        _ =  dbuild.setFrequency(Double(cmd.frequency))
       }
       let mbuild = VehicleMessage.Builder()
       _ = mbuild.setType(.diagnostic)
@@ -837,42 +871,42 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       
       return
     }
-
+    
     
     // build the command json
-    var reqObject: [String: Any] = [
-        "bus": cmd.bus,
-        "id": cmd.message_id,
-        "mode": cmd.mode
-    ]
-    if let pid = cmd.pid {
-      reqObject["pid"] = pid
+    let cmdjson : NSMutableString = ""
+    cmdjson.append("{\"command\":\"diagnostic_request\",\"action\":\"add\",\"request\":{\"bus\":\(cmd.bus),\"id\":\(cmd.message_id),\"mode\":\(cmd.mode)")
+    
+    if cmd.pid != nil {
+      cmdjson.append(",\"pid\":\(cmd.pid!)")
     }
     if cmd.frequency > 0 {
-      reqObject["frequency"] = cmd.frequency
+      cmdjson.append(",\"frequency\":\(cmd.frequency)")
     }
-    if cmd.payload.length > 0 {
-      reqObject["payload"] = cmd.payload
-    }
-    let cmdObject: [String: Any] = [
-      "command": "diagnostic_request",
-      "action": "add",
-      "request": reqObject
-    ]
     
-    do {
-      let cmdData = try JSONSerialization.data(withJSONObject: cmdObject, options: [])
+    print("payload : \(cmd.payload)")
+    
+    if !cmd.payload.isEqual(to: "") {
       
-      // Forming the json string is expensive – avoid it unless debugging
-      if managerDebug, let jsonstring = String(data: cmdData, encoding: String.Encoding.utf8) {
-        vmlog("sending diag cmd:",jsonstring)
-      }
+      let payloadStr = String(cmd.payload)
+      cmdjson.append(",\"payload\":")
       
-      BLETxDataBuffer.add(cmdData)
-      BLESendFunction()
-    } catch {
-      vmlog("failed to write cmd to json with error", error)
+      let char = "\""
+      
+      cmdjson.append(char)
+      cmdjson.append(payloadStr)
+      cmdjson.append(char)
     }
+    
+    cmdjson.append("}}\0")
+    
+    vmlog("sending diag cmd:",cmdjson)
+    // append to tx buffer
+    BLETxDataBuffer.add(cmdjson.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)!)
+    
+    // trigger a BLE data send
+    BLESendFunction()
+    
   }
   
   
@@ -896,7 +930,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         str = str.substring(from: 2) as NSString
       }
       _ = cbuild.setData(data as Data)
-
+      
       let mbuild = VehicleMessage.Builder()
       _ = mbuild.setType(.can)
       
@@ -927,23 +961,17 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       return
     }
     
-
+    
     
     
     // build the command json
-    let cmdObject: [String: Any] = [
-      "bus": cmd.bus,
-      "id": cmd.id,
-      "data": cmd.data
-    ]
+    let cmd = "{\"bus\":\(cmd.bus),\"id\":\(cmd.id),\"data\":\"\(cmd.data)\"}"
+    // append to tx buffer
+    BLETxDataBuffer.add(cmd.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
     
-    do {
-      let cmdData = try JSONSerialization.data(withJSONObject: cmdObject, options: [])
-      BLETxDataBuffer.add(cmdData)
-      BLESendFunction()
-    } catch {
-      vmlog("Failed to serialize can command with error ", error)
-    }
+    // trigger a BLE data send
+    BLESendFunction()
+    
   }
   
   
@@ -973,7 +1001,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     // Check to see if the tx write semaphore is >0.
     // This indicates that the last message are still being sent.
-    // As the parts of the messsage are being queued up in CoreBluetooth 
+    // As the parts of the messsage are being queued up in CoreBluetooth
     // (20B at a time), the tx write semaphore is incremented.
     // As the parts of the message are actually sent (20B at a time) and
     // acknowledged the tx write semaphore is decremented.
@@ -982,43 +1010,43 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       return
     }
     if(isBleConnected){
-    // take the message to send from the head of the tx buffer queue
-    var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
-    vmlog("cmdToSend:",cmdToSend)
-    let datastring = NSString(data: (cmdToSend as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
-    vmlog("datastring:",datastring!)
-
-    // we can only send 20B at a time in BLE
-    let rangedata = NSMakeRange(0, 20)
-    // loop through and send 20B at a time, make sure to handle <20B in the last send.
-    while cmdToSend.length > 0 {
-      if (cmdToSend.length<=20) {
-        vmlog("cmdToSend if length < 20:",cmdToSend)
-        sendBytes = cmdToSend as Data
-        vmlog("sendBytes if length < 20:",sendBytes)
-        
-        let try2Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
-        vmlog("try2Str....:",try2Str!)
-
-        
-        cmdToSend = NSMutableData()
-      } else {
-        sendBytes = cmdToSend.subdata(with: rangedata)
-        vmlog("20B chunks....:",sendBytes)
-       
-        let try1Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
-        vmlog("try1Str....:",try1Str!)
-
-        let leftdata = NSMakeRange(20,cmdToSend.length-20)
-        cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata))
+      // take the message to send from the head of the tx buffer queue
+      var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
+      vmlog("cmdToSend:",cmdToSend)
+      let datastring = NSString(data: (cmdToSend as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+      vmlog("datastring:",datastring!)
+      
+      // we can only send 20B at a time in BLE
+      let rangedata = NSMakeRange(0, 20)
+      // loop through and send 20B at a time, make sure to handle <20B in the last send.
+      while cmdToSend.length > 0 {
+        if (cmdToSend.length<=20) {
+          vmlog("cmdToSend if length < 20:",cmdToSend)
+          sendBytes = cmdToSend as Data
+          vmlog("sendBytes if length < 20:",sendBytes)
+          
+          let try2Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+          vmlog("try2Str....:",try2Str!)
+          
+          
+          cmdToSend = NSMutableData()
+        } else {
+          sendBytes = cmdToSend.subdata(with: rangedata)
+          vmlog("20B chunks....:",sendBytes)
+          
+          let try1Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
+          vmlog("try1Str....:",try1Str!)
+          
+          let leftdata = NSMakeRange(20,cmdToSend.length-20)
+          cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata))
+        }
+        // write the byte chunk to the VI
+        openXCPeripheral.writeValue(sendBytes, for: openXCWriteChar, type: CBCharacteristicWriteType.withResponse)
+        // increment the tx write semaphore
+        BLETxWriteCount += 1
       }
-      // write the byte chunk to the VI
-      openXCPeripheral.writeValue(sendBytes, for: openXCWriteChar, type: CBCharacteristicWriteType.withResponse)
-      // increment the tx write semaphore
-      BLETxWriteCount += 1
     }
-    }
-
+    
     // remove the message from the tx buffer queue once all parts of it have been sent
     BLETxDataBuffer.removeObject(at: 0)
     
@@ -1031,8 +1059,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // separated by different things, for example messages are separated by \0
   // when coming via BLE, and separated by 0xa when coming via a trace file
   // RXDataParser returns the timestamp of the parsed message out of convenience.
-    
-    //fileprivate to open
+  
+  //fileprivate to open
   open func RxDataParser(_ separator:UInt8) {
     
     
@@ -1047,15 +1075,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       
       if RxDataBuffer.length > packetlen+1 {
         vmlog("found \(packetlen)B protobuf frame")
-
+        
         let data_chunk : NSMutableData = NSMutableData()
         data_chunk.append(RxDataBuffer.subdata(with: NSMakeRange(1,packetlen)))
-
+        
         vmlog(data_chunk)
         
         var msg : VehicleMessage
         do {
-            msg = try VehicleMessage.parseFrom(data: data_chunk as Data)
+          msg = try VehicleMessage.parseFrom(data: data_chunk as Data)
           print(msg)
         } catch {
           print("protobuf parse error")
@@ -1072,12 +1100,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         ///////////////////////////////////////////
         if msg.type == .simple {
           decoded = true
-          let name = msg.simpleMessage.name as NSString
+          let name = msg.simpleMessage.name
           
           // build measurement message
           let rsp : VehicleMeasurementResponse = VehicleMeasurementResponse()
           rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
-          rsp.name = name
+          rsp.name = msg.simpleMessage.name as NSString
           if msg.simpleMessage.value.hasStringValue {rsp.value = msg.simpleMessage.value.stringValue as AnyObject}
           if msg.simpleMessage.value.hasBooleanValue {rsp.value = msg.simpleMessage.value.booleanValue as AnyObject}
           if msg.simpleMessage.value.hasNumericValue {rsp.value = msg.simpleMessage.value.numericValue as AnyObject}
@@ -1089,13 +1117,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           }
           
           // capture this message into the dictionary of latest messages
-          latestVehicleMeasurements[name] = rsp
+          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
           
           // look for a specific callback for this measurement name
           var found=false
           for key in measurementCallbacks.keys {
             let act = measurementCallbacks[key]
-            if act!.returnKey() == name {
+            if act!.returnKey() as String == name {
               found=true
               act!.performAction(["vehiclemessage":rsp] as NSDictionary)
             }
@@ -1106,7 +1134,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
               act.performAction(["vehiclemessage":rsp] as NSDictionary)
             }
           }
-
+          
         }
         
         
@@ -1115,8 +1143,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         if msg.type == .commandResponse {
           decoded = true
           
-//          let name = msg.commandResponse.type.toString()
-            let name = msg.commandResponse.type.description
+          //          let name = msg.commandResponse.type.toString()
+          let name = msg.commandResponse.type.description
           
           
           // build command response message
@@ -1145,7 +1173,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           }
           
         }
- 
+        
         
         
         // Diagnostic messages
@@ -1161,8 +1189,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           rsp.mode = Int(msg.diagnosticResponse.mode)
           if msg.diagnosticResponse.hasPid {rsp.pid = Int(msg.diagnosticResponse.pid)}
           rsp.success = msg.diagnosticResponse.success
-       //   if msg.diagnosticResponse.hasPayload {rsp.payload = String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString}
-       //   if msg.diagnosticResponse.hasPayload {rsp.payload = (String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString) as String}
+          //   if msg.diagnosticResponse.hasPayload {rsp.payload = String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString}
+          //   if msg.diagnosticResponse.hasPayload {rsp.payload = (String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString) as String}
           if msg.diagnosticResponse.hasValue {rsp.value = Int(msg.diagnosticResponse.value)}
           
           // build the key that identifies this diagnostic response
@@ -1258,28 +1286,28 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
           }
         }
-
-       
+        
+        
         
         
         // Keep a count of how many messages were received in total
         // since connection. Can be used by the client app.
         messageCount += 1
         
-
+        
         
       }
-
+      
       return
-
+      
     }
     
     
     ////////////////
     // JSON decoding
     /////////////////
-   
-
+    
+    
     // see if we can find a separator in the buffered data
     let sepdata = Data(bytes: UnsafePointer<UInt8>([separator] as [UInt8]), count: 1)
     let rangedata = NSMakeRange(0, RxDataBuffer.length)
@@ -1305,7 +1333,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       // TODO: remove this, just for debug
       let str = String(data: data_chunk as Data,encoding: String.Encoding.utf8)
       if str != nil {
-     //          vmlog(str!)
+        //          vmlog(str!)
       } else {
         vmlog("not UTF8")
       }
@@ -1326,12 +1354,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         var timestamp : NSInteger = 0
         var timestamp1 : NSNumber = 0
         if json["timestamp"] != nil {
-           timestamp1 = json["timestamp"]  as! NSNumber
-            timestamp = NSInteger(timestamp1.int64Value)
-           // NSLog("%d",timestamp)
+          timestamp1 = json["timestamp"]  as! NSNumber
+          timestamp = NSInteger(timestamp1.int64Value)
+          // NSLog("%d",timestamp)
         }
-
-
+        
+        
         // insert a delay if we're reading from a tracefile
         // and we're tracking the timestamps in the file to
         // decide when to send the next message
@@ -1351,7 +1379,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           traceFilesourceLastMsgTime = timestamp
           traceFilesourceLastActualTime = msTimeNow
         }
-
+        
         
         // evented measurement rsp
         ///////////////////
@@ -1371,7 +1399,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           rsp.event = event
           
           // capture this message into the dictionary of latest messages
-          latestVehicleMeasurements[name] = rsp
+          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
           
           // look for a specific callback for this measurement name
           var found=false
@@ -1391,9 +1419,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         }
           
           
-        // measurement rsp
-        ///////////////////
-        // normal measuerment messages will have an "name" key (but no "event" key)
+          // measurement rsp
+          ///////////////////
+          // normal measuerment messages will have an "name" key (but no "event" key)
         else if let name = json["name"] as? NSString {
           
           // extract other keys from message
@@ -1406,7 +1434,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           rsp.name = name
           
           // capture this message into the dictionary of latest messages
-          latestVehicleMeasurements[name] = rsp
+          latestVehicleMeasurements.setValue(rsp, forKey:name as String)
           
           // look for a specific callback for this measurement name
           var found=false
@@ -1427,9 +1455,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           
           
           
-        // command rsp
-        ///////////////////
-        // command response messages will have a "command_response" key
+          // command rsp
+          ///////////////////
+          // command response messages will have a "command_response" key
         else if let cmd_rsp = json["command_response"] as? NSString {
           
           // extract other keys from message
@@ -1455,12 +1483,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           if let act = defaultCommandCallback {
             act.performAction(["vehiclemessage":rsp] as NSDictionary)
           }
-          // Otherwise, grab the first callback message in the list of command callbacks.
-          // They will be in order relative to when the commands are sent (VI guarantees
-          // to response order). We need to check that the list of command callbacks
-          // actually has something in it here (check for count>0) because if we're
-          // receiving command responses via a trace file, then there was never an
-          // actual command request message sent to the VI.
+            // Otherwise, grab the first callback message in the list of command callbacks.
+            // They will be in order relative to when the commands are sent (VI guarantees
+            // to response order). We need to check that the list of command callbacks
+            // actually has something in it here (check for count>0) because if we're
+            // receiving command responses via a trace file, then there was never an
+            // actual command request message sent to the VI.
           else if BLETxCommandCallback.count > 0 {
             let ta : TargetAction = BLETxCommandCallback.removeFirst()
             let s : String = BLETxCommandToken.removeFirst()
@@ -1470,9 +1498,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         }
           
           
-        // diag rsp or CAN message
-        ///////////////////
-        // both diagnostic response and CAN response messages have an "id" key
+          // diag rsp or CAN message
+          ///////////////////
+          // both diagnostic response and CAN response messages have an "id" key
         else if let id = json["id"] as? NSInteger {
           
           // only diagnostic response messages have "success"
@@ -1496,18 +1524,18 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             if let payloadX = json["payload"] as? NSString {
               payload = payloadX
               print("payload : \(payload)")
-//
-//            var payload : Data?
-//            if let payloadX = json["payload"] as? NSString {
-//                
-//                payload = payloadX.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)
-//                print("payload : \(payload)")
-
-//            var payload : [UInt8] = []
-//            if let payloadX = json["payload"] as? String {
-//                payload = Array(payloadX.utf8)
-//                print("payload : \(payload)")
-                
+              //
+              //            var payload : Data?
+              //            if let payloadX = json["payload"] as? NSString {
+              //
+              //                payload = payloadX.data(using: String.Encoding.utf8.rawValue, allowLossyConversion: false)
+              //                print("payload : \(payload)")
+              
+              //            var payload : [UInt8] = []
+              //            if let payloadX = json["payload"] as? String {
+              //                payload = Array(payloadX.utf8)
+              //                print("payload : \(payload)")
+              
             }
             var value : NSInteger?
             if let valueX = json["value"] as? NSInteger {
@@ -1534,7 +1562,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             } else {
               tupple.append("X")
             }
-
+            
             // TODO: debug printouts, maybe remove
             if value != nil {
               if pid != nil {
@@ -1569,7 +1597,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             
             
             
-          // CAN messages have "data"
+            // CAN messages have "data"
           } else if let data = json["data"] as? NSString {
             
             // extract other keys from message
@@ -1623,7 +1651,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
           if let act = managerCallback {
             act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
           }
-       
+          
         }
         
         
@@ -1632,34 +1660,34 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         // TODO: for debug, remove later
         //// fake out a CAN msg on every msg received!!
         /*
-        if false {
-          let rsp : VehicleCanResponse = VehicleCanResponse()
-          rsp.timestamp = timestamp
-          rsp.bus = Int(arc4random_uniform(2) + 1)
-          rsp.id = Int(arc4random_uniform(20) + 2015)
-          rsp.data = String(format:"%x",Int(arc4random_uniform(100000)+1))
-          
-          vmlog("CAN bus:\(rsp.bus) id:\(rsp.id) payload:\(rsp.data)")
-          
-          
-          let tupple = "\(String(rsp.bus))-\(String(rsp.id))"
-          
-          var found=false
-          for key in canCallbacks.keys {
-            let act = canCallbacks[key]
-            if act!.returnKey() == tupple {
-              found=true
-              act!.performAction(["vehiclemessage":rsp] as NSDictionary)
-            }
-          }
-          if !found {
-            if let act = defaultCanCallback {
-              act.performAction(["vehiclemessage":rsp] as NSDictionary)
-            }
-          }
-          
-        }
-        */
+         if false {
+         let rsp : VehicleCanResponse = VehicleCanResponse()
+         rsp.timestamp = timestamp
+         rsp.bus = Int(arc4random_uniform(2) + 1)
+         rsp.id = Int(arc4random_uniform(20) + 2015)
+         rsp.data = String(format:"%x",Int(arc4random_uniform(100000)+1))
+         
+         vmlog("CAN bus:\(rsp.bus) id:\(rsp.id) payload:\(rsp.data)")
+         
+         
+         let tupple = "\(String(rsp.bus))-\(String(rsp.id))"
+         
+         var found=false
+         for key in canCallbacks.keys {
+         let act = canCallbacks[key]
+         if act!.returnKey() == tupple {
+         found=true
+         act!.performAction(["vehiclemessage":rsp] as NSDictionary)
+         }
+         }
+         if !found {
+         if let act = defaultCanCallback {
+         act.performAction(["vehiclemessage":rsp] as NSDictionary)
+         }
+         }
+         
+         }
+         */
         //////////////////////////////////////////////
         
         
@@ -1703,7 +1731,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     var traceOut = string
     
     traceOut.append("\n");
-
+    
     // search for the trace output file
     if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory,
                                                      FileManager.SearchPathDomainMask.allDomainsMask, true).first {
@@ -1776,27 +1804,27 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     }
     
   }
-
+  
   // MARK: Core Bluetooth Manager
   // watch for changes to the BLE state
   open func centralManagerDidUpdateState(_ central: CBCentralManager) {
     vmlog("in centralManagerDidUpdateState:")
     if central.state == .poweredOff {
-        
-        self.callbackHandler!(false)
+      
+      self.callbackHandler!(false)
       vmlog(" PoweredOff")
     } else if central.state == .poweredOn {
       vmlog(" PoweredOn")
-       self.callbackHandler!(true)
-       
+      self.callbackHandler!(true)
+      
     } else {
       vmlog(" Other")
     }
-  
+    
     if central.state == .poweredOn && connectionState == .scanning {
       centralManager.scanForPeripherals(withServices: nil, options: nil)
     }
-
+    
   }
   
   // Core Bluetooth has discovered a BLE peripheral
@@ -1848,8 +1876,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // notify client if the callback is enabled
     if let act = managerCallback {
       act.performAction(["status":VehicleManagerStatusMessage.c5CONNECTED.rawValue] as NSDictionary)
-        isBleConnected = true
-        
+      isBleConnected = true
+      
     }
   }
   
@@ -1859,10 +1887,10 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }
   
   
-/*  open func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
-    vmlog("in centralManager:willRestoreState")
-  }
- */
+  /*  open func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
+   vmlog("in centralManager:willRestoreState")
+   }
+   */
   
   // Core Bluetooth has disconnected from BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -1872,14 +1900,14 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // just reconnect automatically to the same device for now
     if peripheral == openXCPeripheral {
       centralManager.connect(openXCPeripheral, options:nil)
-
+      
       // notify client if the callback is enabled
       if let act = managerCallback {
         act.performAction(["status":VehicleManagerStatusMessage.c5DISCONNECTED.rawValue] as NSDictionary)
       }
-
+      
       // clear any saved context
-      latestVehicleMeasurements.removeAll()
+      latestVehicleMeasurements = NSMutableDictionary()
       
       // update the connection state
       connectionState = .connectionInProgress
@@ -2027,12 +2055,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       vmlog("error")
       vmlog(error!.localizedDescription)
     } else {
-
+      
     }
     
     // Thread sleep for a small time interval, allowing some time to pass before we
     // call the BLESendFunction method again. This prevents deadlocks/issues with
-    // the semaphore that is altered here and in that method. The Core Bluetooth 
+    // the semaphore that is altered here and in that method. The Core Bluetooth
     // methods are all running outside of the main thread, so this short sleep will
     // not affect any UI
     Thread.sleep(forTimeInterval: 0.05)
