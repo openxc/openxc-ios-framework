@@ -228,8 +228,11 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }
   
   
-  // connect the VM to the first VI found
-  open func connect() {
+//  // connect the VM to the first VI found
+//  open func connect() {
+  
+  // connect the VM to a specific VI, or first if no name provided
+  open func connect(_ name: String? = nil) {
     
     // if the VM is not scanning, don't do anything
     if connectionState != .scanning {
@@ -237,42 +240,46 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       return
     }
     
-    // if the found VI list is empty, just return
-    if foundOpenXCPeripherals.count == 0 {
-      vmlog("VehicleManager has not found any VIs!")
+//    // if the found VI list is empty, just return
+//    if foundOpenXCPeripherals.count == 0 {
+//      vmlog("VehicleManager has not found any VIs!")
+//
+//      return
+//    }
+//
+//    // for this method, just connect to first one found
+//    openXCPeripheral = foundOpenXCPeripherals.first?.1
+//    openXCPeripheral.delegate = self
+    
+//    // start the connection process
+//    vmlog("VehicleManager connect started")
+//    centralManager.connect(openXCPeripheral, options:nil)
+//    connectionState = .connectionInProgress
+//
+//  }
+//
+//
+//  // connect the VM to a specific VI
+//  open func connect(_ name:String) {
+//
+//    // if the VM is not scanning, don't do anything
+//    if connectionState != .scanning {
+//      vmlog("VehicleManager be scanning before a connect can occur!")
+//      return
+//    }
+//
+//    // if the found VI list is empty, just return
+//    if foundOpenXCPeripherals[name] == nil {
+    // if the name is given, look it up. Otherwise use any peripheral
+    openXCPeripheral = (name != nil ? foundOpenXCPeripherals[name!] : foundOpenXCPeripherals.first?.1)
       
-      return
-    }
-    
-    // for this method, just connect to first one found
-    openXCPeripheral = foundOpenXCPeripherals.first?.1
-    openXCPeripheral.delegate = self
-    
-    // start the connection process
-    vmlog("VehicleManager connect started")
-    centralManager.connect(openXCPeripheral, options:nil)
-    connectionState = .connectionInProgress
-    
-  }
-  
-  
-  // connect the VM to a specific VI
-  open func connect(_ name:String) {
-    
-    // if the VM is not scanning, don't do anything
-    if connectionState != .scanning {
-      vmlog("VehicleManager be scanning before a connect can occur!")
-      return
-    }
-    
-    // if the found VI list is empty, just return
-    if foundOpenXCPeripherals[name] == nil {
+      if openXCPeripheral == nil {
       vmlog("VehicleManager has not found this peripheral!")
       return
     }
     
     // for this method, just connect to first one found
-    openXCPeripheral = foundOpenXCPeripherals[name]
+   // openXCPeripheral = foundOpenXCPeripherals[name]
     openXCPeripheral.delegate = self
     
     // start the connection process
