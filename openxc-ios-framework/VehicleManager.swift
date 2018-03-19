@@ -113,6 +113,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // data buffer for storing vehicle messages to send to BTLE
     //Ranjan changed fileprivate to public due to travis fail
   public var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+  public var tempDataBuffer : NSMutableData! = NSMutableData()
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
   // BTLE transmit token increment variable
@@ -377,72 +378,72 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   // are read from the file in ms
   // If the speed is not specified, the framework will use the timestamp
   // values found in the trace file to determine when to send the next message
-  open func enableTraceFileSource(_ filename:NSString, speed:NSInteger?=nil) -> Bool {
-    
-    // only allow a reasonable range of values for speed, not too fast or slow
-    if speed != nil {
-      if speed < 50 || speed > 1000 {return false}
-    }
-    
-    // check for file sharing in the bundle
-    if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
-      if fs == true {
-        vmlog("file sharing ok!")
-      } else {
-        vmlog("file sharing false!")
-        return false
-      }
-    } else {
-      vmlog("no file sharing key!")
-      return false
-    }
-    
-    
-    // check that the file exists
-    if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory,
-                                                     FileManager.SearchPathDomainMask.allDomainsMask, true).first {
-      
-      let path = URL(fileURLWithPath: dir).appendingPathComponent(filename as String).path
-      
-      vmlog("checking for file")
-      if FileManager.default.fileExists(atPath: path) {
-        vmlog("file detected")
+    open func enableTraceFileSource(_ filename:NSString, speedOrNil:NSInteger?=nil) -> Bool {
         
-        // file exists, save file name for trace input
-        traceFilesourceEnabled = true
-        traceFilesourceName = filename
-        
-        // create a file handle for the trace input
-        traceFilesourceHandle = FileHandle(forReadingAtPath:path)
-        if traceFilesourceHandle == nil {
-          vmlog("can't open filehandle")
-          return false
+        // only allow a reasonable range of values for speed, not too fast or slow
+        if let speed = speedOrNil, speed < 50 || speed > 1000 {
+            return false
         }
         
-        // create a timer to handle reading from the trace input filehandle
-        // if speed parameter exists
-        if speed != nil {
-          let spdf:Double = Double(speed!) / 1000.0
-          traceFilesourceTimer = Timer.scheduledTimer(timeInterval: spdf, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
+        // check for file sharing in the bundle
+        if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool {
+            if fs == true {
+                vmlog("file sharing ok!")
+            } else {
+                vmlog("file sharing false!")
+                return false
+            }
         } else {
-          // if it doesn't exist, we're tracking the time held in the
-          // trace file
-          traceFilesourceTimeTracking = true
-          traceFilesourceLastMsgTime = 0
-          traceFilesourceLastActualTime = 0
-          // call the timer as fast as possible, the data parser will sleep to delay the
-          // messages when necessary
-          traceFilesourceTimer = Timer.scheduledTimer(timeInterval: 0.001, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
+            vmlog("no file sharing key!")
+            return false
         }
         
-        return true
         
-      }
+        // check that the file exists
+        if let dir = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory,
+                                                         FileManager.SearchPathDomainMask.allDomainsMask, true).first {
+            
+            let path = URL(fileURLWithPath: dir).appendingPathComponent(filename as String).path
+            
+            vmlog("checking for file")
+            if FileManager.default.fileExists(atPath: path) {
+                vmlog("file detected")
+                
+                // file exists, save file name for trace input
+                traceFilesourceEnabled = true
+                traceFilesourceName = filename
+                
+                // create a file handle for the trace input
+                traceFilesourceHandle = FileHandle(forReadingAtPath:path)
+                if traceFilesourceHandle == nil {
+                    vmlog("can't open filehandle")
+                    return false
+                }
+                
+                // create a timer to handle reading from the trace input filehandle
+                // if speed parameter exists
+                if let speed = speedOrNil {
+                    let spdf:Double = Double(speed) / 1000.0
+                    traceFilesourceTimer = Timer.scheduledTimer(timeInterval: spdf, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
+                } else {
+                    // if it doesn't exist, we're tracking the time held in the
+                    // trace file
+                    traceFilesourceTimeTracking = true
+                    traceFilesourceLastMsgTime = 0
+                    traceFilesourceLastActualTime = 0
+                    // call the timer as fast as possible, the data parser will sleep to delay the
+                    // messages when necessary
+                    traceFilesourceTimer = Timer.scheduledTimer(timeInterval: 0.001, target: self, selector: #selector(traceFileReader), userInfo: nil, repeats: true)
+                }
+                
+                return true
+                
+            }
+        }
+        
+        return false
+        
     }
-    
-    return false
-    
-  }
   
   
   // turn off trace file input
@@ -1724,6 +1725,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         }
         
         
+        
         // Keep a count of how many messages were received in total
         // since connection. Can be used by the client app.
         messageCount += 1
@@ -2037,9 +2039,33 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // and try to parse any messages held in the buffer. The separator
     // in this case is nil because messages arriving from BLE is
     // delineated by null characters
+    
+    // if data.count > 0 {
+    
     if data.count > 0 {
-      RxDataBuffer.append(data)
-      RxDataParser(0x00)
+    tempDataBuffer.append(data)
+    let sepdata = Data(bytes: UnsafePointer<UInt8>([0x00] as [UInt8]), count: 1)
+    let rangedata = NSMakeRange(0, tempDataBuffer.length)
+    let foundRange = tempDataBuffer.range(of: sepdata, options:[], in:rangedata)
+    if foundRange.location != NSNotFound {
+       // extract the entire message from the rx data buffer
+        RxDataBuffer.append(tempDataBuffer.subdata(with: NSMakeRange(0,foundRange.location+1)))
+        RxDataParser(0x00)
+        // tempDataBuffer.resetBytes(in:NSMakeRange(0,foundRange.location))
+       // if there is leftover data in the buffer, make sure to keep it otherwise
+        // the parsing will not work for the next message that is partially complete now
+        if tempDataBuffer.length-1 > foundRange.location {
+           tempDataBuffer.resetBytes(in:NSMakeRange(0,foundRange.location+1))
+            let data_left : NSMutableData = NSMutableData()
+            data_left.append(tempDataBuffer.subdata(with: NSMakeRange(foundRange.location+1,tempDataBuffer.length-foundRange.location-1)))
+            tempDataBuffer = data_left
+            } else {
+             tempDataBuffer = NSMutableData()
+            }
+    }
+    //if data.count > 0 {
+      //RxDataBuffer.append(data)
+     // RxDataParser(0x00)
     }
     
   }
