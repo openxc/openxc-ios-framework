@@ -86,7 +86,7 @@ open class VehicleManager: NSObject {
     fileprivate var managerDebug : Bool = false
     
     // config for protobuf vs json BLE mode, defaults to JSON
-    fileprivate var jsonMode : Bool = true
+    public var jsonMode : Bool = true
     
     // optional variable holding callback for VehicleManager status updates
     var managerCallback: TargetAction!
@@ -505,7 +505,7 @@ open class VehicleManager: NSObject {
     }
     ////////////////
     // private functions
-    
+   
     // common function for sending a VehicleCommandRequest for JSON mode
     fileprivate  func sendCommandJson(cmd:VehicleCommandRequest){
         // we're in json mode
@@ -542,8 +542,10 @@ open class VehicleManager: NSObject {
             print("timestamp is..",cmd.unix_time)
             cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
         } else {
-            // unknown command!
-            return
+            // Custom command!
+            // build the command json
+            cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
+           //return
             
         }
         
@@ -553,7 +555,7 @@ open class VehicleManager: NSObject {
         // trigger a BLE data send
         BluetoothManager.sharedInstance.BLESendFunction()
     }
-    
+   
     // common function for sending a VehicleDiagnosticRequest
     fileprivate func sendDiagCommon(_ cmd:VehicleDiagnosticRequest) {
         vmlog("in sendDiagCommon")
@@ -1180,7 +1182,7 @@ open class VehicleManager: NSObject {
             ///////////////////
             // normal measuerment messages will have an "name" key (but no "event" key)
         else if let name = json["name"] as? NSString {
-            vmlog(<#T##strings: Any...##Any#>)
+          
             self.Measurementrsp(json:json as [String:AnyObject],timestamp:timestamp)
         }
         

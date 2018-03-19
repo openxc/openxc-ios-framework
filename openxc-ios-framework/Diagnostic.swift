@@ -23,6 +23,7 @@ open class VehicleDiagnosticRequest : VehicleBaseMessage {
     open var multiple_responses : Bool = false
     open var frequency : NSInteger = 0
     open var decoded_type : NSString = ""
+    open var timeStamp: NSInteger = 0
 }
 
 
@@ -40,4 +41,5 @@ open class VehicleDiagnosticResponse : VehicleBaseMessage {
     open var negative_response_code : NSInteger = 0
     open var payload : NSString = ""
     open var value : NSInteger?
+    open var timeStamp: NSInteger = 0
 }

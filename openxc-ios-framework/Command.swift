@@ -20,6 +20,7 @@ public enum VehicleCommandType: NSString {
     case modem_configuration
     case sd_mount_status
     case rtc_configuration
+    case custom_command
 }
 
 
@@ -80,16 +81,17 @@ open class Command: NSObject {
     fileprivate var BLETxCommandToken = [String]()
     
     // config for protobuf vs json BLE mode, defaults to JSON
-    fileprivate var jsonMode : Bool = true
+    //fileprivate var jsonMode : Bool = true
     
     // config for outputting debug messages to console
     fileprivate var managerDebug : Bool = false
     
-    // data buffer for storing vehicle messages to send to BTLE
-    fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
-    
     var vm = VehicleManager.sharedInstance
-    var bm = BluetoothManager.sharedInstance
+    // data buffer for storing vehicle messages to send to BTLE
+    //fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+    
+   
+    //var bm = BluetoothManager.sharedInstance
     // 'default' command callback. If this is defined, it takes priority over any other callback
     fileprivate var defaultCommandCallback : TargetAction?
     // optional variable holding callback for VehicleManager status updates
@@ -110,7 +112,6 @@ open class Command: NSObject {
         }
     }
     
-    
     open func sendCommand<T: AnyObject>(_ cmd:VehicleCommandRequest, target: T, action: @escaping (T) -> (NSDictionary) -> ()) -> String {
         vmlog("in sendCommand:target")
         
@@ -130,7 +131,38 @@ open class Command: NSObject {
         return key
         
     }
-    
+    open func customCommand(jsonString:String) {
+        
+        // if we have a trace input file, ignore this request!
+        if (traceFilesourceEnabled) {return}
+        
+        // we still need to keep a spot for the callback in the ordered list, so
+        // nothing gets out of sync. Assign the callback to the null callback method.
+        BLETxSendToken += 1
+        let key : String = String(BLETxSendToken)
+        let act : TargetAction = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
+        BLETxCommandCallback.append(act)
+        BLETxCommandToken.append(key)
+        // we're in json mode
+        //var cmdstr = ""
+        // build the command json
+        // cmdstr = jsonString
+        // append to tx buffer
+        // append to tx buffer
+        var cmdstr = ""
+        print("cmdStr..",jsonString + "\0")
+        cmdstr = jsonString + "\0"
+        self.vm.BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
+        
+        print("BLETxDataBuffer.count...",self.vm.BLETxDataBuffer.count)
+        print("BLETxDataBuffer...",self.vm.BLETxDataBuffer)
+        
+        self.vm.BLETxDataBuffer = self.vm.BLETxDataBuffer
+        
+        // trigger a BLE data send
+        BluetoothManager.sharedInstance.BLESendFunction()
+        //BLESendFunction()
+    }
     // send a command message with no callback specified
     open func sendCommand(_ cmd:VehicleCommandRequest) {
         vmlog("in sendCommand")
@@ -150,7 +182,7 @@ open class Command: NSObject {
         sendCommandCommon(cmd)
         
     }
-    
+
     // MARK: Class Functions
     
     // set the callback for VM status updates
@@ -171,7 +203,7 @@ open class Command: NSObject {
     fileprivate func sendCommandCommon(_ cmd:VehicleCommandRequest) {
         vmlog("in sendCommandCommon")
         
-        if !jsonMode {
+        if !self.vm.jsonMode {
             // in protobuf mode, build the command message
             let cbuild = ControlCommand.Builder()
             if cmd.command == .version {_ = cbuild.setType(.version)}
@@ -239,10 +271,10 @@ open class Command: NSObject {
                 print(cdata2)
                 
                 // append to tx buffer
-                BLETxDataBuffer.add(cdata2)
+                VehicleManager.sharedInstance.BLETxDataBuffer.add(cdata2)
                 
                 // trigger a BLE data send
-                bm.BLESendFunction()
+                BluetoothManager.sharedInstance.BLESendFunction()
                 
             } catch {
                 print("cmd msg build failed")
@@ -289,21 +321,29 @@ open class Command: NSObject {
             cmdstr = "{\"command\":\"\(cmd.command.rawValue)\",\"unix_time\":\"\(cmd.unix_time)\"}\0"
         } else {
             // unknown command!
+//            
+//            // build the command json
+//            cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
+//            print("cmdStr..",cmdstr)
             return
             
         }
         
         // append to tx buffer
-        BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
+        self.vm.BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
         
-        print("BLETxDataBuffer.count...",BLETxDataBuffer.count)
-        print("BLETxDataBuffer...",BLETxDataBuffer)
+        print("BLETxDataBuffer.count...",self.vm.BLETxDataBuffer.count)
+        print("BLETxDataBuffer...",self.vm.BLETxDataBuffer)
         
-        self.vm.BLETxDataBuffer = BLETxDataBuffer
+        self.vm.BLETxDataBuffer = self.vm.BLETxDataBuffer
+        
+       
+           BluetoothManager.sharedInstance.BLESendFunction()
         
         // trigger a BLE data send
-        bm.BLESendFunction()
+        
         //BLESendFunction()
         
     }
+    
 }
