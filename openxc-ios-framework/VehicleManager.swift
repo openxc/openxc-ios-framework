@@ -1852,9 +1852,9 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if openXCPeripheral == nil {
       
       // only find the right kinds of the BLE devices (C5 VI)
-      if let advNameCheck : String = advertisementData["kCBAdvDataLocalName"] as? String {
-        let advName = advNameCheck.uppercased()
-        if advName.hasPrefix(OpenXCConstants.C5_VI_NAME_PREFIX) {
+      if let advName : String = advertisementData["kCBAdvDataLocalName"] as? String {
+       
+        if advName.uppercased().hasPrefix(OpenXCConstants.C5_VI_NAME_PREFIX) {
           // check to see if we already have this one
           // and save the discovered peripheral
           if foundOpenXCPeripherals[advName] == nil {
