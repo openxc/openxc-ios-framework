@@ -13,7 +13,6 @@ class VehicleManagerTest: XCTestCase {
     
     var traceFileSinkPath : NSString = "1.json"
     var traceFileSourcePath : NSString = "2.json"
-    var versionId : NSString = "Version"
     var scanValueIs : Bool = false
     var sucessValueIs : Bool = true
     override func setUp() {
@@ -38,18 +37,13 @@ class VehicleManagerTest: XCTestCase {
     }
     //Vehicle manager trace filr source  test method
     func testEnableTraceFileSource(){
-        let value = VehicleManager.sharedInstance.enableTraceFileSource( self.traceFileSourcePath, speed:60)
+        let value = VehicleManager.sharedInstance.enableTraceFileSource( self.traceFileSourcePath, speedOrNil:60)
         if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool{
         XCTAssert(!value )
         }else{
             XCTAssert(value )
         }
-    }
-    //Vehicle manager Measurement  test method
-    func testgetLatestMeasurement(){
-        let value = VehicleManager.sharedInstance.getLatest(self.versionId)
-        XCTAssert(value.isEvented == false)
-    }
+  }
  
     
     func  testAutoConnect() {
