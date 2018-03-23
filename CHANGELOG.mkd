@@ -4,6 +4,7 @@
 
 * Improvement: Support for iOS 11
 * Feature: Added support to receive data from network source through Wi-Fi
+* Feature: App will now pull and display the VI platform
 * Bug Fixes
 * Code Refactor and improvement in framework
 
