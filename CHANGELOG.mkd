@@ -1,12 +1,21 @@
 # OpenXC iOS Library Changelog
 
+## v2.0
+
+* Improvement: Support for iOS 11
+* Feature: Added support to receive data from network source through Wi-Fi
+* Feature: App will now pull and display the VI platform
+* Bug Fixes
+* Code Refactor and improvement in framework
+
 ## v1.2.0
 
-* Command Support
+* Feature: Adding feature to send commands to VI if its connected
 
 ## v1.1.0
 
-* Swift3-iOS10 integration with existing framework
+* Improvement: Support for iOS 10
+* Improvement: Migration to Swift3
 
 ## v1.0.0
 
