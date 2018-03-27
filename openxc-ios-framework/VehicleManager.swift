@@ -1061,7 +1061,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         // increment the tx write semaphore
         BLETxWriteCount += 1
 
-      }
+      
     }
     }
 
@@ -2139,7 +2139,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }
   
   
-  
-  
+
   
 }
