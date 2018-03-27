@@ -182,7 +182,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     //Connected to Ble simulator
     open var isBleConnected: Bool = false
 
-  
+    //Connected to tracefile simulator
+    open var isTraceFileConnected: Bool = false
   
   
   // MARK: Class Functions
@@ -368,7 +369,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func disableTraceFileSink() {
     
     traceFilesinkEnabled = false
-    
+    VehicleManager.sharedInstance.isTraceFileConnected = false
   }
   
   
@@ -448,7 +449,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   // turn off trace file input
   open func disableTraceFileSource() {
-    
+    VehicleManager.sharedInstance.isTraceFileConnected = false
     traceFilesourceEnabled = false
   }
   
@@ -1813,6 +1814,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         // Try parsing the data that was added to the buffer. Use
         // LF as the message delimiter because that's what's used
         // in trace files.
+        VehicleManager.sharedInstance.isTraceFileConnected = true
         RxDataParser(0x0a)
       } else {
         // There was no data read, so we're at the end of the
