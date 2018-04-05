@@ -155,7 +155,6 @@
 				3A1017091D5941C8006C5E93 /* openxc-ios-framework.h */,
 				3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */,
 				3A1017111D5941D8006C5E93 /* VehicleManager.swift */,
-				3A10170B1D5941C8006C5E93 /* Info.plist */,
 				3A1017331D5BA223006C5E93 /* TargetAction.swift */,
 				E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */,
 				E7AA8AE71F03A9A00076A288 /* Command.swift */,
@@ -166,6 +165,7 @@
 				E7AA8AFA1F03B0790076A288 /* Utilities.swift */,
 				7D1274952003637F0094AB64 /* NetworkData.swift */,
 				7D8E87D920569ADB00B33E0A /* VehicleMessageUnit.swift */,
+				3A10170B1D5941C8006C5E93 /* Info.plist */,
 			);
 			path = "openxc-ios-framework";
 			sourceTree = "<group>";
@@ -195,6 +195,8 @@
 			isa = PBXGroup;
 			children = (
 				E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */,
+				7D4571172015BB4300634390 /* NetworkDataTest.swift */,
+				7D58682A2015EC3700CDD997 /* VehicleManagerTest.swift */,
 				E7C63D3D1DDC56BB00EE9790 /* Info.plist */,
 			);
 			path = openXCiOSFrameworkTests;
@@ -389,6 +391,8 @@
 			files = (
 				E7FAF9FC1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */,
 				E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */,
+				7D58682B2015EC3700CDD997 /* VehicleManagerTest.swift in Sources */,
+				7D4571182015BB4300634390 /* NetworkDataTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

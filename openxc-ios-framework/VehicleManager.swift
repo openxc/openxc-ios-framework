@@ -12,6 +12,32 @@ import CoreBluetooth
 import ProtocolBuffers
 
 
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
+
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
 public enum VehicleManagerStatusMessage: Int {
@@ -72,11 +98,11 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   fileprivate var foundOpenXCPeripherals: [String:CBPeripheral] = [String:CBPeripheral]()
   
   // config for auto connecting to first discovered VI
-  fileprivate var autoConnectPeripheral : Bool = true
-  
+   open var autoConnectPeripheral : Bool = true
+   //fileprivate var autoConnectPeripheral : Bool = true
   // config for outputting debug messages to console
-  fileprivate var managerDebug : Bool = false
-  
+    fileprivate var managerDebug : Bool = false
+    
   // config for protobuf vs json BLE mode, defaults to JSON
   fileprivate var jsonMode : Bool = true
   
@@ -155,13 +181,12 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   var callbackHandler: ((Bool) -> ())?  = nil
   
+
     //Connected to Ble simulator
     open var isBleConnected: Bool = false
 
     //Connected to tracefile simulator
     open var isTraceFileConnected: Bool = false
-
-
   
   
   // MARK: Class Functions
@@ -177,7 +202,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   }
   
   // private debug log function gated by the debug setting
-  fileprivate func vmlog(_ strings:Any...) {
+  fileprivate func vmlog(_ strings:Any...){
     if managerDebug {
       let d = Date()
       let df = DateFormatter()
@@ -360,7 +385,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   
   // turn on trace file input instead of data from BTLE
-  // specify a filename to read from, and a speed that lines
+  // specify a filename to read from,and a speed that lines
   // are read from the file in ms
   // If the speed is not specified, the framework will use the timestamp
   // values found in the trace file to determine when to send the next message
@@ -438,9 +463,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     VehicleManager.sharedInstance.isTraceFileConnected = false
     traceFilesourceEnabled = false
   }
-  
-  
-  
+
   // return the latest message received for a given measurement string name
 //  open func getLatest(_ key:NSString) -> VehicleMeasurementResponse {
 //    if let entry = latestVehicleMeasurements[key] {
@@ -472,9 +495,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func clearMeasurementDefaultTarget() {
     defaultMeasurementCallback = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
   }
-  
-  
-  
+
   // send a command message with a callback for when the command response is received
   open func sendCommand<T: AnyObject>(_ cmd:VehicleCommandRequest, target: T, action: @escaping (T) -> (NSDictionary) -> ()) -> String {
     vmlog("in sendCommand:target")
@@ -788,6 +809,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     // we're in json mode
     var cmdstr = ""
     // decode the command type and build the command depending on the command
+
     if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
       // build the command json
       cmdstr = "{\"command\":\"\(cmd.command.rawValue)\"}\0"
@@ -1024,6 +1046,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     if BLETxWriteCount != 0 {
       return
     }
+
     if(isBleConnected){
     // take the message to send from the head of the tx buffer queue
     var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
@@ -1903,6 +1926,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     
     // notify client if the callback is enabled
     if let act = managerCallback {
+
       act.performAction(["status":VehicleManagerStatusMessage.c5CONNECTED.rawValue] as NSDictionary)
         isBleConnected = true
         
