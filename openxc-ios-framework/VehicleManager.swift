@@ -225,7 +225,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     connectionState = .scanning
     messageCount = 0
     openXCPeripheral=nil
-    // centralManager = CBCentralManager(delegate: self, queue: cbqueue, options:nil)
     centralManager = CBCentralManager(delegate: self, queue: cbqueue, options: nil)
   }
   
@@ -433,7 +432,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   
   // turn off trace file input
   open func disableTraceFileSource() {
-    
+  
+    connectionState = .notConnected
     traceFilesourceEnabled = false
     VehicleManager.sharedInstance.isTraceFileConnected = false
   }
@@ -1810,6 +1810,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         // LF as the message delimiter because that's what's used
         // in trace files.
         VehicleManager.sharedInstance.isTraceFileConnected = true
+        connectionState = .operational
         RxDataParser(0x0a)
       } else {
         // There was no data read, so we're at the end of the
@@ -1919,15 +1920,15 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
   open func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
     vmlog("in centralManager:didDisconnectPeripheral:")
     vmlog(error!)
-    
+    let autoOn = UserDefaults.standard.bool(forKey: "autoConnectOn")
     // just reconnect automatically to the same device for now
-    if peripheral == openXCPeripheral {
+    if peripheral == openXCPeripheral && autoOn{
       centralManager.connect(openXCPeripheral, options:nil)
       
       // notify client if the callback is enabled
-      if let act = managerCallback {
-        act.performAction(["status":VehicleManagerStatusMessage.c5DISCONNECTED.rawValue] as NSDictionary)
-      }
+//      if let act = managerCallback {
+//        act.performAction(["status":VehicleManagerStatusMessage.c5DISCONNECTED.rawValue] as NSDictionary)
+//      }
       
       // clear any saved context
       //latestVehicleMeasurements = NSMutableDictionary()
@@ -1935,10 +1936,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       
       // update the connection state
       connectionState = .connectionInProgress
+    }else{
+      connectionState = .notConnected
     }
-    
+    if let act = managerCallback {
+      act.performAction(["status":VehicleManagerStatusMessage.c5DISCONNECTED.rawValue] as NSDictionary)
+    }
   }
-  
   
   
   // MARK: Peripheral Delgate Function
@@ -2108,8 +2112,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     vmlog("in peripheral:didReadRSSI")
   }
   
-  
-  
+
   
   
 }
