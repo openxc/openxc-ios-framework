@@ -10,7 +10,7 @@ import UIKit
 import ExternalAccessory
 
 open class NetworkData: NSObject ,StreamDelegate {
-
+    
     
     static let sharedNetwork = NetworkData()
     private var inputstream:  InputStream?
