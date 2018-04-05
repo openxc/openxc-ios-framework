@@ -138,7 +138,9 @@
 				3A1017071D5941C8006C5E93 /* Products */,
 				E77269CF1E30B1BF001267D3 /* Frameworks */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		3A1017071D5941C8006C5E93 /* Products */ = {
 			isa = PBXGroup;
@@ -196,6 +198,8 @@
 			isa = PBXGroup;
 			children = (
 				E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */,
+				7D4571172015BB4300634390 /* NetworkDataTest.swift */,
+				7D58682A2015EC3700CDD997 /* VehicleManagerTest.swift */,
 				E7C63D3D1DDC56BB00EE9790 /* Info.plist */,
 			);
 			path = openXCiOSFrameworkTests;
@@ -391,6 +395,8 @@
 			files = (
 				E7FAF9FC1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */,
 				E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */,
+				7D58682B2015EC3700CDD997 /* VehicleManagerTest.swift in Sources */,
+				7D4571182015BB4300634390 /* NetworkDataTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
