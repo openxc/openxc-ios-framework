@@ -104,7 +104,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     fileprivate var managerDebug : Bool = false
     
   // config for protobuf vs json BLE mode, defaults to JSON
-  fileprivate var jsonMode : Bool = true
+  public var jsonMode : Bool = true
   
   // optional variable holding callback for VehicleManager status updates
   fileprivate var managerCallback: TargetAction?

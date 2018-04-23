@@ -171,7 +171,7 @@ open class Command: NSObject {
     fileprivate func sendCommandCommon(_ cmd:VehicleCommandRequest) {
         vmlog("in sendCommandCommon")
         
-        if !jsonMode {
+        if !self.vm.jsonMode {
             // in protobuf mode, build the command message
             let cbuild = ControlCommand.Builder()
             if cmd.command == .version {_ = cbuild.setType(.version)}
