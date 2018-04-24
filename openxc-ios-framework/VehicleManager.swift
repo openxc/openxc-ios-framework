@@ -1605,7 +1605,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             // build the key that identifies this diagnostic response
             // bus-id-mode-[X or pid]
             let tupple : NSMutableString = ""
-            tupple.append("\(String(bus))-\(String(id))-\(String(mode))-")
+            let newid=id-8
+            tupple.append("\(String(bus))-\(String(newid))-\(String(mode))-")
             if pid != nil {
               tupple.append(String(describing: pid))
             } else {
