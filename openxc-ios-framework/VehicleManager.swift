@@ -1052,7 +1052,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     var cmdToSend : NSData = BLETxDataBuffer[0] as! NSData
     vmlog("cmdToSend:",cmdToSend)
     let datastring = NSString(data: (cmdToSend as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
-    vmlog("datastring:",datastring!)
+      vmlog("datastring:",datastring as Any)
 
     // we can only send 20B at a time in BLE
     let rangedata = NSMakeRange(0, 20)
@@ -1064,7 +1064,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         vmlog("sendBytes if length < 20:",sendBytes)
         
         let try2Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
-        vmlog("try2Str....:",try2Str!)
+        vmlog("try2Str....:",try2Str as Any)
 
         
         cmdToSend = NSMutableData()
@@ -1073,7 +1073,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         vmlog("20B chunks....:",sendBytes)
        
         let try1Str = NSString(data: (sendBytes as NSData) as Data, encoding:String.Encoding.utf8.rawValue)
-        vmlog("try1Str....:",try1Str!)
+        vmlog("try1Str....:",try1Str as Any)
 
         let leftdata = NSMakeRange(20,cmdToSend.length-20)
         cmdToSend = NSData(data: cmdToSend.subdata(with: leftdata))
