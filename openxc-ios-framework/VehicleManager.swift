@@ -188,6 +188,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
     //Connected to tracefile simulator
     open var isTraceFileConnected: Bool = false
   
+  // diag last req msg id
+  open var lastReqMsg_id : NSInteger = 0
   
   // MARK: Class Functions
   
@@ -909,7 +911,8 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
       return
     }
     
-    
+    self.lastReqMsg_id = cmd.message_id
+
     // build the command json
     let cmdjson : NSMutableString = ""
     cmdjson.append("{\"command\":\"diagnostic_request\",\"action\":\"add\",\"request\":{\"bus\":\(cmd.bus),\"id\":\(cmd.message_id),\"mode\":\(cmd.mode)")
@@ -1605,7 +1608,13 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
             // build the key that identifies this diagnostic response
             // bus-id-mode-[X or pid]
             let tupple : NSMutableString = ""
-            tupple.append("\(String(bus))-\(String(id))-\(String(mode))-")
+            var newid = 0
+            if(self.lastReqMsg_id == 2015) { //exception for 7df
+              newid = self.lastReqMsg_id
+            } else {
+              newid=id-8
+            }
+            tupple.append("\(String(bus))-\(String(newid))-\(String(mode))-")
             if pid != nil {
               tupple.append(String(describing: pid))
             } else {
