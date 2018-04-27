@@ -187,9 +187,6 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
 
     //Connected to tracefile simulator
     open var isTraceFileConnected: Bool = false
-  
-  //Connected to tracefile simulator
-  //open var isTraceFileConnected: Bool = false
 
   // diag last req msg id
   open var lastReqMsg_id : NSInteger = 0
