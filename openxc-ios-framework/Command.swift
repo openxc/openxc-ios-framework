@@ -87,7 +87,7 @@ open class Command: NSObject {
     fileprivate var managerDebug : Bool = false
 
     // data buffer for storing vehicle messages to send to BTLE
-    fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+   // fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
     
     var vm = VehicleManager.sharedInstance
 
@@ -172,7 +172,7 @@ open class Command: NSObject {
     fileprivate func sendCommandCommon(_ cmd:VehicleCommandRequest) {
         vmlog("in sendCommandCommon")
         
-        if !jsonMode {
+        if !self.vm.jsonMode {
             // in protobuf mode, build the command message
             let cbuild = ControlCommand.Builder()
             if cmd.command == .version {_ = cbuild.setType(.version)}
@@ -240,10 +240,10 @@ open class Command: NSObject {
                 print(cdata2)
                 
                 // append to tx buffer
-                BLETxDataBuffer.add(cdata2)
+                self.vm.BLETxDataBuffer.add(cdata2)
                 
                 // trigger a BLE data send
-                vm.BLESendFunction()
+                self.vm.BLESendFunction()
                 
             } catch {
                 print("cmd msg build failed")
@@ -295,12 +295,12 @@ open class Command: NSObject {
         }
         
         // append to tx buffer
-        BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
+        VehicleManager.sharedInstance.BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
         
-        print("BLETxDataBuffer.count...",BLETxDataBuffer.count)
-        print("BLETxDataBuffer...",BLETxDataBuffer)
+        print("BLETxDataBuffer.count...", self.vm.BLETxDataBuffer.count)
+        print("BLETxDataBuffer...", self.vm.BLETxDataBuffer)
         
-        self.vm.BLETxDataBuffer = BLETxDataBuffer
+        self.vm.BLETxDataBuffer =  self.vm.BLETxDataBuffer
         
         // trigger a BLE data send
         self.vm.BLESendFunction()
