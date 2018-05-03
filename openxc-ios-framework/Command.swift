@@ -57,7 +57,6 @@ open class Command: NSObject {
 
     
     // MARK: Singleton Init
-    
     // This signleton init allows mutiple controllers to access the same instantiation
     // of the VehicleManager. There is only a single instantiation of the VehicleManager
     // for the entire client app
@@ -81,7 +80,7 @@ open class Command: NSObject {
     fileprivate var BLETxCommandToken = [String]()
 
     // config for protobuf vs json BLE mode, defaults to JSON
-    fileprivate var jsonMode : Bool = true
+   // fileprivate var jsonMode : Bool = true
 
     // config for outputting debug messages to console
     fileprivate var managerDebug : Bool = false
@@ -172,7 +171,7 @@ open class Command: NSObject {
     fileprivate func sendCommandCommon(_ cmd:VehicleCommandRequest) {
         vmlog("in sendCommandCommon")
         
-        if !jsonMode {
+        if !self.vm.jsonMode {
             // in protobuf mode, build the command message
             let cbuild = ControlCommand.Builder()
             if cmd.command == .version {_ = cbuild.setType(.version)}
@@ -240,10 +239,10 @@ open class Command: NSObject {
                 print(cdata2)
                 
                 // append to tx buffer
-                BLETxDataBuffer.add(cdata2)
+               self.vm.BLETxDataBuffer.add(cdata2)
                 
                 // trigger a BLE data send
-                vm.BLESendFunction()
+                self.vm.BLESendFunction()
                 
             } catch {
                 print("cmd msg build failed")
@@ -337,7 +336,7 @@ open class Command: NSObject {
     self.vm.BLETxDataBuffer = self.vm.BLETxDataBuffer
     
     // trigger a BLE data send
-    VehicleManager.sharedInstance.BLESendFunction()
+    self.vm.BLESendFunction()
    // BLESendFunction()
   }
 }
