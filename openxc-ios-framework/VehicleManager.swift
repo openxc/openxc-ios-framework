@@ -878,7 +878,7 @@ open class VehicleManager: NSObject, CBCentralManagerDelegate, CBPeripheralDeleg
         _ =  dbuild.setFrequency(Double(cmd.frequency))
       }
       let mbuild = VehicleMessage.Builder()
-      _ = mbuild.setType(.diagnostic)
+      _ = mbuild.setType(.controlCommand)
       
       do {
         let dmsg = try dbuild.build()
