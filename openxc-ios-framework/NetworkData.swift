@@ -45,7 +45,7 @@ open class NetworkData: NSObject ,StreamDelegate {
         inputstream?.open()
         
         if ((outputstream?.open()) != nil){
-            // print("connected")
+             print("connected")
             
         }else{
             //print("not connected")
@@ -56,6 +56,7 @@ open class NetworkData: NSObject ,StreamDelegate {
     open func disconnectConnection(){
         inputstream?.close()
         outputstream?.close()
+        VehicleManager.sharedInstance.isNetworkConnected = false
     }
     
     public func stream(_ aStream: Stream, handle eventCode: Stream.Event) {

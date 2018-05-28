@@ -20,6 +20,7 @@ public enum VehicleCommandType: NSString {
     case modem_configuration
     case sd_mount_status
     case rtc_configuration
+    case custom_command
 }
 
 
@@ -56,7 +57,6 @@ open class Command: NSObject {
 
     
     // MARK: Singleton Init
-    
     // This signleton init allows mutiple controllers to access the same instantiation
     // of the VehicleManager. There is only a single instantiation of the VehicleManager
     // for the entire client app
@@ -80,13 +80,13 @@ open class Command: NSObject {
     fileprivate var BLETxCommandToken = [String]()
 
     // config for protobuf vs json BLE mode, defaults to JSON
-    fileprivate var jsonMode : Bool = true
+   // fileprivate var jsonMode : Bool = true
 
     // config for outputting debug messages to console
     fileprivate var managerDebug : Bool = false
 
     // data buffer for storing vehicle messages to send to BTLE
-   // fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+    fileprivate var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
     
     var vm = VehicleManager.sharedInstance
 
@@ -239,7 +239,7 @@ open class Command: NSObject {
                 print(cdata2)
                 
                 // append to tx buffer
-                self.vm.BLETxDataBuffer.add(cdata2)
+               self.vm.BLETxDataBuffer.add(cdata2)
                 
                 // trigger a BLE data send
                 self.vm.BLESendFunction()
@@ -294,16 +294,49 @@ open class Command: NSObject {
         }
         
         // append to tx buffer
-        VehicleManager.sharedInstance.BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
+        BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
         
-        print("BLETxDataBuffer.count...", self.vm.BLETxDataBuffer.count)
-        print("BLETxDataBuffer...", self.vm.BLETxDataBuffer)
+        print("BLETxDataBuffer.count...",BLETxDataBuffer.count)
+        print("BLETxDataBuffer...",BLETxDataBuffer)
         
-        self.vm.BLETxDataBuffer =  self.vm.BLETxDataBuffer
+        self.vm.BLETxDataBuffer = BLETxDataBuffer
         
         // trigger a BLE data send
         self.vm.BLESendFunction()
         //BLESendFunction()
         
     }
+  
+  open func customCommand(jsonString:String) {
+    
+    // if we have a trace input file, ignore this request!
+    if (traceFilesourceEnabled) {return}
+    
+    // we still need to keep a spot for the callback in the ordered list, so
+    // nothing gets out of sync. Assign the callback to the null callback method.
+    BLETxSendToken += 1
+    let key : String = String(BLETxSendToken)
+    let act : TargetAction = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
+    BLETxCommandCallback.append(act)
+    BLETxCommandToken.append(key)
+    // we're in json mode
+    //var cmdstr = ""
+    // build the command json
+    // cmdstr = jsonString
+    // append to tx buffer
+    // append to tx buffer
+    var cmdstr = ""
+    print("cmdStr..",jsonString + "\0")
+    cmdstr = jsonString + "\0"
+    self.vm.BLETxDataBuffer.add(cmdstr.data(using: String.Encoding.utf8, allowLossyConversion: false)!)
+    
+    print("BLETxDataBuffer.count...",self.vm.BLETxDataBuffer.count)
+    print("BLETxDataBuffer...",self.vm.BLETxDataBuffer)
+    
+    self.vm.BLETxDataBuffer = self.vm.BLETxDataBuffer
+    
+    // trigger a BLE data send
+    self.vm.BLESendFunction()
+   // BLESendFunction()
+  }
 }
