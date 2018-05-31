@@ -49,7 +49,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   fileprivate var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   public var tempDataBuffer : NSMutableData! = NSMutableData()
   // public variable holding VehicleManager connection state enum
-  open var connectionState: VehicleManagerConnectionState! = .notConnected
+  public var connectionState: VehicleManagerConnectionState! = .notConnected
   
   //Iphone device blutooth is on/fff status
   
@@ -71,16 +71,17 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     
   }()
   fileprivate override init() {
-    
+    // connectionState = .notConnected
   }
   // change the auto connect config for the VM
   open func setAutoconnect(_ on:Bool) {
     autoConnectPeripheral = on
+    
   }
   
   // connect the VM to a specific VI, or first if no name provided
   open func connect(_ name: String? = nil) {
-    
+   
     // if the VM is not scanning, don't do anything
     if connectionState != .scanning {
       vmlog("VehicleManager be scanning before a connect can occur!")
@@ -427,6 +428,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     // if data.count > 0 {
     
     if data.count > 0 {
+      connectionState = .operational
       tempDataBuffer.append(data)
       let sepdata = Data(bytes: UnsafePointer<UInt8>([0x00] as [UInt8]), count: 1)
       let rangedata = NSMakeRange(0, tempDataBuffer.length)

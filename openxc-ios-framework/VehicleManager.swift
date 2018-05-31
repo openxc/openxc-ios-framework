@@ -227,10 +227,16 @@ open class VehicleManager: NSObject {
   
   // change the data format for the VM
   open func setProtobufMode(_ on:Bool) {
-    jsonMode = !on
+
+    if on{
+    jsonMode = false
+    }
+    else{
+    jsonMode = true
+    }
   }
   
-  
+ 
   
   open func getLatest(_ key:NSString) -> VehicleMeasurementResponse? {
     return latestVehicleMeasurements[key]
@@ -1458,6 +1464,7 @@ open class VehicleManager: NSObject {
     ////////////////
     // Protobuf decoding
     /////////////////
+    
     
     if !jsonMode && RxDataBuffer.length > 0 {
       var packetlenbyte:UInt8 = 0
