@@ -11,7 +11,7 @@
 		3A1017121D5941D8006C5E93 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017111D5941D8006C5E93 /* VehicleManager.swift */; };
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
-		7D1274962003637F0094AB64 /* NetworkData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1274952003637F0094AB64 /* NetworkData.swift */; };
+		7D1274962003637F0094AB64 /* NetworkDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1274952003637F0094AB64 /* NetworkDataManager.swift */; };
 		7D8E87DA20569ADB00B33E0A /* VehicleMessageUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D8E87D920569ADB00B33E0A /* VehicleMessageUnit.swift */; };
 		7DA8E46C20B2C47300ABBB1C /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA8E46B20B2C47300ABBB1C /* BluetoothManager.swift */; };
 		7DA8E47520B2CFA100ABBB1C /* TraceFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA8E47420B2CFA100ABBB1C /* TraceFileManager.swift */; };
@@ -94,7 +94,7 @@
 		3A1017111D5941D8006C5E93 /* VehicleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleManager.swift; sourceTree = "<group>"; };
 		3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenXCClasses.swift; sourceTree = "<group>"; };
 		3A1017331D5BA223006C5E93 /* TargetAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetAction.swift; sourceTree = "<group>"; };
-		7D1274952003637F0094AB64 /* NetworkData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkData.swift; sourceTree = "<group>"; };
+		7D1274952003637F0094AB64 /* NetworkDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataManager.swift; sourceTree = "<group>"; };
 		7D8E87D920569ADB00B33E0A /* VehicleMessageUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleMessageUnit.swift; sourceTree = "<group>"; };
 		7DA8E46B20B2C47300ABBB1C /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		7DA8E47420B2CFA100ABBB1C /* TraceFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceFileManager.swift; sourceTree = "<group>"; };
@@ -167,8 +167,8 @@
 				E7AA8AF41F03AA890076A288 /* CAN.swift */,
 				E7AA8AF61F03AAA20076A288 /* Message.swift */,
 				E7AA8AFA1F03B0790076A288 /* Utilities.swift */,
-				7D1274952003637F0094AB64 /* NetworkData.swift */,
 				7D8E87D920569ADB00B33E0A /* VehicleMessageUnit.swift */,
+				7D1274952003637F0094AB64 /* NetworkDataManager.swift */,
 				7DA8E46B20B2C47300ABBB1C /* BluetoothManager.swift */,
 				7DA8E47420B2CFA100ABBB1C /* TraceFileManager.swift */,
 				3A10170B1D5941C8006C5E93 /* Info.plist */,
@@ -382,7 +382,7 @@
 				7DA8E47520B2CFA100ABBB1C /* TraceFileManager.swift in Sources */,
 				E7AA8AF71F03AAA20076A288 /* Message.swift in Sources */,
 				E7AA8AF11F03AA300076A288 /* Measurement.swift in Sources */,
-				7D1274962003637F0094AB64 /* NetworkData.swift in Sources */,
+				7D1274962003637F0094AB64 /* NetworkDataManager.swift in Sources */,
 				3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */,
 				E7AA8AE81F03A9A00076A288 /* Command.swift in Sources */,
 				E7AA8AF51F03AA890076A288 /* CAN.swift in Sources */,

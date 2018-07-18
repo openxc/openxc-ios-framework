@@ -1,10 +1,8 @@
 //
 //  BluetoothManager.swift
 //  openxc-ios-framework
-//
 //  Created by Ranjan, Kumar sahu (K.) on 21/05/18.
 //  Copyright © 2018 Ford Motor Company. All rights reserved.
-//
 
 import UIKit
 import CoreBluetooth
@@ -302,7 +300,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   // Core Bluetooth has disconnected from BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
     vmlog("in centralManager:didDisconnectPeripheral:")
-    vmlog(error!)
+    //vmlog(error!)
     let autoOn = UserDefaults.standard.bool(forKey: "autoConnectOn")
     // just reconnect automatically to the same device for now
     if peripheral == openXCPeripheral && autoOn{
@@ -407,7 +405,17 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     }
     
   }
-  
+   // Core Bluetooth has cancel peripheral
+  open func disconnect() {
+    vmlog("VehicleManager disconnecting...")
+    centralManager.cancelPeripheralConnection(openXCPeripheral)
+    connectionState = .notConnected
+    isBleConnected = false
+    tempDataBuffer = NSMutableData()
+    VehicleManager.sharedInstance.RxDataBuffer = NSMutableData()
+    foundOpenXCPeripherals = [String:CBPeripheral]()
+    
+  }
   
   // Core Bluetooth has data received from a characteristic
   open func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {

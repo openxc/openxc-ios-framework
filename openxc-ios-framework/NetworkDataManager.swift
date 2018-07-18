@@ -9,10 +9,10 @@
 import UIKit
 import ExternalAccessory
 
-open class NetworkData: NSObject ,StreamDelegate {
+open class NetworkDataManager: NSObject ,StreamDelegate {
 
     
-    static let sharedNetwork = NetworkData()
+  static let sharedNetwork = NetworkDataManager()
     private var inputstream:  InputStream?
     private var outputstream: OutputStream?
     private var connecting:Bool
@@ -22,8 +22,8 @@ open class NetworkData: NSObject ,StreamDelegate {
     var callbackHandler: ((Bool) -> ())?  = nil
     
     // Initialization
-    static open let sharedInstance: NetworkData = {
-        let instance = NetworkData()
+    static open let sharedInstance: NetworkDataManager = {
+        let instance = NetworkDataManager()
         return instance
     }()
     fileprivate override init() {

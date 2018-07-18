@@ -315,12 +315,7 @@ open class VehicleManager: NSObject {
   }
   
   
-  
-  
-  
-  
-  
-  
+
   // send a diagnostic message with a callback for when the diag command response is received
   open func sendDiagReq<T: AnyObject>(_ cmd:VehicleDiagnosticRequest, target: T, cmdaction: @escaping (T) -> (NSDictionary) -> ()) -> String {
     vmlog("in sendDiagReq:cmd")
@@ -416,10 +411,7 @@ open class VehicleManager: NSObject {
     defaultDiagCallback = TargetActionWrapper(key: "", target: VehicleManager.sharedInstance, action: VehicleManager.CallbackNull)
   }
   
-  
-  
-  
-  
+
   // set a callback for any can messages received with a given set of keys.
   // The key is bus-id and 2 keys must be specified always
   open func addCanTarget<T: AnyObject>(_ keys: [NSInteger], target: T, action: @escaping (T) -> (NSDictionary) -> ()) {
@@ -479,10 +471,7 @@ open class VehicleManager: NSObject {
     sendCanCommon(cmd)
     
   }
-  
-  
-  
-  
+
   
   ////////////////
   // private functions
@@ -549,7 +538,7 @@ open class VehicleManager: NSObject {
         let cmsg = try cbuild.build()
         _ = mbuild.setControlCommand(cmsg)
         let mmsg = try mbuild.build()
-        print (mmsg)
+        //print (mmsg)
         
         
         let cdata = mmsg.data()
@@ -557,7 +546,7 @@ open class VehicleManager: NSObject {
         let prepend : [UInt8] = [UInt8(cdata.count)]
         cdata2.append(Data(bytes: UnsafePointer<UInt8>(prepend), count:1))
         cdata2.append(cdata)
-        print(cdata2)
+        //print(cdata2)
         
         // append to tx buffer
         BLETxDataBuffer.add(cdata2)
@@ -652,7 +641,7 @@ open class VehicleManager: NSObject {
         let cmsg = try cbuild.build()
         _ = mbuild.setControlCommand(cmsg)
         let mmsg = try mbuild.build()
-        print (mmsg)
+        //print (mmsg)
         
         
         let cdata = mmsg.data()
@@ -660,7 +649,7 @@ open class VehicleManager: NSObject {
         let prepend : [UInt8] = [UInt8(cdata.count)]
         cdata2.append(Data(bytes: UnsafePointer<UInt8>(prepend), count:1))
         cdata2.append(cdata)
-        print(cdata2)
+        //print(cdata2)
         
         // append to tx buffer
         BLETxDataBuffer.add(cdata2)
@@ -742,7 +731,7 @@ open class VehicleManager: NSObject {
         let cmsg = try cbuild.build()
         _ = mbuild.setCanMessage(cmsg)
         let mmsg = try mbuild.build()
-        print (mmsg)
+        //print (mmsg)
         
         
         let cdata = mmsg.data()
@@ -750,7 +739,7 @@ open class VehicleManager: NSObject {
         let prepend : [UInt8] = [UInt8(cdata.count)]
         cdata2.append(Data(bytes: UnsafePointer<UInt8>(prepend), count:1))
         cdata2.append(cdata)
-        print(cdata2)
+        //print(cdata2)
         
         // append to tx buffer
         BLETxDataBuffer.add(cdata2)
@@ -801,56 +790,62 @@ open class VehicleManager: NSObject {
     var msg : VehicleMessage
     do {
       msg = try VehicleMessage.parseFrom(data: data_chunk as Data)
-      print(msg)
+      //print(msg)
+      
+      
+      let data_left : NSMutableData = NSMutableData()
+      data_left.append(RxDataBuffer.subdata(with: NSMakeRange(packetlen+1, RxDataBuffer.length-packetlen-1)))
+      RxDataBuffer = data_left
+      
+      var decoded = false
+      
+      // measurement messages (normal and evented)
+      ///////////////////////////////////////////
+      if msg.type == .simple {
+        
+        decoded = true
+        self.protobufMeasurementMessage(msg : msg)
+      }
+      
+      // Command Response messages
+      /////////////////////////////
+      if msg.type == .commandResponse {
+        let nameValue = msg.commandResponse.type
+        if nameValue != .diagnostic{
+          decoded = true
+          self.protobufCommandResponse(msg : msg)
+        }
+        
+      }
+      
+      // Diagnostic messages
+      /////////////////////////////
+      if msg.type == .diagnostic {
+        decoded = true
+        print("Response Diagnostic>>>>\(msg)")
+        self.protobufDignosticMessage(msg: msg)
+      }
+      
+      // CAN messages
+      /////////////////////////////
+      if msg.type == .can {
+        decoded = true
+        self.protobufCanMessage(msg: msg)
+        
+      }
+      
+      if (!decoded) {
+        // should never get here!
+        if let act = managerCallback {
+          act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
+        }
+      }
     } catch {
+      //self.jsonMode = true
       print("protobuf parse error")
       return
     }
-    
-    let data_left : NSMutableData = NSMutableData()
-    data_left.append(RxDataBuffer.subdata(with: NSMakeRange(packetlen+1, RxDataBuffer.length-packetlen-1)))
-    RxDataBuffer = data_left
-    
-    var decoded = false
-    
-    // measurement messages (normal and evented)
-    ///////////////////////////////////////////
-    if msg.type == .simple {
-      
-      decoded = true
-      self.protobufMeasurementMessage(msg : msg)
-    }
-    
-    // Command Response messages
-    /////////////////////////////
-    if msg.type == .commandResponse {
-      decoded = true
-      self.protobufCommandResponse(msg : msg)
-      
-    }
-    
-    // Diagnostic messages
-    /////////////////////////////
-    if msg.type == .diagnostic {
-      decoded = true
-      
-      self.protobufDignosticMessage(msg: msg)
-    }
-    
-    // CAN messages
-    /////////////////////////////
-    if msg.type == .can {
-      decoded = true
-      self.protobufCanMessage(msg: msg)
-      
-    }
-    
-    if (!decoded) {
-      // should never get here!
-      if let act = managerCallback {
-        act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
-      }
-    }
+
   }
   
   fileprivate func protobufMeasurementMessage(msg : VehicleMessage){
@@ -945,6 +940,9 @@ open class VehicleManager: NSObject {
     //   if msg.diagnosticResponse.hasPayload {rsp.payload = (String(data:msg.diagnosticResponse.payload as Data,encoding: String.Encoding.utf8)! as NSString) as String}
     if msg.diagnosticResponse.hasValue {rsp.value = Int(msg.diagnosticResponse.value)}
     
+    if rsp.value != nil {
+       rsp.success = true//msg.diagnosticResponse.success
+    }
     // build the key that identifies this diagnostic response
     // bus-id-mode-[X or pid]
     let tupple : NSMutableString = ""
@@ -1030,7 +1028,7 @@ open class VehicleManager: NSObject {
       
       // decode json
       let json = try JSONSerialization.jsonObject(with: data_chunk as Data, options: .mutableContainers) as! [String:AnyObject]
-      
+      //print(json)
       // every message will have a timestamp
       
       //Ranjan:  Added NSNumber in timestamp to parse as it is in number format then convert nsnumber to integer as per requirment.
@@ -1088,8 +1086,11 @@ open class VehicleManager: NSObject {
         ///////////////////
         // command response messages will have a "command_response" key
       else if let cmd_rsp = json["command_response"] as? NSString {
-        
+        let myValue = json["command_response"] as? NSString
+        print(myValue as Any)
+        if (myValue != "diagnostic_request") {
         self.commandResponse(timestamp: timestamp,cmd_rsp:cmd_rsp,json: json as [String:AnyObject])
+      }
         
       }
         
@@ -1165,6 +1166,7 @@ open class VehicleManager: NSObject {
     } catch {
       // the json decode failed for some reason, usually data lost in connection
       vmlog("bad json")
+      //self.jsonMode = false
       if let act = managerCallback {
         act.performAction(["status":VehicleManagerStatusMessage.ble_RX_DATA_PARSE_ERROR.rawValue] as NSMutableDictionary)
       }
@@ -1472,11 +1474,11 @@ open class VehicleManager: NSObject {
       let packetlen = Int(packetlenbyte)
       
       if RxDataBuffer.length > packetlen+1 {
-        vmlog("found \(packetlen)B protobuf frame")
+       // vmlog("found \(packetlen)B protobuf frame")
         let data_chunk : NSMutableData = NSMutableData()
         data_chunk.append(RxDataBuffer.subdata(with: NSMakeRange(1,packetlen)))
         
-        vmlog(data_chunk)
+       // vmlog(data_chunk)
         
         self.protobufDecoding(data_chunk: data_chunk,packetlen:packetlen)
         
