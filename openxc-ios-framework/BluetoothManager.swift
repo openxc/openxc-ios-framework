@@ -427,16 +427,22 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     
     // grab the data from the characteristic
     let data = characteristic.value!
-    
+    let returnData = String(data: data, encoding: .utf8)
+    print(returnData as Any)
     // if there is actually data, append it to the rx data buffer,
     // and try to parse any messages held in the buffer. The separator
     // in this case is nil because messages arriving from BLE is
     // delineated by null characters
     
-    // if data.count > 0 {
-    
+   
     if data.count > 0 {
       connectionState = .operational
+      if !VehicleManager.sharedInstance.jsonMode{
+        VehicleManager.sharedInstance.RxDataBuffer.append(data)
+        VehicleManager.sharedInstance.RxDataParser(0x00)
+        return
+      }
+      
       tempDataBuffer.append(data)
       let sepdata = Data(bytes: UnsafePointer<UInt8>([0x00] as [UInt8]), count: 1)
       let rangedata = NSMakeRange(0, tempDataBuffer.length)
