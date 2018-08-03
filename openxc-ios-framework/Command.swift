@@ -242,7 +242,7 @@ open class Command: NSObject {
                self.vm.BLETxDataBuffer.add(cdata2)
                 
                 // trigger a BLE data send
-                self.vm.BLESendFunction()
+                BluetoothManager.sharedInstance.BLESendFunction()
                 
             } catch {
                 print("cmd msg build failed")
@@ -302,7 +302,7 @@ open class Command: NSObject {
         self.vm.BLETxDataBuffer = BLETxDataBuffer
         
         // trigger a BLE data send
-        self.vm.BLESendFunction()
+        BluetoothManager.sharedInstance.BLESendFunction()
         //BLESendFunction()
         
     }
@@ -336,7 +336,7 @@ open class Command: NSObject {
     self.vm.BLETxDataBuffer = self.vm.BLETxDataBuffer
     
     // trigger a BLE data send
-    self.vm.BLESendFunction()
+    BluetoothManager.sharedInstance.BLESendFunction()
    // BLESendFunction()
   }
 }
