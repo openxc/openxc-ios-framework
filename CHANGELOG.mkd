@@ -1,6 +1,11 @@
 # OpenXC iOS Library Changelog
+## v2.1.0
+* Data source selection in setting Page.
+* Code refactor for RXData parser Method.
+* custom command Feature implimentation.
+* Bug fixes for Diagnostic message.
 
-## v2.0
+## v2.0.0
 
 * Improvement: Support for iOS 11
 * Feature: Added support to receive data from network source through Wi-Fi
