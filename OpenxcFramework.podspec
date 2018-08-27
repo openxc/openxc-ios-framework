@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0'
 
   s.module_name = "OpenXCFramework"
-  s.source       = { :git => 'https://github.com/openxc/openxc-ios-framework.git', :branch => 'next' }
+  s.source       = { :git => 'https://github.com/openxc/openxc-ios-framework.git', :branch => s.version }
   s.source_files = 'Source/*.{swift}'
   s.requires_arc = true
   s.frameworks   = 'Foundation'
