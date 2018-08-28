@@ -1,9 +1,11 @@
 # OpenXC iOS Library Changelog
 ## v2.1.0
-* Data source selection in setting Page.
-* Code refactor for RXData parser Method.
-* custom command Feature implimentation.
-* Bug fixes for Diagnostic message.
+* Feature:Data source selection in setting Page.
+* Feature:Code refactor for RXData parser Method and vehicle manager class.
+* Feature:Custom command Feature implimentation.
+* Feature:Diagnostic message and command message in Protobuf mode.
+* Feature: Some UI changes are made.
+* Bug fixes
 
 ## v2.0.0
 
