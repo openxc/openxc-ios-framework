@@ -1,11 +1,14 @@
 # OpenXC iOS Library Changelog
 ## v2.1.0
-* Feature:Data source selection in setting Page.
-* Feature:Code refactor for RXData parser Method and vehicle manager class.
-* Feature:Custom command Feature implimentation.
-* Feature:Diagnostic message and command message in Protobuf mode.
-* Feature: Some UI changes are made.
-* Bug fixes
+* Feature: Data source selection in Settings Page.
+* Feature: Custom command added in Commands Page
+* Feature: Diagnostic message support added in Protobuf mode.
+* Feature: Command messages support added in Protobuf mode.
+* Feature: Manual format change support added. JSON to proto & vice-versa can be changed in commands page
+* Feature: Disconnect C5BLE from application
+* Enhancement: Timestamp added in tracefile
+* Enhancement: Code refactor for RXData parser Method and Vehicle Manager class.
+* UI: Settings screen cosmetic changes
 
 ## v2.0.0
 
