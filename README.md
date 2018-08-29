@@ -3,7 +3,12 @@ This framework is part of the OpenXC project. This iOS framework contains the to
 
 OpenXC iOS framework for use with the C5 BLE device. See also the [openxc-ios-app-demo](https://github.com/openxc/openxc-ios-app-demo)
 
-##Supported versions:
+## OpenXC-iOS-Framework-Version
+
+* V2.1.0
+
+## Supported versions:
+
 * iOS - upto 11.2.5
 * XCode - upto 9
 * Swift - Swift3
@@ -29,10 +34,11 @@ Also see [Step by Step Guide] (https://github.com/openxc/openxc-ios-framework/bl
 
 
 ## Tests
+
 * to be added
 
-
 ## Building from Command Line
+
 The project requires XCode, XCode command line tools installed. 
 
 To install XCode command line tools, follow these steps for XCode:
