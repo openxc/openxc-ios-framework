@@ -2,8 +2,7 @@
 ## v2.1.0
 * Feature: Data source selection in Settings Page.
 * Feature: Custom command added in Commands Page
-* Feature: Diagnostic message support added in Protobuf mode.
-* Feature: Command messages support added in Protobuf mode.
+* Feature: Diagnostic and command message support added in Protobuf mode.
 * Feature: Manual format change support added. JSON to proto & vice-versa can be changed in commands page
 * Feature: Disconnect C5BLE from application
 * Enhancement: Timestamp added in tracefile
