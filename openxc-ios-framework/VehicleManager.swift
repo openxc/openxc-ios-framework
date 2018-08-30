@@ -1473,7 +1473,7 @@ open class VehicleManager: NSObject {
       RxDataBuffer.getBytes(&packetlenbyte, length:MemoryLayout<UInt8>.size)
       let packetlen = Int(packetlenbyte)
       
-      if RxDataBuffer.length > packetlen+1 {
+      if RxDataBuffer.length > packetlen {
        // vmlog("found \(packetlen)B protobuf frame")
         let data_chunk : NSMutableData = NSMutableData()
         data_chunk.append(RxDataBuffer.subdata(with: NSMakeRange(1,packetlen)))
