@@ -80,6 +80,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   // connect the VM to a specific VI, or first if no name provided
   open func connect(_ name: String? = nil) {
    
+    UserDefaults.standard.setValue(name, forKey: "LastConnectedBle")
     // if the VM is not scanning, don't do anything
     if connectionState != .scanning {
       vmlog("VehicleManager be scanning before a connect can occur!")
@@ -106,13 +107,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     //
     //
     //  // connect the VM to a specific VI
-    //  open func connect(_ name:String) {
-    //
-    //    // if the VM is not scanning, don't do anything
-    //    if connectionState != .scanning {
-    //      vmlog("VehicleManager be scanning before a connect can occur!")
-    //      return
-    //    }
+
     //
     //    // if the found VI list is empty, just return
     //    if foundOpenXCPeripherals[name] == nil {
@@ -134,10 +129,12 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
    connectionState = .connectionInProgress
     
   }
-  
+
   // connect the VM to the first VI found
   open func connect() {
     
+
+    print("connect:-\(foundOpenXCPeripherals.count)")
     // if the VM is not scanning, don't do anything
     if connectionState != .scanning {
       vmlog("VehicleManager be scanning before a connect can occur!")
@@ -153,6 +150,8 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     
     // for this method, just connect to first one found
     openXCPeripheral = foundOpenXCPeripherals.first?.1
+    print(foundOpenXCPeripherals.first!.key)
+    UserDefaults.standard.setValue(foundOpenXCPeripherals.first?.key, forKey: "LastConnectedBle")
     openXCPeripheral.delegate = self
     
     // start the connection process
@@ -188,7 +187,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     return Array(foundOpenXCPeripherals.keys)
   }
   
-  // private debug log function gated by the debug setting
+    // private debug log function gated by the debug setting
   fileprivate func vmlog(_ strings:Any...) {
     if managerDebug {
       let d = Date()
@@ -234,8 +233,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   
   // Core Bluetooth has discovered a BLE peripheral
   open func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-    vmlog("in centralManager:didDiscover")
-    
+  
     if openXCPeripheral == nil {
       
       // only find the right kinds of the BLE devices (C5 VI)
@@ -251,22 +249,38 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
             
             foundOpenXCPeripherals[advName] = peripheral
             
-            // if we're in auto connect mode, just connect right away
-            if autoConnectPeripheral {
-              connect()
-            }
-            
             // notify client if the callback is enabled
             if let act = VehicleManager.sharedInstance.managerCallback {
               act.performAction(["status":VehicleManagerStatusMessage.c5DETECTED.rawValue] as NSDictionary)
             }
             
           }
+          
         }
-        
+        else{
+          if(foundOpenXCPeripherals.count > 0) && autoConnectPeripheral{
+            if isDeviceKey(){
+              connect(UserDefaults.standard.string(forKey:"LastConnectedBle"))
+              return
+            }else{
+              connect()
+              return
+            }
+          }
+        }
       }
-      
+     
     }
+  
+  }
+
+  func isDeviceKey() -> Bool {
+    for (theKey,_) in foundOpenXCPeripherals{
+      if theKey == UserDefaults.standard.string(forKey:"LastConnectedBle") {
+        return true
+      }
+    }
+    return false
   }
   
   // Core Bluetooth has connected to a BLE peripheral
