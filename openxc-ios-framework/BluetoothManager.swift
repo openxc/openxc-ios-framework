@@ -249,12 +249,6 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
             
             foundOpenXCPeripherals[advName] = peripheral
             
-            // if we're in auto connect mode, just connect right away
-//            if autoConnectPeripheral && UserDefaults.standard.string(forKey:"BleName") == advName {
-//              connect(UserDefaults.standard.string(forKey:"BleName"))
-//              return
-//            }
-            
             // notify client if the callback is enabled
             if let act = VehicleManager.sharedInstance.managerCallback {
               act.performAction(["status":VehicleManagerStatusMessage.c5DETECTED.rawValue] as NSDictionary)
