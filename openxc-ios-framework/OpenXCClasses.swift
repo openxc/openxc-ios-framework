@@ -28,6 +28,20 @@ public enum VehicleMessageType: NSString {
   case canRequest
 }
 
+//public enum VehicleCommandType: NSString {
+//  case version
+//  case device_id
+//  case platform
+//  case passthrough
+//  case af_bypass
+//  case payload_format
+//  case predefined_odb2
+//  case modem_configuration
+//  case sd_mount_status
+//  case rtc_configuration
+//}
+
+
 open class VehicleBaseMessage {
   public init() {
     

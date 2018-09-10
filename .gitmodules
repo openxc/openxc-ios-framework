@@ -1,4 +1,0 @@
-[submodule "protobuf-swift"]
-	path = protobuf-swift
-url=https://github.com/alexeyxo/protobuf-swift.git
-	branch=type_fix
