@@ -82,6 +82,7 @@ open class Command: NSObject {
     // config for protobuf vs json BLE mode, defaults to JSON
    // fileprivate var jsonMode : Bool = true
 
+
     // config for outputting debug messages to console
     fileprivate var managerDebug : Bool = false
 
@@ -172,6 +173,7 @@ open class Command: NSObject {
         vmlog("in sendCommandCommon")
         
         if !self.vm.jsonMode {
+
             // in protobuf mode, build the command message
             let cbuild = ControlCommand.Builder()
             if cmd.command == .version {_ = cbuild.setType(.version)}
@@ -254,7 +256,7 @@ open class Command: NSObject {
         // we're in json mode
         var cmdstr = ""
         // decode the command type and build the command depending on the command
-        print("cmd command...",cmd.command)
+        //print("cmd command...",cmd.command)
         
         if cmd.command == .version || cmd.command == .device_id || cmd.command == .sd_mount_status || cmd.command == .platform {
             // build the command json
@@ -339,4 +341,5 @@ open class Command: NSObject {
     BluetoothManager.sharedInstance.BLESendFunction()
    // BLESendFunction()
   }
+
 }
