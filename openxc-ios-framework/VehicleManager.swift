@@ -12,7 +12,6 @@ import CoreBluetooth
 import ProtocolBuffers
 
 
-
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
@@ -36,7 +35,6 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
     return rhs < lhs
   }
 }
-
 
 // public enum VehicleManagerStatusMessage
 // values reported to managerCallback if defined
@@ -70,10 +68,11 @@ public enum VehicleManagerStatusMessage: Int {
 // can be accessed directly as .C5DETECTED for example
 
 
+
 open class VehicleManager: NSObject {
 
+
   // MARK: Singleton Init
-  
   // This signleton init allows mutiple controllers to access the same instantiation
   // of the VehicleManager. There is only a single instantiation of the VehicleManager
   // for the entire client app
@@ -115,7 +114,9 @@ open class VehicleManager: NSObject {
   // data buffer for storing vehicle messages to send to BTLE
   //Ranjan changed fileprivate to public due to travis fail
   public var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
+
   public var tempDataBuffer : NSMutableData! = NSMutableData()
+
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
   // BTLE transmit token increment variable
@@ -172,12 +173,14 @@ open class VehicleManager: NSObject {
   // public variable holding VehicleManager connection state enum
  // open var connectionState: VehicleManagerConnectionState! = .notConnected
   // public variable holding number of messages received since last Connection established
+
  //open var messageCount: Int = 0
   //Connected to network simulator
   open var isNetworkConnected: Bool = false
 
  //Iphone device blutooth is on/fff status
   open var isDeviceBluetoothIsOn :Bool = false
+
   
   var callbackHandler: ((Bool) -> ())?  = nil
   
@@ -235,9 +238,16 @@ open class VehicleManager: NSObject {
     jsonMode = true
     }
   }
+
   
- 
-  
+  // return the latest message received for a given measurement string name
+//  open func getLatest(_ key:NSString) -> VehicleMeasurementResponse {
+//    if let entry = latestVehicleMeasurements[key] {
+//      return entry as! VehicleMeasurementResponse
+//    }
+//    return VehicleMeasurementResponse()
+//  }
+
   open func getLatest(_ key:NSString) -> VehicleMeasurementResponse? {
     return latestVehicleMeasurements[key]
   }
@@ -313,8 +323,6 @@ open class VehicleManager: NSObject {
   open func clearCommandDefaultTarget() {
     defaultCommandCallback = nil
   }
-  
-  
 
   // send a diagnostic message with a callback for when the diag command response is received
   open func sendDiagReq<T: AnyObject>(_ cmd:VehicleDiagnosticRequest, target: T, cmdaction: @escaping (T) -> (NSDictionary) -> ()) -> String {
@@ -553,7 +561,7 @@ open class VehicleManager: NSObject {
         
         // trigger a BLE data send
         BluetoothManager.sharedInstance.BLESendFunction()
-        
+
       } catch {
         print("cmd msg build failed")
       }
@@ -663,7 +671,6 @@ open class VehicleManager: NSObject {
       
       return
     }
-    
     self.lastReqMsg_id = cmd.message_id
 
     // build the command json
@@ -892,7 +899,9 @@ open class VehicleManager: NSObject {
     
   }
   
+
    fileprivate func protobufCommandResponse(msg : VehicleMessage){
+
     
     //          let name = msg.commandResponse.type.toString()
     let name = msg.commandResponse.type.description
@@ -905,6 +914,7 @@ open class VehicleManager: NSObject {
     rsp.message = msg.commandResponse.message as NSString
     rsp.status = msg.commandResponse.status
     
+
     // First see if the default command callback is defined. If it is
     // then that takes priority. This will be the most likely use case,
     // with a single command response handler.
@@ -925,9 +935,7 @@ open class VehicleManager: NSObject {
   }
   
   fileprivate func protobufDignosticMessage(msg : VehicleMessage){
-    
-   
-    
+
     // build diag response message
     let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
     rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
@@ -1020,6 +1028,7 @@ open class VehicleManager: NSObject {
     }
   }
   
+
   ////////////////
   // JSON decoding
   /////////////////
@@ -1050,6 +1059,7 @@ open class VehicleManager: NSObject {
           // first time
           traceFilesourceLastMsgTime = timestamp
           traceFilesourceLastActualTime = msTimeNow
+
         }
         let msgDelta = timestamp - traceFilesourceLastMsgTime
         let actualDelta = msTimeNow - traceFilesourceLastActualTime
@@ -1057,8 +1067,10 @@ open class VehicleManager: NSObject {
         if deltaDelta > 0 {
           Thread.sleep(forTimeInterval: deltaDelta)
         }
+
         traceFilesourceLastMsgTime = timestamp
         traceFilesourceLastActualTime = msTimeNow
+
       }
       
       
@@ -1070,6 +1082,7 @@ open class VehicleManager: NSObject {
         self.Measurementrsp(json:json as [String:AnyObject],timestamp:timestamp)
       }
         
+
         
         // measurement rsp
         ///////////////////
@@ -1079,7 +1092,7 @@ open class VehicleManager: NSObject {
         //vmlog(<#T##strings: Any...##Any#>)
         self.Measurementrsp(json:json as [String:AnyObject],timestamp:timestamp)
       }
-        
+
         
         
         // command rsp
@@ -1109,9 +1122,7 @@ open class VehicleManager: NSObject {
         }
         
       }
-      
-      
-      
+
       ///////
       // TODO: for debug, remove later
       //// fake out a CAN msg on every msg received!!
@@ -1212,6 +1223,7 @@ open class VehicleManager: NSObject {
     }
   }
   
+
   // measurement rsp
   ///////////////////
   // normal measuerment messages will have an "name" key (but no "event" key)
@@ -1294,6 +1306,7 @@ open class VehicleManager: NSObject {
   ///////////////////
   // both diagnostic response and CAN response messages have an "id" key
   fileprivate func canMessagersp(json:[String:AnyObject],timestamp:NSInteger,id:NSInteger){
+
     
     // only diagnostic response messages have "success"
     if let success = json["success"] as? Bool {
@@ -1340,6 +1353,7 @@ open class VehicleManager: NSObject {
       if !found {
         if let act = defaultCanCallback {
           act.performAction(["vehiclemessage":rsp] as NSDictionary)
+
         }
       }
       
@@ -1366,6 +1380,7 @@ open class VehicleManager: NSObject {
       pid = pidX
     }
     
+
     var payload : NSString = ""
     if let payloadX = json["payload"] as? NSString {
       payload = payloadX
@@ -1445,13 +1460,9 @@ open class VehicleManager: NSObject {
       if let act = defaultDiagCallback {
         act.performAction(["vehiclemessage":rsp] as NSDictionary)
       }
+
     }
   }
-  
-  
-  
-  
-  
   
   // Common function for parsing any received data into openXC messages.
   // The separator parameter allows data to be parsed when each message is
@@ -1528,7 +1539,6 @@ open class VehicleManager: NSObject {
       /////////////////////////////////////
     }
     
-    
     // do the actual parsing if we've managed to extract a full message
     if data_chunk.length > 0 {
 
@@ -1539,8 +1549,7 @@ open class VehicleManager: NSObject {
       
        BluetoothManager.sharedInstance.messageCount += 1
     }
-    
-   
+
   }
   
  

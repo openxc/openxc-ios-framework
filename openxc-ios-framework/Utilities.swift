@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 public var acceleratorPedal: String = "accelerator_pedal_position"
 public var enginespeed: String = "engine_speed"
 public var fuelConsumed: String = "fuel_consumed_since_restart"
@@ -17,6 +18,4 @@ public var odometer: String = "odometer"
 public var steeringWheelAngle: String = "steering_wheel_angle"
 public var torqueTransmission: String = "torque_at_transmission"
 public var vehicleSpeed: String = "vehicle_speed"
-
-
 
