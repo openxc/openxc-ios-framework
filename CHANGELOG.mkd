@@ -4,10 +4,11 @@
 * Feature: Custom command added in Commands Page
 * Feature: Diagnostic and command message support added in Protobuf mode.
 * Feature: Manual format change support added. JSON to proto & vice-versa can be changed in commands page
-* Feature: Disconnect C5BLE from application
-* Enhancement: Timestamp added in tracefile
+* Feature: Disconnect C5BLE from application.
+* Feature: Autoconnect and Reconnect for C5BLE from application.
+* Enhancement: Timestamp added in tracefile.
 * Enhancement: Code refactor for RXData parser Method and Vehicle Manager class.
-* UI: Settings screen cosmetic changes
+* UI: Settings screen cosmetic changes.
 
 ## v2.0.0
 
