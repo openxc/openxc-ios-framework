@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 s.name         = "OpenXCFramework-Swift"
-s.version      = '1.2.0'
+s.version      = '1.2.2'
 s.summary      = "OpenXC Framework for vehicle"
 s.license      = "MIT"
 s.homepage     ="https://github.com/openxc"
