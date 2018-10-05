@@ -1,6 +1,6 @@
 # OpenXC iOS Library Changelog
 
-## v2.1.0
+## v3.0.0
 * Feature: Data source selection in Settings Page.
 * Feature: Custom command added in Commands Page
 * Feature: Diagnostic and command message support added in Protobuf mode.
@@ -12,14 +12,6 @@
 * UI: Settings screen cosmetic changes.
 
 ## v2.0.0
-
-* Improvement: Support for iOS 11
-* Feature: Added support to receive data from network source through Wi-Fi
-* Feature: App will now pull and display the VI platform
-* Bug Fixes
-* Code Refactor and improvement in framework
-
-## v2.0
 
 * Improvement: Support for iOS 11
 * Feature: Added support to receive data from network source through Wi-Fi
