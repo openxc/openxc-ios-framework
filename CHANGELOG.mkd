@@ -1,6 +1,6 @@
 # OpenXC iOS Library Changelog
 
-## v2.1.0
+## v3.0.0
 * Feature: Data source selection in Settings Page.
 * Feature: Custom command added in Commands Page
 * Feature: Diagnostic and command message support added in Protobuf mode.
