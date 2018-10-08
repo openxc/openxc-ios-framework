@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F85569819C71BCF003802F2"
-               BuildableName = "ProtocolBuffers.framework"
-               BlueprintName = "ProtocolBuffers"
-               ReferencedContainer = "container:protobuf/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj">
+               BlueprintIdentifier = "3A1017051D5941C8006C5E93"
+               BuildableName = "openXCiOSFramework.framework"
+               BlueprintName = "openxc-ios-framework"
+               ReferencedContainer = "container:openxc-ios-framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -28,9 +28,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3A1017051D5941C8006C5E93"
-               BuildableName = "openXCiOSFramework.framework"
-               BlueprintName = "openxc-ios-framework"
+               BlueprintIdentifier = "E7C63D381DDC56BB00EE9790"
+               BuildableName = "openXCiOSFrameworkTests.xctest"
+               BlueprintName = "openXCiOSFrameworkTests"
                ReferencedContainer = "container:openxc-ios-framework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -80,10 +80,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3F85569819C71BCF003802F2"
-            BuildableName = "ProtocolBuffers.framework"
-            BlueprintName = "ProtocolBuffers"
-            ReferencedContainer = "container:protobuf/plugin/ProtocolBuffers/ProtocolBuffers.xcodeproj">
+            BlueprintIdentifier = "3A1017051D5941C8006C5E93"
+            BuildableName = "openXCiOSFramework.framework"
+            BlueprintName = "openxc-ios-framework"
+            ReferencedContainer = "container:openxc-ios-framework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>

@@ -1,6 +1,17 @@
 # OpenXC iOS Library Changelog
 
-## v2.0
+## v3.0.0
+* Feature: Data source selection in Settings Page.
+* Feature: Custom command added in Commands Page
+* Feature: Diagnostic and command message support added in Protobuf mode.
+* Feature: Manual format change support added. JSON to proto & vice-versa can be changed in commands page
+* Feature: Disconnect C5BLE from application.
+* Feature: Autoconnect and Reconnect for C5BLE from application.
+* Enhancement: Timestamp added in tracefile.
+* Enhancement: Code refactor for RXData parser Method and Vehicle Manager class.
+* UI: Settings screen cosmetic changes.
+
+## v2.0.0
 
 * Improvement: Support for iOS 11
 * Feature: Added support to receive data from network source through Wi-Fi
