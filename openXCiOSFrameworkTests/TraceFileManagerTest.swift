@@ -8,6 +8,8 @@
 
 import XCTest
 
+@testable import openXCiOSFramework
+
 class TraceFileManagerTest: XCTestCase {
     
   let traceFileSinkPath : NSString = "1.json"

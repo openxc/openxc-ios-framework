@@ -7,7 +7,7 @@
 //
 
 import XCTest
-
+@testable import openXCiOSFramework
 class BluetoothManagerTest: XCTestCase {
     
   var scanValueIs : Bool = false
@@ -29,7 +29,7 @@ class BluetoothManagerTest: XCTestCase {
   }
   
   func testScanVi{
-    VehicleManager.sharedInstance.scan { (success) in
+    BluetoothManager.sharedInstance.scan { (success) in
       if(!success){
         self.scanValueIs = sucessValueIs
       }else{
@@ -40,7 +40,7 @@ class BluetoothManagerTest: XCTestCase {
   }
   
   func testdiscoveredVI(){
-    let value =VehicleManager.sharedInstance.discoveredVI()
+    let value =BluetoothManager.sharedInstance.discoveredVI()
     
     XCTAssert(value == "OPENXC-VI-6C9B")
   }

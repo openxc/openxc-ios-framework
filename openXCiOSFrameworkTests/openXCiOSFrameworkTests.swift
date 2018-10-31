@@ -7,7 +7,7 @@
 //
 
 import XCTest
-
+@testable import openXCiOSFramework
 class openXCiOSFrameworkTests: XCTestCase {
     
     override func setUp() {

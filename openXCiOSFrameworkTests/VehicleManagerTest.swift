@@ -11,10 +11,7 @@ import XCTest
 
 class VehicleManagerTest: XCTestCase {
     
-    var traceFileSinkPath : NSString = "1.json"
-    var traceFileSourcePath : NSString = "2.json"
-    var scanValueIs : Bool = false
-    var sucessValueIs : Bool = true
+
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -24,33 +21,11 @@ class VehicleManagerTest: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
-  
-    //Vehicle manager Trace file sink test method
-    func testEnableTraceFileSink(){
-        let value = VehicleManager.sharedInstance.enableTraceFileSink( self.traceFileSinkPath)
-        if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool{
-        XCTAssert(!value)
-        }else{
-            XCTAssert(value)
-        }
-    }
-    //Vehicle manager trace filr source  test method
-    func testEnableTraceFileSource(){
-        let value = VehicleManager.sharedInstance.enableTraceFileSource( self.traceFileSourcePath, speedOrNil:60)
-        if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool{
-        XCTAssert(!value )
-        }else{
-            XCTAssert(value )
-        }
+
+    func testExample() {
+    // This is an example of a functional test case.
+    // Use XCTAssert and related functions to verify your tests produce the correct results.
   }
- 
-    
-    func  testAutoConnect() {
-        VehicleManager.sharedInstance.setAutoconnect(true)
-        XCTAssert(VehicleManager.sharedInstance.autoConnectPeripheral)
-    }
-    
 //    func testScanVi{
 //        VehicleManager.sharedInstance.scan { (success) in
 //            if(!success){
