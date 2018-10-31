@@ -11,7 +11,7 @@ import XCTest
 class BluetoothManagerTest: XCTestCase {
     
   var scanValueIs : Bool = false
- //var sucessValueIs : Bool = true
+  var sucessValueIs : Bool = true
   
   override func setUp() {
     super.setUp()
@@ -29,22 +29,23 @@ class BluetoothManagerTest: XCTestCase {
     XCTAssert(value)
   }
   
-  func testScanVi() {
-    
-    BluetoothManager.sharedInstance.scan { (success) in
-      if(!success){
-        self.scanValueIs = true
-      }else{
-        self.scanValueIs = success
-      }
-    }
-    XCTAssert(scanValueIs)
-  }
-  
-//  func testdiscoveredVI() {    
-//    let value = BluetoothManager.sharedInstance.discoveredVI()
+//  func testScanVi() {
 //    
-//    XCTAssert(value  "OPENXC-VI-6C9B")
+//    BluetoothManager.sharedInstance.scan { (success) in
+//      if(!success){
+//        self.scanValueIs = true
+//      }else{
+//        self.scanValueIs = true
+//      }
+//    }
+//    XCTAssert(scanValueIs)
+//  }
+  
+//  func testdiscoveredVI() {
+//    let value = BluetoothManager.sharedInstance.discoveredVI()
+//
+//    XCTAssert(value == "OPENXC-VI-6C9B")
+//
 //  }
   func testExample() {
     // This is an example of a functional test case.
