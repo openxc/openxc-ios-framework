@@ -7,16 +7,16 @@
 //
 
 import XCTest
-
 @testable import openXCiOSFramework
 
 class TraceFileManagerTest: XCTestCase {
     
   let traceFileSinkPath : NSString = "1.json"
   let traceFileSourcePath : NSString = "2.json"
-  var scanValueIs : Bool = false`
+  var scanValueIs : Bool = false
   var sucessValueIs : Bool = true
-  var measurmentObj:VehicleMeasurementResponse!
+  var measurmentObj : VehicleMeasurementResponse!
+  
   override func setUp() {
     /*
      traceOutput
@@ -38,12 +38,13 @@ class TraceFileManagerTest: XCTestCase {
   //    let value = measurmentObj.traceOutput()
   //    XCTAssertEqual(value, "null")
   //  }
-  func testValueisBool(){
+  func testValueisBool() {
     let value = measurmentObj.valueIsBool()
     XCTAssert(!value)
   }
+  
   //Vehicle manager Trace file sink test method
-  func testEnableTraceFileSink(){
+  func testEnableTraceFileSink() {
     let value = TraceFileManager.sharedInstance.enableTraceFileSink(self.traceFileSinkPath)
     if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool{
       XCTAssert(!value)
@@ -51,8 +52,9 @@ class TraceFileManagerTest: XCTestCase {
       XCTAssert(value)
     }
   }
+  
   //Vehicle manager trace filr source  test method
-  func testEnableTraceFileSource(){
+  func testEnableTraceFileSource() {
     let value = TraceFileManager.sharedInstance.enableTraceFileSource( self.traceFileSourcePath, speed:60)
     if let fs : Bool? = Bundle.main.infoDictionary?["UIFileSharingEnabled"] as? Bool{
       XCTAssert(!value )
@@ -60,19 +62,11 @@ class TraceFileManagerTest: XCTestCase {
       XCTAssert(value )
     }
   }
-  
-  
-  
+
   func testExample() {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
   }
-  
-  func testPerformanceExample() {
-    // This is an example of a performance test case.
-    self.measure {
-      // Put the code you want to measure the time of here.
-    }
-  }
+
     
 }

@@ -1,14 +1,15 @@
 //
-//  openXCiOSFrameworkTests.swift
+//  NetworkManagerTest.swift
 //  openXCiOSFrameworkTests
 //
-//  Created by Kanishka, Vedi (V.) on 16/11/16.
-//  Copyright (c) 2016 Ford Motor Company Licensed under the BSD license.
+//  Created by Ranjan, Kumar sahu (K.) on 31/10/18.
+//  Copyright © 2018 Ford Motor Company. All rights reserved.
 //
 
 import XCTest
 @testable import openXCiOSFramework
-class openXCiOSFrameworkTests: XCTestCase {
+
+class NetworkManagerTest: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -24,7 +25,16 @@ class openXCiOSFrameworkTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-    
+  /*
+   //Test the Socket network connection
+   func testSocketConnection() {
+   NetworkData.sharedInstance.connect(ip:"0.0.0.0", portvalue: 50001, completionHandler: { (success) in
+   
+   self.valueIs = success
+   })
+   
+   XCTAssert(valueIs)
+   }*/
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {

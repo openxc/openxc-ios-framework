@@ -11,11 +11,11 @@
 		3A1017121D5941D8006C5E93 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017111D5941D8006C5E93 /* VehicleManager.swift */; };
 		3A1017321D5BA15A006C5E93 /* OpenXCClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */; };
 		3A1017341D5BA223006C5E93 /* TargetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1017331D5BA223006C5E93 /* TargetAction.swift */; };
-		7D03D60221871CD300EEF950 /* NetworkDataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D03D5F921871CD300EEF950 /* NetworkDataTest.swift */; };
 		7D03D60321871CD300EEF950 /* VehicleManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D03D60121871CD300EEF950 /* VehicleManagerTest.swift */; };
 		7D03D60521871CF900EEF950 /* BluetoothManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D03D60421871CF900EEF950 /* BluetoothManagerTest.swift */; };
 		7D03D60721871D1C00EEF950 /* TraceFileManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D03D60621871D1C00EEF950 /* TraceFileManagerTest.swift */; };
 		7D1274962003637F0094AB64 /* NetworkDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D1274952003637F0094AB64 /* NetworkDataManager.swift */; };
+		7D3E5A4A2189A91B0049C703 /* NetworkManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D3E5A492189A91B0049C703 /* NetworkManagerTest.swift */; };
 		7D8E87DA20569ADB00B33E0A /* VehicleMessageUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D8E87D920569ADB00B33E0A /* VehicleMessageUnit.swift */; };
 		7DA8E46C20B2C47300ABBB1C /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA8E46B20B2C47300ABBB1C /* BluetoothManager.swift */; };
 		7DA8E47520B2CFA100ABBB1C /* TraceFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA8E47420B2CFA100ABBB1C /* TraceFileManager.swift */; };
@@ -26,7 +26,6 @@
 		E7AA8AF51F03AA890076A288 /* CAN.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF41F03AA890076A288 /* CAN.swift */; };
 		E7AA8AF71F03AAA20076A288 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AF61F03AAA20076A288 /* Message.swift */; };
 		E7AA8AFB1F03B0790076A288 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7AA8AFA1F03B0790076A288 /* Utilities.swift */; };
-		E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */; };
 		E7C63D3E1DDC56BB00EE9790 /* openXCiOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1017061D5941C8006C5E93 /* openXCiOSFramework.framework */; };
 		E7FAF9FB1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */; };
 		E7FAF9FC1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */; };
@@ -98,11 +97,11 @@
 		3A1017111D5941D8006C5E93 /* VehicleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleManager.swift; sourceTree = "<group>"; };
 		3A1017311D5BA15A006C5E93 /* OpenXCClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenXCClasses.swift; sourceTree = "<group>"; };
 		3A1017331D5BA223006C5E93 /* TargetAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TargetAction.swift; sourceTree = "<group>"; };
-		7D03D5F921871CD300EEF950 /* NetworkDataTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDataTest.swift; sourceTree = "<group>"; };
 		7D03D60121871CD300EEF950 /* VehicleManagerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleManagerTest.swift; sourceTree = "<group>"; };
 		7D03D60421871CF900EEF950 /* BluetoothManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManagerTest.swift; sourceTree = "<group>"; };
 		7D03D60621871D1C00EEF950 /* TraceFileManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceFileManagerTest.swift; sourceTree = "<group>"; };
 		7D1274952003637F0094AB64 /* NetworkDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataManager.swift; sourceTree = "<group>"; };
+		7D3E5A492189A91B0049C703 /* NetworkManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManagerTest.swift; sourceTree = "<group>"; };
 		7D8E87D920569ADB00B33E0A /* VehicleMessageUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleMessageUnit.swift; sourceTree = "<group>"; };
 		7DA8E46B20B2C47300ABBB1C /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
 		7DA8E47420B2CFA100ABBB1C /* TraceFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraceFileManager.swift; sourceTree = "<group>"; };
@@ -114,7 +113,6 @@
 		E7AA8AF61F03AAA20076A288 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		E7AA8AFA1F03B0790076A288 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		E7C63D391DDC56BB00EE9790 /* openXCiOSFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = openXCiOSFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = openXCiOSFrameworkTests.swift; sourceTree = "<group>"; };
 		E7C63D3D1DDC56BB00EE9790 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E7FAF9FA1E38D97300A8D5F4 /* Openxc.proto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Openxc.proto.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,12 +206,11 @@
 		E7C63D3A1DDC56BB00EE9790 /* openXCiOSFrameworkTests */ = {
 			isa = PBXGroup;
 			children = (
-				7D03D5F921871CD300EEF950 /* NetworkDataTest.swift */,
+				E7C63D3D1DDC56BB00EE9790 /* Info.plist */,
 				7D03D60121871CD300EEF950 /* VehicleManagerTest.swift */,
-				E7C63D3B1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift */,
 				7D03D60421871CF900EEF950 /* BluetoothManagerTest.swift */,
 				7D03D60621871D1C00EEF950 /* TraceFileManagerTest.swift */,
-				E7C63D3D1DDC56BB00EE9790 /* Info.plist */,
+				7D3E5A492189A91B0049C703 /* NetworkManagerTest.swift */,
 			);
 			path = openXCiOSFrameworkTests;
 			sourceTree = "<group>";
@@ -411,10 +408,9 @@
 			files = (
 				E7FAF9FC1E38D97300A8D5F4 /* Openxc.proto.swift in Sources */,
 				7D03D60521871CF900EEF950 /* BluetoothManagerTest.swift in Sources */,
-				E7C63D3C1DDC56BB00EE9790 /* openXCiOSFrameworkTests.swift in Sources */,
+				7D3E5A4A2189A91B0049C703 /* NetworkManagerTest.swift in Sources */,
 				7D03D60721871D1C00EEF950 /* TraceFileManagerTest.swift in Sources */,
 				7D03D60321871CD300EEF950 /* VehicleManagerTest.swift in Sources */,
-				7D03D60221871CD300EEF950 /* NetworkDataTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
