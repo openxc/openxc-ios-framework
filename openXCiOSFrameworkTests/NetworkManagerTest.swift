@@ -25,21 +25,17 @@ class NetworkManagerTest: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-  /*
+  
    //Test the Socket network connection
-   func testSocketConnection() {
+  
+   /*func testSocketConnection() {
    NetworkData.sharedInstance.connect(ip:"0.0.0.0", portvalue: 50001, completionHandler: { (success) in
    
-   self.valueIs = success
+   self.valueIs = true
    })
    
    XCTAssert(valueIs)
    }*/
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+
     
 }

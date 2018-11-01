@@ -30,7 +30,7 @@ class BluetoothManagerTest: XCTestCase {
   }
   
 //  func testScanVi() {
-//    
+//
 //    BluetoothManager.sharedInstance.scan { (success) in
 //      if(!success){
 //        self.scanValueIs = true

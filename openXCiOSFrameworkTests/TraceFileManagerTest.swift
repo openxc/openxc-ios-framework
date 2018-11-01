@@ -34,10 +34,10 @@ class TraceFileManagerTest: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     super.tearDown()
   }
-  //  func testTraceOutput(){
-  //    let value = measurmentObj.traceOutput()
-  //    XCTAssertEqual(value, "null")
-  //  }
+    func testTraceOutput(){
+      let value = measurmentObj.traceOutput()
+      XCTAssertEqual(value, "null")
+    }
   func testValueisBool() {
     let value = measurmentObj.valueIsBool()
     XCTAssert(!value)
