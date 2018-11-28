@@ -36,7 +36,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   open var foundOpenXCPeripherals: [String:CBPeripheral] = [String:CBPeripheral]()
   
   // config for auto connecting to first discovered VI
-  fileprivate var autoConnectPeripheral : Bool = true
+  open var autoConnectPeripheral : Bool = true
   
   // config for outputting debug messages to console
   fileprivate var managerDebug : Bool = false
