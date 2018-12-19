@@ -1,0 +1,22 @@
+{
+  "name": "openxc-ios-framework",
+  "version": "0.1.0",
+  "summary": "A short description of openxc-ios-framework.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/ranjans402/openxc-ios-framework",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "ranjans402": "kranjan@ford.com"
+  },
+  "source": {
+    "git": "https://github.com/ranjans402/openxc-ios-framework.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "openxc-ios-framework/Classes/**/*"
+}

@@ -1,0 +1,6 @@
+use_frameworks!
+target 'openxc-ios-framework_Tests' do
+  pod 'openxc-ios-framework', :path => '../'
+  
+  
+end

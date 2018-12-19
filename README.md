@@ -1,62 +1,29 @@
-# OpenXC-iOS-Framework
-This framework is part of the OpenXC project. This iOS framework contains the tools required to read vehicle data from the vehicle's CAN bus through the OpenXC vehicle interface in any iOS application.
+# openxc-ios-framework
 
+[![CI Status](https://img.shields.io/travis/ranjans402/openxc-ios-framework.svg?style=flat)](https://travis-ci.org/ranjans402/openxc-ios-framework)
+[![Version](https://img.shields.io/cocoapods/v/openxc-ios-framework.svg?style=flat)](https://cocoapods.org/pods/openxc-ios-framework)
+[![License](https://img.shields.io/cocoapods/l/openxc-ios-framework.svg?style=flat)](https://cocoapods.org/pods/openxc-ios-framework)
+[![Platform](https://img.shields.io/cocoapods/p/openxc-ios-framework.svg?style=flat)](https://cocoapods.org/pods/openxc-ios-framework)
 
-OpenXC iOS framework for use with the C5 BLE device. See also the [openxc-ios-app-demo](https://github.com/openxc/openxc-ios-app-demo)
+## Example
 
-## OpenXC-iOS-Framework-Version
-* V3.0.0
+To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
-## Supported versions:
-* iOS - upto 11.2.5
-* XCode - upto 9
-* Swift - Swift3
+## Requirements
 
-Note: TravisCI build run will work only till XCode8.1-iOS10.1 (https://github.com/travis-ci/travis-ci/issues/7031) but the framework supports XCode 9 and iOS 11
+## Installation
 
-## Using the Framework
-The framework can be picked directly from the releases
-* Simulator build - openXCiOSFramework.framework.simulator.zip, ProtocolBuffers.framework.simulator.zip
-* Device build - openXCiOSFramework.framework.device.zip, ProtocolBuffers.framework.device.zip
+openxc-ios-framework is available through [CocoaPods](https://cocoapods.org). To install
+it, simply add the following line to your Podfile:
 
-## Building from XCode
+```ruby
+pod 'openxc-ios-framework'
+```
 
-Make sure you have XCode9 installed with iOS11 to build it from XCode. This framework must be included in any iOS application that needs to connect to a VI
+## Author
 
-Refer to this [document](https://github.com/openxc/openxc-ios-framework/blob/master/OpenXC_iOS_Document.docx) for more details on installation and usage.
-
-API usage details are available [here](https://github.com/openxc/openxc-ios-framework/blob/master/iOS%20Framework%20API%20Guide.pdf). 
-
-Also see [Step by Step Guide] (https://github.com/openxc/openxc-ios-framework/blob/master/StepsToBuildOpenXCiOSFrameworkAndDemoApp.docx) to build framework. 
-
-
-## Tests
-
-* to be added
-
-## Building from Command Line
-
-The project requires XCode, XCode command line tools installed. 
-
-To install XCode command line tools, follow these steps for XCode:
-
-* Launch XCode
-* Go to Preferences - Locations - Command Line Tools - Install
-* Open "Terminal" and change directory to framework
-* Run - xcodebuild clean build test -project openxc-ios-framework.xcodeproj -scheme openxc-ios-framework
-
-
-## Releasing the App and Library
-
-* Update CHANGELOG.mkd
-* Merge into master push to GitHub
-* Travis CI will take care of the rest.
-
-
-## Contributing
-
-Please see our [Contribution Documents] (https://github.com/openxc/openxc-ios-framework/blob/master/CONTRIBUTING.mkd)
+ranjans402, kranjan@ford.com
 
 ## License
-Copyright (c) 2016 Ford Motor Company
-Licensed under the BSD license.
+
+openxc-ios-framework is available under the MIT license. See the LICENSE file for more info.

@@ -1,0 +1,4 @@
+framework module openXCiOSFramework {
+  header "openXCiOSFramework-Swift.h"
+  requires objc
+}

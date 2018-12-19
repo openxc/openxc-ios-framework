@@ -1,0 +1,6 @@
+framework module openxc_ios_framework {
+  umbrella header "openxc-ios-framework-umbrella.h"
+
+  export *
+  module * { export * }
+}

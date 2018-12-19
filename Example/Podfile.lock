@@ -1,0 +1,16 @@
+PODS:
+  - openxc-ios-framework (0.1.0)
+
+DEPENDENCIES:
+  - openxc-ios-framework (from `../`)
+
+EXTERNAL SOURCES:
+  openxc-ios-framework:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  openxc-ios-framework: f17347c5bffae0528d9de6551e8c21cd32581257
+
+PODFILE CHECKSUM: 035b0cefb82d31d988450e80b6e49220550b9827
+
+COCOAPODS: 1.6.0.beta.2
