@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'openxc-ios-framework'
   s.version          = '1.0.0'
-  s.summary          = 'A short description of openxc-ios-framework.'
+  s.summary          = 'openxc-ios-framework is API to car .Which provide can signals'
   s.swift_version    = '3.2'
 
 # This description is used to generate tags and improve search results.
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+openxc-ios-framework is API to car .Which provide can signals
                        DESC
 
   s.homepage         = 'https://github.com/kranjan/openxc-ios-framework'
