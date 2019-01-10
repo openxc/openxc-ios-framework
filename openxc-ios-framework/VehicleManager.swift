@@ -1414,6 +1414,13 @@ open class VehicleManager: NSObject {
     rsp.payload = payload
     rsp.value = value
     
+    //Adde for NRC fix
+    if(!success){
+      //success false, parse negative response code. For DID commands.
+      if let nrcX = json["negative_response_code"] as? NSInteger{
+        rsp.negative_response_code = nrcX
+      }
+    }
     // build the key that identifies this diagnostic response
     // bus-id-mode-[X or pid]
     let tupple : NSMutableString = ""
