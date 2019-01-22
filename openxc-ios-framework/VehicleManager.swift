@@ -861,7 +861,7 @@ open class VehicleManager: NSObject {
     
     // build measurement message
     let rsp : VehicleMeasurementResponse = VehicleMeasurementResponse()
-    rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+    rsp.timestamp = Int(truncatingIfNeeded:msg.timestamp)
     //rsp.name = msg.simpleMessage.name as NSString
     
     rsp.name = name
@@ -909,7 +909,7 @@ open class VehicleManager: NSObject {
     
     // build command response message
     let rsp : VehicleCommandResponse = VehicleCommandResponse()
-    rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+    rsp.timestamp = Int(truncatingIfNeeded:msg.timestamp)
     rsp.command_response = name.lowercased() as NSString
     rsp.message = msg.commandResponse.message as NSString
     rsp.status = msg.commandResponse.status
@@ -938,7 +938,7 @@ open class VehicleManager: NSObject {
 
     // build diag response message
     let rsp : VehicleDiagnosticResponse = VehicleDiagnosticResponse()
-    rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+    rsp.timestamp = Int(truncatingIfNeeded:msg.timestamp)
     rsp.bus = Int(msg.diagnosticResponse.bus)
     rsp.message_id = Int(msg.diagnosticResponse.messageId)
     rsp.mode = Int(msg.diagnosticResponse.mode)
@@ -997,7 +997,7 @@ open class VehicleManager: NSObject {
   fileprivate func protobufCanMessage(msg : VehicleMessage){
     // build CAN response message
     let rsp : VehicleCanResponse = VehicleCanResponse()
-    rsp.timestamp = Int(truncatingBitPattern:msg.timestamp)
+    rsp.timestamp = Int(truncatingIfNeeded:msg.timestamp)
     rsp.bus = Int(msg.canMessage.bus)
     rsp.id = Int(msg.canMessage.id)
     rsp.data = String(data:msg.canMessage.data as Data,encoding: String.Encoding.utf8)! as NSString
@@ -1441,15 +1441,15 @@ open class VehicleManager: NSObject {
     // TODO: debug printouts, maybe remove
     if value != nil {
       if pid != nil {
-        vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) value:\(value)")
+        //vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) value:\(value)")
       } else {
-        vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(value)")
+        //vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(value)")
       }
     } else {
       if pid != nil {
-        vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) payload:\(payload)")
+        //vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) pid:\(pid) success:\(success) payload:\(payload)")
       } else {
-        vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(payload)")
+        //vmlog("diag rsp msg:\(bus) id:\(id) mode:\(mode) success:\(success) value:\(payload)")
       }
     }
     ////////////////////////////
@@ -1471,7 +1471,71 @@ open class VehicleManager: NSObject {
 
     }
   }
-  
+  // TODO: ToDo - Uncomment the code when when there will be a server URL and test the code
+
+  //Send data using trace URL
+  @objc public func sendTraceURLData(urlName:String,rspdict:NSMutableDictionary) {
+    
+    
+    //declare parameter as a dictionary which contains string as key and value combination. considering inputs are valid
+    let urlName = "http://localhost:8080/print"
+    let rspdict: [String:String] = ["name":"Ranjan","value":"123456"]
+    //let postString = "firstName=James&lastName=Bond";
+    //create the url with URL
+    
+    //let tracename = UserDefaults.standard.string(forKey: "traceURLname")//traceURLname "http://localhost:8080/print"
+    let url = URL(string: urlName)
+    
+    //now create the URLRequest object using the url object
+    var request:URLRequest = URLRequest(url: url!)
+    //create the session object
+    let session = URLSession.shared
+    
+    do {
+      // pass dictionary to nsdata object and set it as request body
+      //  let jsonData = try JSONSerialization.data(withJSONObject: parameters, options:.prettyPrinted)
+      let jsonData = try? JSONSerialization.data(withJSONObject: rspdict as Any)
+      //let postLength = String(format:"%lu", Double(jsonData.count))
+      //set http method as POST
+      request.httpMethod = "POST"
+      request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")  // the request is JSON
+      request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+      //request.addValue(postLength, forHTTPHeaderField: "Content-Type")
+      //request.addValue("application/json, forHTTPHeaderField: "Accept")
+      request.httpBody = jsonData
+    
+
+      
+    } catch let error {
+      print(error.localizedDescription)
+    }
+    
+    //create dataTask using the session object to send data to the server
+    let task = session.dataTask(with: request, completionHandler: { data, response, error in
+      
+      guard error == nil else {
+        return
+      }
+      
+      guard let data = data else {
+        return
+      }
+      
+      do {
+        //create json object from data
+        if let json = try JSONSerialization.jsonObject(with: data, options:.mutableContainers) as? [String:AnyObject] {
+          print(json)
+          
+          // handle json...
+        }
+        
+      } catch let error {
+        print(error.localizedDescription)
+      }
+    })
+    task.resume()
+  }
+
   // Common function for parsing any received data into openXC messages.
   // The separator parameter allows data to be parsed when each message is
   // separated by different things, for example messages are separated by \0

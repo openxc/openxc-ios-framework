@@ -276,7 +276,7 @@ open class TraceFileManager: NSObject {
   // 20B is chosen as the chunk size to mirror the BLE data size.
   // Called by timer function when client app provides a speed value for
   // trace input file
-  fileprivate dynamic func traceFileReader() {
+  @objc fileprivate dynamic func traceFileReader() {
     
     // if the trace file is enabled and open, read 20B
     if traceFilesourceEnabled && traceFilesourceHandle != nil {

@@ -268,12 +268,12 @@
 				TargetAttributes = {
 					3A1017051D5941C8006C5E93 = {
 						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 0940;
 					};
 					E7C63D381DDC56BB00EE9790 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = D95XHVNG2Z;
-						LastSwiftMigration = 0820;
+						LastSwiftMigration = 0940;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -545,7 +545,8 @@
 				PRODUCT_NAME = openXCiOSFramework;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -571,7 +572,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "net.ford.openxc-ios-framework";
 				PRODUCT_NAME = openXCiOSFramework;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -587,7 +589,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ford.openXCiOSFrameworkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Debug;
@@ -602,7 +605,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ford.openXCiOSFrameworkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 			};
 			name = Release;
