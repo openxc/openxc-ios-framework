@@ -1474,16 +1474,20 @@ open class VehicleManager: NSObject {
   // TODO: ToDo - Uncomment the code when when there will be a server URL and test the code
 
   //Send data using trace URL
-  @objc public func sendTraceURLData(urlName:String,rspdict:NSMutableDictionary) {
-    
-    
+  @objc public func sendTraceURLData(urlName:String,rspdict:NSMutableDictionary,isdrrsp:Bool) {
+
     //declare parameter as a dictionary which contains string as key and value combination. considering inputs are valid
-    let urlName = "http://localhost:8080/print"
-    let rspdict: [String:String] = ["name":"Ranjan","value":"123456"]
-    //let postString = "firstName=James&lastName=Bond";
-    //create the url with URL
-    
-    //let tracename = UserDefaults.standard.string(forKey: "traceURLname")//traceURLname "http://localhost:8080/print"
+    //"https://openxc-openxc-message-stream-dev.apps.pp01i.edc1.cf.ford.com/api/v1/message/ranjansiphone/save"//"http://localhost:8080/print"
+    let urlName = urlName
+    var traceArr = [AnyObject]()
+    if !isdrrsp {
+      for (key, value) in rspdict{
+        let tempDict: [String:Any] = ["name":key ,"value":value ]
+        traceArr.append(tempDict as AnyObject)
+      }
+    }else{
+      traceArr.append(rspdict as AnyObject)
+    }
     let url = URL(string: urlName)
     
     //now create the URLRequest object using the url object
@@ -1492,19 +1496,19 @@ open class VehicleManager: NSObject {
     let session = URLSession.shared
     
     do {
-      // pass dictionary to nsdata object and set it as request body
-      //  let jsonData = try JSONSerialization.data(withJSONObject: parameters, options:.prettyPrinted)
-      let jsonData = try? JSONSerialization.data(withJSONObject: rspdict as Any)
-      //let postLength = String(format:"%lu", Double(jsonData.count))
-      //set http method as POST
-      request.httpMethod = "POST"
-      request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")  // the request is JSON
-      request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-      //request.addValue(postLength, forHTTPHeaderField: "Content-Type")
-      //request.addValue("application/json, forHTTPHeaderField: "Accept")
-      request.httpBody = jsonData
-    
+      // pass array to nsdata object and set it as request body
+      
+      let jsonData = try? JSONSerialization.data(withJSONObject: traceArr as Any)
+      let jsonString = String(data: jsonData!, encoding: String.Encoding.utf8)
+      let data = jsonString!.data(using: .utf8)!
 
+      // the request is JSON
+      request.httpMethod = "POST"
+      request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+      request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+      request.httpBody = data
+      
+      
       
     } catch let error {
       print(error.localizedDescription)
