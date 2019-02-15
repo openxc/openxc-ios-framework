@@ -40,12 +40,15 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   
   // config for outputting debug messages to console
   fileprivate var managerDebug : Bool = false
-  
+  var result: String!
+  var troughputtimer: Timer!
   // optional variable holding callback for VehicleManager status updates
   // fileprivate var managerCallback: TargetAction?
   // dictionary holding last received measurement message for each measurement type
   fileprivate var latestVehicleMeasurements: NSMutableDictionary! = NSMutableDictionary()
   public var tempDataBuffer : NSMutableData! = NSMutableData()
+  
+  //ublic var tempDataArray : Array<Any> = Array()
   // public variable holding VehicleManager connection state enum
   public var connectionState: VehicleManagerConnectionState! = .notConnected
   
@@ -54,7 +57,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   open var isDeviceBluetoothIsOn :Bool = false
   
   var callbackHandler: ((Bool) -> ())?  = nil
-  
+
   //Connected to Ble simulator
   open var isBleConnected: Bool = false
   // BTLE transmit semaphore variable
@@ -69,6 +72,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
     
   }()
   fileprivate override init() {
+    
     // connectionState = .notConnected
   }
   // change the auto connect config for the VM
@@ -297,6 +301,7 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
       act.performAction(["status":VehicleManagerStatusMessage.c5CONNECTED.rawValue] as NSDictionary)
       isBleConnected = true
       
+      //self.troughputtimer = Timer.scheduledTimer(timeInterval: 0.5, target:self, selector:#selector(calculateThroughput), userInfo: nil, repeats:true)
     }
   }
   
@@ -457,34 +462,34 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
         return
       }
       
-      tempDataBuffer.append(data)
-      let sepdata = Data(bytes: UnsafePointer<UInt8>([0x00] as [UInt8]), count: 1)
-      let rangedata = NSMakeRange(0, tempDataBuffer.length)
-      let foundRange = tempDataBuffer.range(of: sepdata, options:[], in:rangedata)
-      if foundRange.location != NSNotFound {
+     tempDataBuffer.append(data)
+      //tempDataBuffer1.append(data)
+//      let sepdata = Data(bytes: UnsafePointer<UInt8>([0x00] as [UInt8]), count: 1)
+//      let rangedata = NSMakeRange(0, tempDataBuffer.length)
+//      let foundRange = tempDataBuffer.range(of: sepdata, options:[], in:rangedata)
+//      if foundRange.location != NSNotFound {
         // extract the entire message from the rx data buffer
-        VehicleManager.sharedInstance.RxDataBuffer.append(tempDataBuffer.subdata(with: NSMakeRange(0,foundRange.location+1)))
+        VehicleManager.sharedInstance.RxDataBuffer.append(data)//tempDataBuffer.subdata(with: NSMakeRange(0,foundRange.location+1))
         VehicleManager.sharedInstance.RxDataParser(0x00)
         // tempDataBuffer.resetBytes(in:NSMakeRange(0,foundRange.location))
         // if there is leftover data in the buffer, make sure to keep it otherwise
         // the parsing will not work for the next message that is partially complete now
-        if tempDataBuffer.length-1 > foundRange.location {
-          tempDataBuffer.resetBytes(in:NSMakeRange(0,foundRange.location+1))
-          let data_left : NSMutableData = NSMutableData()
-          data_left.append(tempDataBuffer.subdata(with: NSMakeRange(foundRange.location+1,tempDataBuffer.length-foundRange.location-1)))
-          tempDataBuffer = data_left
-        } else {
-          tempDataBuffer = NSMutableData()
-        }
-      }
+//        if tempDataBuffer.length-1 > foundRange.location {
+//          tempDataBuffer.resetBytes(in:NSMakeRange(0,foundRange.location+1))
+//          let data_left : NSMutableData = NSMutableData()
+//          data_left.append(tempDataBuffer.subdata(with: NSMakeRange(foundRange.location+1,tempDataBuffer.length-foundRange.location-1)))
+//          tempDataBuffer = data_left
+//        } else {
+//          tempDataBuffer = NSMutableData()
+//        }
+     // }
       //if data.count > 0 {
       //RxDataBuffer.append(data)
-      // RxDataParser(0x00)
+    // RxDataParser(0x00)
     }
     
   }
-  
-  
+
   // Core Bluetooth has discovered a description for a characteristic
   // don't need to save or use it in this case
   open func peripheral(_ peripheral: CBPeripheral, didDiscoverDescriptorsFor characteristic: CBCharacteristic, error: Error?) {
@@ -617,7 +622,18 @@ open class BluetoothManager: NSObject,CBCentralManagerDelegate,CBPeripheralDeleg
   open func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
     vmlog("in peripheral:didReadRSSI")
   }
-  
-  
-  
+  public func calculateThroughput() -> (String) {
+    //.. Code process
+    let returnData = String(data: tempDataBuffer as Data, encoding: .utf8)
+    //print(returnData as Any)
+    let arrOfStr = returnData?.split(separator: "\0")
+    let value1 = (arrOfStr?.count)!/5
+    let value = tempDataBuffer.length/5
+    let result = String(value)
+    let result1 = String(value1) + " msg," + result + " byte/sec"
+   // print(arrOfStr?.count as Any)
+    tempDataBuffer.setData(NSMutableData() as Data)
+    return result1
+  }
+
 }

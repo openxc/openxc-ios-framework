@@ -110,12 +110,12 @@ open class VehicleManager: NSObject {
   
   // data buffer for receiving raw BTLE data
   public var RxDataBuffer: NSMutableData! = NSMutableData()
+  public var tempDataBuffer: NSMutableData! = NSMutableData()
+  //public var tempDataArray : Array<Any> = Array()
   
   // data buffer for storing vehicle messages to send to BTLE
   //Ranjan changed fileprivate to public due to travis fail
   public var BLETxDataBuffer: NSMutableArray! = NSMutableArray()
-
-  public var tempDataBuffer : NSMutableData! = NSMutableData()
 
   // BTLE transmit semaphore variable
   fileprivate var BLETxWriteCount: Int = 0
@@ -151,6 +151,7 @@ open class VehicleManager: NSObject {
   // default callback action for can messages not registered above
   fileprivate var defaultCanCallback : TargetAction?
   
+  public var throughputEnabled: Bool = false
   // config variable determining whether trace output is generated
   fileprivate var traceFilesinkEnabled: Bool = false
   // config variable holding trace output file name
@@ -238,8 +239,16 @@ open class VehicleManager: NSObject {
     jsonMode = true
     }
   }
-
-  
+  // change the throughput for the VM
+  open func setThroughput(_ on:Bool) {
+    
+    if on{
+      throughputEnabled = true
+    }
+    else{
+      throughputEnabled = false
+    }
+  }
   // return the latest message received for a given measurement string name
 //  open func getLatest(_ key:NSString) -> VehicleMeasurementResponse {
 //    if let entry = latestVehicleMeasurements[key] {
@@ -1548,7 +1557,12 @@ open class VehicleManager: NSObject {
   
   //fileprivate to open
   open func RxDataParser(_ separator:UInt8) {
-    
+
+//    if throughputEnabled{
+//      tempDataBuffer.append(RxDataBuffer as Data)
+//      print(RxDataBuffer.length)
+//      print(tempDataBuffer.length)
+//    }
     
     ////////////////
     // Protobuf decoding
@@ -1627,6 +1641,16 @@ open class VehicleManager: NSObject {
     }
 
   }
-  
- 
+  public func calculateThroughput() -> (String) {
+    //.. Code process
+    //print(tempDataBuffer1)
+    let value = tempDataBuffer.length/5
+    print(tempDataBuffer.length)
+    tempDataBuffer.setData(NSMutableData() as Data)
+    let result = String(value)
+    print(tempDataBuffer.length)
+    print(result)
+    return result
+  }
+
 }
