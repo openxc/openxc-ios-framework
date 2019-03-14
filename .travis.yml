@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode10.1
+osx_image: xcode9.4
 xcode_project: openxc-ios-framework.xcodeproj
 xcode_scheme: openxc-ios-framework
 xcode_sdk: iphonesimulator11.0
