@@ -1,4 +1,4 @@
-language: objective-c,Swift
+language: objective-c
 osx_image: xcode10.1
 xcode_project: openxc-ios-framework.xcodeproj
 xcode_scheme: openxc-ios-framework
