@@ -1,12 +1,12 @@
-language: objective-c
-osx_image: xcode9.0
+language: swift
+osx_image: xcode10.0
 xcode_project: openxc-ios-framework.xcodeproj
 xcode_scheme: openxc-ios-framework
-xcode_sdk: iphonesimulator11.0
+xcode_sdk: iphonesimulator11.4
 
 branches:
 - master
 - next
 
 script:
-- xcodebuild clean build test -project openxc-ios-framework.xcodeproj -scheme openxc-ios-framework -destination 'platform=iOS Simulator,name=iPhone 6s,OS=9.2'  ONLY_ACTIVE_ARCH=NO
+- xcodebuild clean build test -project openxc-ios-framework.xcodeproj -scheme openxc-ios-framework -destination 'platform=iOS Simulator,name=iPhone 6s,OS=11.4'  ONLY_ACTIVE_ARCH=NO
