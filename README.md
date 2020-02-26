@@ -1,3 +1,6 @@
+# Archive Note
+***This repository is no longer being actively maintained and is archived. All the latest changes to the OpenXC iOS library and sample application are now located at [openxc-ios-library](https://github.com/openxc/openxc-ios-library).***
+
 # OpenXC-iOS-Framework
 This framework is part of the OpenXC project. This iOS framework contains the tools required to read vehicle data from the vehicle's CAN bus through the OpenXC vehicle interface in any iOS application.
 
